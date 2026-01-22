@@ -125,6 +125,13 @@ function App() {
 
   useEffect(() => {
     loadData()
+
+    // 5分ごとに自動更新
+    const intervalId = setInterval(() => {
+      loadData()
+    }, 5 * 60 * 1000) // 5分 = 300,000ミリ秒
+
+    return () => clearInterval(intervalId)
   }, [loadData])
 
   // Escキーでポップアップを閉じる
@@ -275,6 +282,23 @@ function App() {
               BAR MAGUROPHONE
             </h1>
           </div>
+        </div>
+
+        {/* 更新ボタン（右上） */}
+        <div className="absolute top-4 right-4 flex items-center gap-3">
+          {lastUpdate && (
+            <div className="hidden md:block text-xs text-gray-400">
+              最終更新: {lastUpdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })}
+            </div>
+          )}
+          <button
+            onClick={loadData}
+            disabled={loading}
+            className="glass-effect px-4 py-2 rounded-lg border border-light-blue/30 hover:border-amber transition-all text-sm font-body disabled:opacity-50 disabled:cursor-not-allowed"
+            title="データを再読み込み"
+          >
+            {loading ? '🔄' : '↻'} 更新
+          </button>
         </div>
       </div>
 
