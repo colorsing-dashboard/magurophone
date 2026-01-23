@@ -1,0 +1,10 @@
+/* ヘッダー画像のカスタムスタイル */
+.header-image {
+  background-image: url(/header-mobile.png);
+}
+
+@media (min-width: 768px) {
+  .header-image {
+    background-image: url(/header.png);
+  }
+}
