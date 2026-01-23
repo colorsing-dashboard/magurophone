@@ -44,6 +44,11 @@ const BENEFIT_ICONS = {
   'メンバーシップ': '👑'
 }
 
+const ICON_FIELDS = {
+  LABEL: 0,      // 獲得者名
+  IMAGE_URL: 1   // Google Drive URL
+}
+
 // Googleスプレッドシートから公開データを取得（再試行機能付き）
 const fetchSheetData = async (sheetName, retries = 3) => {
   const SPREADSHEET_ID = window.MAGUROPHONE_CONFIG?.SPREADSHEET_ID || 'YOUR_SPREADSHEET_ID_HERE'
@@ -84,6 +89,49 @@ const fetchSheetData = async (sheetName, retries = 3) => {
   }
 
   return []
+}
+
+// Google DriveのURLを直接表示可能なURLに変換
+const convertDriveUrl = (url) => {
+  if (!url || typeof url !== 'string') return ''
+
+  // 既に変換済みの場合はそのまま返す
+  if (url.includes('/uc?export=view')) return url
+
+  // /file/d/FILE_ID/view 形式を /uc?export=view&id=FILE_ID に変換
+  const match = url.match(/\/file\/d\/([^/]+)/)
+  if (match && match[1]) {
+    return `https://drive.google.com/uc?export=view&id=${match[1]}`
+  }
+
+  return url
+}
+
+// 枠内アイコンデータを月別に読み込む（エラーハンドリング付き）
+const fetchIconData = async () => {
+  const ICON_MONTHS = window.MAGUROPHONE_CONFIG?.ICON_MONTHS || []
+  const iconData = {}
+
+  // 全ての月のシートを試行（存在しないシートはスキップ）
+  for (const month of ICON_MONTHS) {
+    try {
+      const data = await fetchSheetData(month, 1) // リトライ1回のみ（高速化）
+      if (data && data.length > 0) {
+        // ヘッダー行をスキップして保存
+        iconData[month] = data.slice(1).filter(row =>
+          row[ICON_FIELDS.LABEL] && row[ICON_FIELDS.IMAGE_URL]
+        ).map(row => ({
+          label: row[ICON_FIELDS.LABEL],
+          imageUrl: convertDriveUrl(row[ICON_FIELDS.IMAGE_URL])
+        }))
+      }
+    } catch (error) {
+      // シートが存在しない場合は静かにスキップ
+      console.debug(`Sheet ${month} not found, skipping...`)
+    }
+  }
+
+  return iconData
 }
 
 // カウントアップアニメーション（ページ読み込み時のみ実行）
@@ -128,7 +176,147 @@ const CountUp = ({ end, duration = 2000 }) => {
   return <span>{count}k</span>
 }
 
+// 枠内アイコンギャラリーコンポーネント
+const IconGallery = ({ icons, selectedMonth, setSelectedMonth, selectedUser, setSelectedUser, loading }) => {
+  // 月のリストを降順（新しい順）でソート
+  const availableMonths = useMemo(() => {
+    return Object.keys(icons).filter(month => icons[month].length > 0).sort().reverse()
+  }, [icons])
+
+  // 選択された月のユーザーリストを取得（重複削除、50音順）
+  const users = useMemo(() => {
+    if (!selectedMonth || !icons[selectedMonth]) return []
+    const uniqueUsers = [...new Set(icons[selectedMonth].map(item => item.label))]
+    return uniqueUsers.sort((a, b) => a.localeCompare(b, 'ja'))
+  }, [selectedMonth, icons])
+
+  // 選択されたユーザーのアイコン一覧を取得
+  const userIcons = useMemo(() => {
+    if (!selectedMonth || !icons[selectedMonth] || !selectedUser) return []
+    return icons[selectedMonth].filter(item => item.label === selectedUser)
+  }, [selectedMonth, selectedUser, icons])
+
+  // 月を選択したときにユーザー選択をリセット
+  const handleMonthChange = (month) => {
+    setSelectedMonth(month)
+    setSelectedUser(null)
+  }
+
+  if (loading) {
+    return (
+      <div className="text-center py-16">
+        <div className="text-4xl mb-4 animate-pulse">🖼️</div>
+        <div className="text-xl text-light-blue animate-shimmer">アイコンデータを読み込み中...</div>
+      </div>
+    )
+  }
+
+  if (availableMonths.length === 0) {
+    return (
+      <div className="text-center py-16">
+        <div className="text-4xl mb-4">📭</div>
+        <div className="text-xl text-gray-400">アイコンデータがありません</div>
+      </div>
+    )
+  }
+
+  // 月タブの表示フォーマット（202602 → 2026年2月）
+  const formatMonth = (month) => {
+    const year = month.substring(0, 4)
+    const m = parseInt(month.substring(4, 6), 10)
+    return `${year}年${m}月`
+  }
+
+  return (
+    <div className="space-y-8">
+      {/* 月選択タブ */}
+      <div className="overflow-x-auto">
+        <div className="flex gap-2 pb-2 min-w-max">
+          {availableMonths.map((month) => (
+            <button
+              key={month}
+              onClick={() => handleMonthChange(month)}
+              className={`px-4 py-2 rounded-lg transition-all whitespace-nowrap ${
+                selectedMonth === month
+                  ? 'bg-light-blue/20 border border-light-blue/50 text-light-blue'
+                  : 'glass-effect border border-light-blue/20 text-gray-400 hover:text-light-blue hover:border-light-blue/40'
+              }`}
+            >
+              {formatMonth(month)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {selectedMonth && (
+        <>
+          {/* 獲得者一覧 */}
+          <section>
+            <h3 className="text-xl md:text-2xl font-body mb-4 text-light-blue">獲得者一覧</h3>
+            <div className="grid grid-cols-2 xs:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+              {users.map((user) => (
+                <button
+                  key={user}
+                  onClick={() => setSelectedUser(user === selectedUser ? null : user)}
+                  className={`glass-effect rounded-lg p-3 transition-all text-center ${
+                    selectedUser === user
+                      ? 'border-2 border-amber text-amber'
+                      : 'border border-light-blue/30 hover:border-light-blue text-gray-300 hover:text-light-blue'
+                  }`}
+                >
+                  <div className="text-sm font-body truncate">{user}</div>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          {/* アイコン画像表示 */}
+          {selectedUser && (
+            <section>
+              <h3 className="text-xl md:text-2xl font-body mb-4 text-amber">
+                {selectedUser} のアイコン
+              </h3>
+              {userIcons.length > 0 ? (
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                  {userIcons.map((icon, index) => (
+                    <a
+                      key={index}
+                      href={icon.imageUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="glass-effect rounded-lg overflow-hidden border border-light-blue/30 hover:border-amber transition-all group aspect-square"
+                    >
+                      <img
+                        src={icon.imageUrl}
+                        alt={`${icon.label}のアイコン`}
+                        className="w-full h-full object-contain bg-deep-blue/30 group-hover:scale-105 transition-transform"
+                        loading="lazy"
+                        onError={(e) => {
+                          e.target.onerror = null
+                          e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200"%3E%3Crect width="200" height="200" fill="%23222"%3E%3C/rect%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" fill="%23666" font-size="16"%3E画像エラー%3C/text%3E%3C/svg%3E'
+                        }}
+                      />
+                    </a>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-gray-400">
+                  アイコンがありません
+                </div>
+              )}
+            </section>
+          )}
+        </>
+      )}
+    </div>
+  )
+}
+
 function App() {
+  // Navigation state
+  const [currentView, setCurrentView] = useState('home') // 'home' | 'menu' | 'rights' | 'icons'
+
+  // Existing state
   const [ranking, setRanking] = useState([])
   const [goals, setGoals] = useState([])
   const [rights, setRights] = useState([])
@@ -139,6 +327,12 @@ function App() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [lastUpdate, setLastUpdate] = useState(null)
+
+  // Icon gallery state
+  const [icons, setIcons] = useState({}) // { '202602': [...], '202603': [...] }
+  const [loadingIcons, setLoadingIcons] = useState(false)
+  const [selectedMonth, setSelectedMonth] = useState(null) // Currently selected month tab
+  const [selectedUser, setSelectedUser] = useState(null) // Currently selected user for filtering icons
 
   const loadData = useCallback(async () => {
     setLoading(true)
@@ -205,6 +399,34 @@ function App() {
       document.body.style.overflow = 'unset'
     }
   }, [selectedPerson, selectedBenefit])
+
+  // アイコンデータの読み込み（アイコンビューに切り替えた時）
+  useEffect(() => {
+    const loadIconData = async () => {
+      // 既に読み込み済みまたは読み込み中の場合はスキップ
+      if (Object.keys(icons).length > 0 || loadingIcons) return
+
+      setLoadingIcons(true)
+      try {
+        const iconData = await fetchIconData()
+        setIcons(iconData)
+
+        // デフォルトで最新の月を選択
+        const months = Object.keys(iconData).sort().reverse()
+        if (months.length > 0 && !selectedMonth) {
+          setSelectedMonth(months[0])
+        }
+      } catch (error) {
+        console.error('Failed to load icon data:', error)
+      } finally {
+        setLoadingIcons(false)
+      }
+    }
+
+    if (currentView === 'icons') {
+      loadIconData()
+    }
+  }, [currentView, icons, loadingIcons, selectedMonth])
 
   // 権利者を50音順にソート（useMemoで最適化）
   const sortedRights = useMemo(() => {
@@ -276,6 +498,73 @@ function App() {
 
   return (
     <div className="min-h-screen">
+      {/* デスクトップ用サイドバーナビゲーション */}
+      <aside className="hidden md:fixed md:flex md:flex-col md:left-0 md:top-0 md:bottom-0 md:w-64 glass-effect border-r border-light-blue/30 z-40 p-6">
+        <div className="mb-8">
+          <h1 className="text-2xl font-display font-black text-transparent bg-clip-text bg-gradient-to-r from-ocean-teal via-light-blue to-amber">
+            MAGUROPHONE
+          </h1>
+        </div>
+
+        <nav className="flex-1 space-y-2">
+          <button
+            onClick={() => setCurrentView('home')}
+            className={`w-full text-left px-4 py-3 rounded-lg transition-all flex items-center gap-3 ${
+              currentView === 'home'
+                ? 'bg-light-blue/20 border border-light-blue/50 text-light-blue'
+                : 'hover:bg-light-blue/10 text-gray-300 hover:text-light-blue'
+            }`}
+          >
+            <span className="text-xl">🏠</span>
+            <span className="font-body">Home</span>
+          </button>
+
+          <button
+            onClick={() => setCurrentView('menu')}
+            className={`w-full text-left px-4 py-3 rounded-lg transition-all flex items-center gap-3 ${
+              currentView === 'menu'
+                ? 'bg-light-blue/20 border border-light-blue/50 text-light-blue'
+                : 'hover:bg-light-blue/10 text-gray-300 hover:text-light-blue'
+            }`}
+          >
+            <span className="text-xl">🍾</span>
+            <span className="font-body">Menu</span>
+          </button>
+
+          <button
+            onClick={() => setCurrentView('rights')}
+            className={`w-full text-left px-4 py-3 rounded-lg transition-all flex items-center gap-3 ${
+              currentView === 'rights'
+                ? 'bg-light-blue/20 border border-light-blue/50 text-light-blue'
+                : 'hover:bg-light-blue/10 text-gray-300 hover:text-light-blue'
+            }`}
+          >
+            <span className="text-xl">👥</span>
+            <span className="font-body">ボトルキープ</span>
+          </button>
+
+          <button
+            onClick={() => setCurrentView('icons')}
+            className={`w-full text-left px-4 py-3 rounded-lg transition-all flex items-center gap-3 ${
+              currentView === 'icons'
+                ? 'bg-light-blue/20 border border-light-blue/50 text-light-blue'
+                : 'hover:bg-light-blue/10 text-gray-300 hover:text-light-blue'
+            }`}
+          >
+            <span className="text-xl">🖼️</span>
+            <span className="font-body">枠内アイコン</span>
+          </button>
+        </nav>
+
+        {lastUpdate && (
+          <div className="mt-auto pt-6 border-t border-light-blue/20 text-xs text-gray-500">
+            最終更新: {lastUpdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })}
+          </div>
+        )}
+      </aside>
+
+      {/* メインコンテンツエリア（デスクトップではサイドバー分の余白を追加） */}
+      <div className="md:ml-64">
       {/* ヘッダー画像エリア */}
       <div className="w-full h-[300px] md:h-[600px] relative overflow-hidden bg-gradient-to-b from-deep-blue via-ocean-teal/30 to-deep-blue">
         {/* ヘッダー画像 */}
@@ -320,7 +609,10 @@ function App() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-6 md:py-12 space-y-8 md:space-y-16">
+      <div className="max-w-7xl mx-auto px-4 py-6 md:py-12 pb-24 md:pb-12 space-y-8 md:space-y-16">
+        {/* Home View - ランキング + 目標 + FAQ */}
+        {currentView === 'home' && (
+          <>
         {/* ランキング */}
         <section className="text-center">
           <h2 className="text-2xl md:text-4xl font-body mb-4 md:mb-8 text-glow-soft text-light-blue">Ranking</h2>
@@ -375,9 +667,31 @@ function App() {
           </div>
         </section>
 
-        {/* 特典制度 */}
-        <section>
-          <h2 className="text-2xl md:text-4xl font-body mb-6 md:mb-12 text-center text-glow-soft text-light-blue">Menu</h2>
+        {/* FAQ */}
+        <section className="max-w-4xl mx-auto">
+          <h2 className="text-2xl md:text-4xl font-body mb-8 text-center text-glow-soft text-light-blue">📝 FAQ・注意事項</h2>
+          <div className="glass-effect rounded-2xl p-8 border border-light-blue/30 space-y-6">
+            <div>
+              <h3 className="text-xl font-body text-amber mb-2">▸ 特典の使用方法は？</h3>
+              <p className="text-gray-300 ml-6">枠内でリクエストするか、XのDMでお知らせください。</p>
+            </div>
+            <div>
+              <h3 className="text-xl font-body text-amber mb-2">▸ 10k以上の特典について</h3>
+              <p className="text-gray-300 ml-6">永続権利です。月が替わっても消えることがありません。</p>
+            </div>
+            <div>
+              <h3 className="text-xl font-body text-amber mb-2">▸ メンバーシップ特典について</h3>
+              <p className="text-gray-300 ml-6">メンバーシップ特典で得られた10ｋ及び20ｋ特典は、それぞれの箇所に合算して記載しています。</p>
+            </div>
+          </div>
+        </section>
+          </>
+        )}
+
+        {/* Menu View - 特典制度 */}
+        {currentView === 'menu' && (
+          <section>
+            <h2 className="text-2xl md:text-4xl font-body mb-6 md:mb-12 text-center text-glow-soft text-light-blue">Menu</h2>
           <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 gap-6">
             {benefits.map((benefit, index) => (
               <div 
@@ -421,9 +735,11 @@ function App() {
               </div>
             ))}
           </div>
-        </section>
+          </section>
+        )}
 
-        {/* 権利者リスト */}
+        {/* Rights View - 権利者リスト */}
+        {currentView === 'rights' && (
         <section>
           <h2 className="text-2xl md:text-4xl font-body mb-4 md:mb-8 text-center text-glow-soft text-amber">🍾 ボトルキープ一覧</h2>
           
@@ -458,25 +774,22 @@ function App() {
             ))}
           </div>
         </section>
+        )}
 
-        {/* FAQ */}
-        <section className="max-w-4xl mx-auto">
-          <h2 className="text-2xl md:text-4xl font-body mb-8 text-center text-glow-soft text-light-blue">📝 FAQ・注意事項</h2>
-          <div className="glass-effect rounded-2xl p-8 border border-light-blue/30 space-y-6">
-            <div>
-              <h3 className="text-xl font-body text-amber mb-2">▸ 特典の使用方法は？</h3>
-              <p className="text-gray-300 ml-6">枠内でリクエストするか、XのDMでお知らせください。</p>
-            </div>
-            <div>
-              <h3 className="text-xl font-body text-amber mb-2">▸ 10k以上の特典について</h3>
-              <p className="text-gray-300 ml-6">永続権利です。月が替わっても消えることがありません。</p>
-            </div>
-            <div>
-              <h3 className="text-xl font-body text-amber mb-2">▸ メンバーシップ特典について</h3>
-              <p className="text-gray-300 ml-6">メンバーシップ特典で得られた10ｋ及び20ｋ特典は、それぞれの箇所に合算して記載しています。</p>
-            </div>
-          </div>
-        </section>
+        {/* Icons View - 枠内アイコンギャラリー */}
+        {currentView === 'icons' && (
+          <section>
+            <h2 className="text-2xl md:text-4xl font-body mb-6 md:mb-12 text-center text-glow-soft text-amber">🖼️ 枠内アイコン</h2>
+            <IconGallery
+              icons={icons}
+              selectedMonth={selectedMonth}
+              setSelectedMonth={setSelectedMonth}
+              selectedUser={selectedUser}
+              setSelectedUser={setSelectedUser}
+              loading={loadingIcons}
+            />
+          </section>
+        )}
 
         {/* フッター */}
         <footer className="text-center py-8 border-t border-light-blue/30">
@@ -710,6 +1023,61 @@ function App() {
           </div>
         </div>
       )}
+      </div>
+
+      {/* モバイル用ボトムナビゲーション */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 glass-effect border-t border-light-blue/30 z-40"
+           style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+        <div className="grid grid-cols-4 h-16">
+          <button
+            onClick={() => setCurrentView('home')}
+            className={`flex flex-col items-center justify-center gap-1 transition-all ${
+              currentView === 'home'
+                ? 'text-light-blue'
+                : 'text-gray-400 hover:text-light-blue'
+            }`}
+          >
+            <span className="text-xl">🏠</span>
+            <span className="text-xs font-body">Home</span>
+          </button>
+
+          <button
+            onClick={() => setCurrentView('menu')}
+            className={`flex flex-col items-center justify-center gap-1 transition-all ${
+              currentView === 'menu'
+                ? 'text-light-blue'
+                : 'text-gray-400 hover:text-light-blue'
+            }`}
+          >
+            <span className="text-xl">🍾</span>
+            <span className="text-xs font-body">Menu</span>
+          </button>
+
+          <button
+            onClick={() => setCurrentView('rights')}
+            className={`flex flex-col items-center justify-center gap-1 transition-all ${
+              currentView === 'rights'
+                ? 'text-light-blue'
+                : 'text-gray-400 hover:text-light-blue'
+            }`}
+          >
+            <span className="text-xl">👥</span>
+            <span className="text-xs font-body">権利者</span>
+          </button>
+
+          <button
+            onClick={() => setCurrentView('icons')}
+            className={`flex flex-col items-center justify-center gap-1 transition-all ${
+              currentView === 'icons'
+                ? 'text-light-blue'
+                : 'text-gray-400 hover:text-light-blue'
+            }`}
+          >
+            <span className="text-xl">🖼️</span>
+            <span className="text-xs font-body">アイコン</span>
+          </button>
+        </div>
+      </nav>
     </div>
   )
 }
