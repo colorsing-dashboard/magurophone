@@ -86,31 +86,35 @@ const fetchSheetData = async (sheetName, retries = 3) => {
   return []
 }
 
-// ページ読み込み時のみアニメーションを実行するためのフラグ（モジュールレベル）
-let hasPageAnimated = false
-
 // カウントアップアニメーション（ページ読み込み時のみ実行）
 const CountUp = ({ end, duration = 2000 }) => {
   const endNum = parseInt(end.replace('k', '')) || 0
-  const [count, setCount] = useState(hasPageAnimated ? endNum : 0)
+
+  const [count, setCount] = useState(0)
+  const hasAnimatedRef = useRef(false)
+  const endNumRef = useRef(endNum)
+  const durationRef = useRef(duration)
+
+  // refを更新（再レンダリング時に最新の値を保持）
+  endNumRef.current = endNum
+  durationRef.current = duration
 
   useEffect(() => {
-    // 既にページ読み込み時のアニメーションが実行済みなら即座に最終値を表示
-    if (hasPageAnimated) {
-      setCount(endNum)
+    // 既にアニメーション実行済みなら最終値を即座に設定
+    if (hasAnimatedRef.current) {
+      setCount(endNumRef.current)
       return
     }
 
-    // ページ読み込み時の初回のみアニメーション実行
-    hasPageAnimated = true
-
-    const increment = endNum / (duration / 16)
+    hasAnimatedRef.current = true
+    const finalValue = endNumRef.current
+    const incr = finalValue / (durationRef.current / 16)
     let current = 0
 
     const timer = setInterval(() => {
-      current += increment
-      if (current >= endNum) {
-        setCount(endNum)
+      current += incr
+      if (current >= finalValue) {
+        setCount(finalValue)
         clearInterval(timer)
       } else {
         setCount(Math.floor(current))
@@ -118,8 +122,8 @@ const CountUp = ({ end, duration = 2000 }) => {
     }, 16)
 
     return () => clearInterval(timer)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []) // 空の依存配列 = マウント時のみ実行
+    // 空の依存配列 = マウント時のみ実行
+  }, [])
 
   return <span>{count}k</span>
 }
