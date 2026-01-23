@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import './App.css'
+import './custom.css'
 
 // データ構造の定数定義
 const RANKING_FIELDS = {
@@ -261,7 +262,7 @@ function App() {
       {/* ヘッダー画像エリア */}
       <div className="w-full h-[300px] md:h-[600px] relative overflow-hidden bg-gradient-to-b from-deep-blue via-ocean-teal/30 to-deep-blue">
         {/* ヘッダー画像 */}
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat header-image"
         ></div>
         {/* オーバーレイ（画像を少し暗くして文字を読みやすく） */}
