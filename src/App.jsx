@@ -86,12 +86,24 @@ const fetchSheetData = async (sheetName, retries = 3) => {
   return []
 }
 
-// カウントアップアニメーション（マウント時のみ実行）
+// ページ読み込み時のみアニメーションを実行するためのフラグ（モジュールレベル）
+let hasPageAnimated = false
+
+// カウントアップアニメーション（ページ読み込み時のみ実行）
 const CountUp = ({ end, duration = 2000 }) => {
-  const [count, setCount] = useState(0)
+  const endNum = parseInt(end.replace('k', '')) || 0
+  const [count, setCount] = useState(hasPageAnimated ? endNum : 0)
 
   useEffect(() => {
-    const endNum = parseInt(end.replace('k', '')) || 0
+    // 既にページ読み込み時のアニメーションが実行済みなら即座に最終値を表示
+    if (hasPageAnimated) {
+      setCount(endNum)
+      return
+    }
+
+    // ページ読み込み時の初回のみアニメーション実行
+    hasPageAnimated = true
+
     const increment = endNum / (duration / 16)
     let current = 0
 
