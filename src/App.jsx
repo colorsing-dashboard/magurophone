@@ -1,19 +1,88 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import './App.css'
 
-// Googleスプレッドシートから公開データを取得
-const fetchSheetData = async (sheetName) => {
-  try {
-    const SPREADSHEET_ID = window.MAGUROPHONE_CONFIG?.SPREADSHEET_ID || 'YOUR_SPREADSHEET_ID_HERE'
-    const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`
-    const response = await fetch(url)
-    const text = await response.text()
-    const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S\w]+)\)/)[1])
-    return json.table.rows.map(row => row.c.map(cell => cell?.v || ''))
-  } catch (error) {
-    console.error(`Error fetching ${sheetName}:`, error)
-    return []
+// データ構造の定数定義
+const RANKING_FIELDS = {
+  RANK: 0,
+  NAME: 1,
+  POINTS: 2
+}
+
+const GOAL_FIELDS = {
+  THIS_WEEK: 0,
+  THIS_MONTH: 1
+}
+
+const RIGHTS_FIELDS = {
+  NAME: 0,
+  SONG_REQUEST_5K: 1,      // 🎵 5k: 強制リクエスト
+  GAME_RIGHT_10K: 2,        // 🎮 10k: ゲーム権利
+  OPENCHAT_20K: 3,          // 💬 20k: オープンチャット
+  ACAPELLA_30K: 4,          // 🎤 30k: アカペラ音源
+  SONG_REQUEST_40K: 5,      // ⚡ 40k: 強制リクエスト
+  MIX_AUDIO_50K: 6,         // 🏆 50k: ミックス音源
+  MEMBERSHIP: 7,            // 👑 メンバーシップ
+  SPECIAL: 8                // ✨ Special権利
+}
+
+const BENEFIT_FIELDS = {
+  TITLE: 0,
+  NAME: 1,
+  DESCRIPTION: 2,
+  ICON: 3,
+  LABEL: 4
+}
+
+const BENEFIT_ICONS = {
+  '5k': '🎵',
+  '10k': '🎮',
+  '20k': '💬',
+  '30k': '🎤',
+  '40k': '⚡',
+  '50k': '🏆',
+  'メンバーシップ': '👑'
+}
+
+// Googleスプレッドシートから公開データを取得（再試行機能付き）
+const fetchSheetData = async (sheetName, retries = 3) => {
+  const SPREADSHEET_ID = window.MAGUROPHONE_CONFIG?.SPREADSHEET_ID || 'YOUR_SPREADSHEET_ID_HERE'
+  const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`
+
+  for (let attempt = 0; attempt < retries; attempt++) {
+    try {
+      const response = await fetch(url)
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const text = await response.text()
+      const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S\w]+)\)/)
+
+      if (!match || !match[1]) {
+        throw new Error('Invalid response format from Google Sheets')
+      }
+
+      const json = JSON.parse(match[1])
+
+      if (!json.table || !json.table.rows) {
+        throw new Error('Invalid data structure from Google Sheets')
+      }
+
+      return json.table.rows.map(row => row.c.map(cell => cell?.v || ''))
+    } catch (error) {
+      console.error(`Error fetching ${sheetName} (attempt ${attempt + 1}/${retries}):`, error)
+
+      if (attempt === retries - 1) {
+        throw error // 最後の試行で失敗したらエラーを投げる
+      }
+
+      // 次の試行前に少し待つ（exponential backoff）
+      await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt)))
+    }
   }
+
+  return []
 }
 
 function App() {
@@ -25,34 +94,88 @@ function App() {
   const [selectedBenefit, setSelectedBenefit] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [lastUpdate, setLastUpdate] = useState(null)
 
-  useEffect(() => {
-    const loadData = async () => {
-      setLoading(true)
+  const loadData = useCallback(async () => {
+    setLoading(true)
+    setError(null)
+
+    try {
       const [rankingData, goalsData, rightsData, benefitsData] = await Promise.all([
         fetchSheetData('ランキング'),
         fetchSheetData('目標'),
         fetchSheetData('権利者'),
         fetchSheetData('特典説明')
       ])
-      
+
       setRanking(rankingData)
       setGoals(goalsData.slice(1))
       setRights(rightsData.slice(1))
       setBenefits(benefitsData.slice(1))
+      setLastUpdate(new Date())
+      setError(null)
+    } catch (err) {
+      console.error('Failed to load data:', err)
+      setError('データの読み込みに失敗しました。しばらくしてから再度お試しください。')
+    } finally {
       setLoading(false)
     }
-    
-    loadData()
   }, [])
 
-  // 権利者を50音順にソート
-  const sortedRights = [...rights].sort((a, b) => a[0].localeCompare(b[0], 'ja'))
-  
-  // 検索フィルター
-  const filteredRights = sortedRights.filter(person => 
-    person[0].toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  useEffect(() => {
+    loadData()
+
+    // 5分ごとに自動更新
+    const intervalId = setInterval(() => {
+      loadData()
+    }, 5 * 60 * 1000) // 5分 = 300,000ミリ秒
+
+    return () => clearInterval(intervalId)
+  }, [loadData])
+
+  // Escキーでポップアップを閉じる
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') {
+        if (selectedBenefit) {
+          setSelectedBenefit(null)
+        } else if (selectedPerson) {
+          setSelectedPerson(null)
+        }
+      }
+    }
+
+    document.addEventListener('keydown', handleEscape)
+    return () => document.removeEventListener('keydown', handleEscape)
+  }, [selectedPerson, selectedBenefit])
+
+  // ポップアップ表示時のスクロール防止
+  useEffect(() => {
+    if (selectedPerson || selectedBenefit) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [selectedPerson, selectedBenefit])
+
+  // 権利者を50音順にソート（useMemoで最適化）
+  const sortedRights = useMemo(() => {
+    return [...rights].sort((a, b) =>
+      a[RIGHTS_FIELDS.NAME].localeCompare(b[RIGHTS_FIELDS.NAME], 'ja')
+    )
+  }, [rights])
+
+  // 検索フィルター（useMemoで最適化）
+  const filteredRights = useMemo(() => {
+    return sortedRights.filter(person =>
+      person[RIGHTS_FIELDS.NAME].toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  }, [sortedRights, searchTerm])
 
   // カウントアップアニメーション
   const CountUp = ({ end, duration = 2000 }) => {
@@ -88,21 +211,21 @@ function App() {
   }
 
   // 権利のアイコンを取得
-  const getRightsIcons = (person) => {
+  const getRightsIcons = useCallback((person) => {
     const icons = []
-    if (hasRight(person[1])) icons.push('🎵')
-    if (hasRight(person[2])) icons.push('🎮')
-    if (hasRight(person[3])) icons.push('💬')
-    if (hasRight(person[4])) icons.push('🎤')
-    if (hasRight(person[5])) icons.push('⚡')
-    if (hasRight(person[6])) icons.push('🏆')
-    if (hasRight(person[7])) icons.push('👑')
+    if (hasRight(person[RIGHTS_FIELDS.SONG_REQUEST_5K])) icons.push(BENEFIT_ICONS['5k'])
+    if (hasRight(person[RIGHTS_FIELDS.GAME_RIGHT_10K])) icons.push(BENEFIT_ICONS['10k'])
+    if (hasRight(person[RIGHTS_FIELDS.OPENCHAT_20K])) icons.push(BENEFIT_ICONS['20k'])
+    if (hasRight(person[RIGHTS_FIELDS.ACAPELLA_30K])) icons.push(BENEFIT_ICONS['30k'])
+    if (hasRight(person[RIGHTS_FIELDS.SONG_REQUEST_40K])) icons.push(BENEFIT_ICONS['40k'])
+    if (hasRight(person[RIGHTS_FIELDS.MIX_AUDIO_50K])) icons.push(BENEFIT_ICONS['50k'])
+    if (hasRight(person[RIGHTS_FIELDS.MEMBERSHIP])) icons.push(BENEFIT_ICONS['メンバーシップ'])
     return icons
-  }
+  }, [])
 
-  const getBenefitByTitle = (title) => {
-    return benefits.find(benefit => benefit[0] === title)
-  }
+  const getBenefitByTitle = useCallback((title) => {
+    return benefits.find(benefit => benefit[BENEFIT_FIELDS.TITLE] === title)
+  }, [benefits])
 
   if (loading) {
     return (
@@ -110,6 +233,24 @@ function App() {
         <div className="text-center">
           <div className="text-4xl mb-4 animate-pulse">🐟</div>
           <div className="text-xl text-light-blue animate-shimmer">Loading...</div>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="glass-effect rounded-2xl p-8 border border-tuna-red/30 max-w-md w-full text-center">
+          <div className="text-5xl mb-4">⚠️</div>
+          <h2 className="text-2xl font-body mb-4 text-tuna-red">エラー</h2>
+          <p className="text-gray-300 mb-6">{error}</p>
+          <button
+            onClick={loadData}
+            className="px-6 py-3 bg-amber/20 hover:bg-amber/30 border border-amber/50 rounded-xl transition-all text-amber font-body"
+          >
+            再読み込み
+          </button>
         </div>
       </div>
     )
@@ -142,6 +283,23 @@ function App() {
             </h1>
           </div>
         </div>
+
+        {/* 更新ボタン（右上） */}
+        <div className="absolute top-4 right-4 flex items-center gap-3">
+          {lastUpdate && (
+            <div className="hidden md:block text-xs text-gray-400">
+              最終更新: {lastUpdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })}
+            </div>
+          )}
+          <button
+            onClick={loadData}
+            disabled={loading}
+            className="glass-effect px-4 py-2 rounded-lg border border-light-blue/30 hover:border-amber transition-all text-sm font-body disabled:opacity-50 disabled:cursor-not-allowed"
+            title="データを再読み込み"
+          >
+            {loading ? '🔄' : '↻'} 更新
+          </button>
+        </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-6 md:py-12 space-y-8 md:space-y-16">
@@ -159,9 +317,9 @@ function App() {
                   {index === 1 && <img src="./medal-2nd.jpg" alt="2位" className="w-12 h-12 md:w-16 md:h-16 object-cover rounded-full" />}
                   {index === 2 && <img src="./medal-3rd.jpg" alt="3位" className="w-12 h-12 md:w-16 md:h-16 object-cover rounded-full" />}
                 </div>
-                <div className="text-xs md:text-2xl font-body mb-1 md:mb-2 whitespace-nowrap overflow-hidden h-4 md:h-8">{person[1]}</div>
+                <div className="text-xs md:text-2xl font-body mb-1 md:mb-2 whitespace-nowrap overflow-hidden h-4 md:h-8">{person[RANKING_FIELDS.NAME]}</div>
                 <div className={`text-2xl md:text-4xl font-black ${index === 0 ? 'text-tuna-red' : 'text-amber'}`}>
-                  <CountUp end={person[2]} />
+                  <CountUp end={person[RANKING_FIELDS.POINTS]} />
                 </div>
                 <div className="text-xs md:text-sm text-gray-400 mt-1 md:mt-2">歌推しPt</div>
               </div>
@@ -174,24 +332,24 @@ function App() {
           <h2 className="text-2xl md:text-4xl font-body mb-4 md:mb-8 text-glow-soft text-amber">Targets</h2>
           <div className="grid grid-cols-2 gap-3 md:gap-6 max-w-4xl mx-auto">
             {/* 今旬の目標 */}
-            <div className={`glass-effect rounded-2xl p-4 md:p-6 border border-amber/30 ${goals.length === 0 || !goals[0] || !goals[0][0] ? 'opacity-50' : ''}`}>
+            <div className={`glass-effect rounded-2xl p-4 md:p-6 border border-amber/30 ${goals.length === 0 || !goals[0] || !goals[0][GOAL_FIELDS.THIS_WEEK] ? 'opacity-50' : ''}`}>
               <h3 className="text-lg md:text-2xl font-body mb-2 md:mb-4 text-light-blue">今旬の目標</h3>
               {goals.map((goal, index) => (
-                goal[0] && (
+                goal[GOAL_FIELDS.THIS_WEEK] && (
                   <div key={index} className="text-sm md:text-lg mb-2 md:mb-4 last:mb-0">
-                    <span className="text-amber">▸</span> {goal[0]}
+                    <span className="text-amber">▸</span> {goal[GOAL_FIELDS.THIS_WEEK]}
                   </div>
                 )
               ))}
             </div>
-            
+
             {/* 今月の目標 */}
-            <div className={`glass-effect rounded-2xl p-4 md:p-6 border border-amber/30 ${goals.length === 0 || !goals[0] || !goals[0][1] ? 'opacity-50' : ''}`}>
+            <div className={`glass-effect rounded-2xl p-4 md:p-6 border border-amber/30 ${goals.length === 0 || !goals[0] || !goals[0][GOAL_FIELDS.THIS_MONTH] ? 'opacity-50' : ''}`}>
               <h3 className="text-lg md:text-2xl font-body mb-2 md:mb-4 text-light-blue">今月の目標</h3>
               {goals.map((goal, index) => (
-                goal[1] && (
+                goal[GOAL_FIELDS.THIS_MONTH] && (
                   <div key={index} className="text-sm md:text-lg mb-2 md:mb-4 last:mb-0">
-                    <span className="text-amber">▸</span> {goal[1]}
+                    <span className="text-amber">▸</span> {goal[GOAL_FIELDS.THIS_MONTH]}
                   </div>
                 )
               ))}
@@ -217,30 +375,30 @@ function App() {
                 <div className="md:hidden py-3 px-4 bg-amber/10 rounded-2xl relative">
                   {/* 左上バッジ */}
                   <div className="absolute top-2 left-2">
-                    <span className="text-xs font-bold text-amber font-body">{benefit[0]}</span>
+                    <span className="text-xs font-bold text-amber font-body">{benefit[BENEFIT_FIELDS.TITLE]}</span>
                   </div>
                   {/* 本文 */}
                   <div className="pt-6">
-                    <span className="text-sm text-amber font-body">{benefit[4]}</span>
+                    <span className="text-sm text-amber font-body">{benefit[BENEFIT_FIELDS.LABEL]}</span>
                   </div>
                 </div>
 
                 {/* ボトルラベル（PC版のみ） */}
-                {benefit[4] && (
+                {benefit[BENEFIT_FIELDS.LABEL] && (
                   <div className="hidden md:block py-3 px-4 md:px-6 bg-amber/10 rounded-2xl md:rounded-t-2xl md:mb-4 md:pb-3 md:border-b border-amber/30 md:-mx-6 md:-mt-6">
                     <div className="flex items-center justify-center pt-1">
-                      <span className="text-sm md:text-base text-amber font-body">{benefit[0]} {benefit[4]}</span>
+                      <span className="text-sm md:text-base text-amber font-body">{benefit[BENEFIT_FIELDS.TITLE]} {benefit[BENEFIT_FIELDS.LABEL]}</span>
                     </div>
                   </div>
                 )}
-                
+
                 {/* PC版：フル表示 */}
                 <div className="hidden md:block flex-1">
                   <div className="flex items-center justify-center mb-2 md:mb-4">
-                    <span className="text-3xl md:text-5xl group-hover:animate-float">{benefit[3]}</span>
+                    <span className="text-3xl md:text-5xl group-hover:animate-float">{benefit[BENEFIT_FIELDS.ICON]}</span>
                   </div>
-                  <p className="text-base md:text-lg font-bold mb-1 md:mb-2 whitespace-pre-line">{benefit[1]}</p>
-                  <p className="text-xs md:text-sm text-gray-400">{benefit[2]}</p>
+                  <p className="text-base md:text-lg font-bold mb-1 md:mb-2 whitespace-pre-line">{benefit[BENEFIT_FIELDS.NAME]}</p>
+                  <p className="text-xs md:text-sm text-gray-400">{benefit[BENEFIT_FIELDS.DESCRIPTION]}</p>
                 </div>
               </div>
             ))}
@@ -269,7 +427,7 @@ function App() {
                 className="glass-effect rounded-xl p-4 md:p-6 border border-light-blue/30 hover:border-amber transition-all hover:scale-105 cursor-pointer group h-32 md:h-36 text-center flex flex-col"
               >
                 <h3 className="text-base md:text-xl font-body group-hover:text-amber transition-colors flex items-center justify-center" style={{ flexGrow: 1, flexShrink: 1, flexBasis: '0%', minHeight: 0 }}>
-                  {person[0]}
+                  {person[RIGHTS_FIELDS.NAME]}
                 </h3>
                 <div className="flex items-center justify-center flex-wrap gap-2 text-lg md:text-2xl" style={{ flexGrow: 2, flexShrink: 1, flexBasis: '0%', minHeight: 0, paddingTop: '13px', alignContent: 'flex-start', boxSizing: 'border-box' }}>
                   {getRightsIcons(person).map((icon, i) => (
@@ -328,178 +486,178 @@ function App() {
             </button>
             
             <h2 className="text-2xl md:text-4xl font-body mb-4 md:mb-8 text-glow-soft text-amber flex-shrink-0 text-center">
-              {selectedPerson[0]}
+              {selectedPerson[RIGHTS_FIELDS.NAME]}
             </h2>
-            
+
             <div className="space-y-6 overflow-y-auto pr-2 flex-1">
-              {hasRight(selectedPerson[1]) && (
+              {hasRight(selectedPerson[RIGHTS_FIELDS.SONG_REQUEST_5K]) && (
                 <div 
                   onClick={() => setSelectedBenefit(getBenefitByTitle('5k'))}
                   className="bg-deep-blue/50 p-4 md:p-6 rounded-xl border border-light-blue/20 cursor-pointer hover:border-amber transition-all text-center flex flex-col overflow-hidden"
                 >
                   {/* ボトルラベル */}
-                  {getBenefitByTitle('5k')?.[4] && (
+                  {getBenefitByTitle('5k')?.[BENEFIT_FIELDS.LABEL] && (
                     <div className="mb-4 pb-3 border-b border-amber/30 bg-amber/10 -mx-4 md:-mx-6 -mt-4 md:-mt-6 px-4 md:px-6 py-3 rounded-t-xl">
                       <div className="flex items-center justify-center pt-1">
-                        <span className="text-sm md:text-base text-amber font-body">{getBenefitByTitle('5k')[0]} {getBenefitByTitle('5k')[4]}</span>
+                        <span className="text-sm md:text-base text-amber font-body">{getBenefitByTitle('5k')[BENEFIT_FIELDS.TITLE]} {getBenefitByTitle('5k')[BENEFIT_FIELDS.LABEL]}</span>
                       </div>
                     </div>
                   )}
-                  
+
                   <div className="flex-1">
                     <div className="flex items-center justify-center mb-2">
-                      <span className="text-3xl">🎵</span>
+                      <span className="text-3xl">{BENEFIT_ICONS['5k']}</span>
                     </div>
-                    <p className="text-gray-300">強制リクエスト: {selectedPerson[1]}曲</p>
+                    <p className="text-gray-300">強制リクエスト: {selectedPerson[RIGHTS_FIELDS.SONG_REQUEST_5K]}曲</p>
                   </div>
                 </div>
               )}
               
-              {hasRight(selectedPerson[2]) && (
-                <div 
+              {hasRight(selectedPerson[RIGHTS_FIELDS.GAME_RIGHT_10K]) && (
+                <div
                   onClick={() => setSelectedBenefit(getBenefitByTitle('10k'))}
                   className="bg-deep-blue/50 p-4 md:p-6 rounded-xl border border-light-blue/20 cursor-pointer hover:border-amber transition-all text-center flex flex-col overflow-hidden"
                 >
                   {/* ボトルラベル */}
-                  {getBenefitByTitle('10k')?.[4] && (
+                  {getBenefitByTitle('10k')?.[BENEFIT_FIELDS.LABEL] && (
                     <div className="mb-4 pb-3 border-b border-amber/30 bg-amber/10 -mx-4 md:-mx-6 -mt-4 md:-mt-6 px-4 md:px-6 py-3 rounded-t-xl">
                       <div className="flex items-center justify-center pt-1">
-                        <span className="text-sm md:text-base text-amber font-body">{getBenefitByTitle('10k')[0]} {getBenefitByTitle('10k')[4]}</span>
+                        <span className="text-sm md:text-base text-amber font-body">{getBenefitByTitle('10k')[BENEFIT_FIELDS.TITLE]} {getBenefitByTitle('10k')[BENEFIT_FIELDS.LABEL]}</span>
                       </div>
                     </div>
                   )}
-                  
+
                   <div className="flex-1">
                     <div className="flex items-center justify-center mb-2">
-                      <span className="text-3xl">🎮</span>
+                      <span className="text-3xl">{BENEFIT_ICONS['10k']}</span>
                     </div>
-                    <p className="text-gray-300">権利: {selectedPerson[2]}回分</p>
+                    <p className="text-gray-300">権利: {selectedPerson[RIGHTS_FIELDS.GAME_RIGHT_10K]}回分</p>
                   </div>
                 </div>
               )}
               
-              {hasRight(selectedPerson[3]) && (
-                <div 
+              {hasRight(selectedPerson[RIGHTS_FIELDS.OPENCHAT_20K]) && (
+                <div
                   onClick={() => setSelectedBenefit(getBenefitByTitle('20k'))}
                   className="bg-deep-blue/50 p-4 md:p-6 rounded-xl border border-light-blue/20 cursor-pointer hover:border-amber transition-all text-center flex flex-col overflow-hidden"
                 >
                   {/* ボトルラベル */}
-                  {getBenefitByTitle('20k')?.[4] && (
+                  {getBenefitByTitle('20k')?.[BENEFIT_FIELDS.LABEL] && (
                     <div className="mb-4 pb-3 border-b border-amber/30 bg-amber/10 -mx-4 md:-mx-6 -mt-4 md:-mt-6 px-4 md:px-6 py-3 rounded-t-xl">
                       <div className="flex items-center justify-center pt-1">
-                        <span className="text-sm md:text-base text-amber font-body">{getBenefitByTitle('20k')[0]} {getBenefitByTitle('20k')[4]}</span>
+                        <span className="text-sm md:text-base text-amber font-body">{getBenefitByTitle('20k')[BENEFIT_FIELDS.TITLE]} {getBenefitByTitle('20k')[BENEFIT_FIELDS.LABEL]}</span>
                       </div>
                     </div>
                   )}
-                  
+
                   <div className="flex-1">
                     <div className="flex items-center justify-center mb-2">
-                      <span className="text-3xl">💬</span>
+                      <span className="text-3xl">{BENEFIT_ICONS['20k']}</span>
                     </div>
                     <p className="text-gray-300">オープンチャット招待済</p>
                   </div>
                 </div>
               )}
               
-              {hasRight(selectedPerson[4]) && (
-                <div 
+              {hasRight(selectedPerson[RIGHTS_FIELDS.ACAPELLA_30K]) && (
+                <div
                   onClick={() => setSelectedBenefit(getBenefitByTitle('30k'))}
                   className="bg-deep-blue/50 p-4 md:p-6 rounded-xl border border-light-blue/20 cursor-pointer hover:border-amber transition-all text-center flex flex-col overflow-hidden"
                 >
                   {/* ボトルラベル */}
-                  {getBenefitByTitle('30k')?.[4] && (
-                    <div className="mb-4 pb-3 border-b border-amber/30 bg-amber/10 -mx-4 md:-mx-6 -mt-4 md:-mt-6 px-4 md:px-6 py-3 rounded-t-xl">
+                  {getBenefitByTitle('30k')?.[BENEFIT_FIELDS.LABEL] && (
+                    <div className="mb-4 pb-3 border-b border-amber/30 bg-amber/10 -mx-4 md:-mx-6 -mt-4 md:px-6 py-3 rounded-t-xl">
                       <div className="flex items-center justify-center pt-1">
-                        <span className="text-sm md:text-base text-amber font-body">{getBenefitByTitle('30k')[0]} {getBenefitByTitle('30k')[4]}</span>
+                        <span className="text-sm md:text-base text-amber font-body">{getBenefitByTitle('30k')[BENEFIT_FIELDS.TITLE]} {getBenefitByTitle('30k')[BENEFIT_FIELDS.LABEL]}</span>
                       </div>
                     </div>
                   )}
-                  
+
                   <div className="flex-1">
                     <div className="flex items-center justify-center mb-2">
-                      <span className="text-3xl">🎤</span>
+                      <span className="text-3xl">{BENEFIT_ICONS['30k']}</span>
                     </div>
-                    <p className="text-gray-300">アカペラ音源: {selectedPerson[4]}回</p>
+                    <p className="text-gray-300">アカペラ音源: {selectedPerson[RIGHTS_FIELDS.ACAPELLA_30K]}回</p>
                   </div>
                 </div>
               )}
               
-              {hasRight(selectedPerson[5]) && (
-                <div 
+              {hasRight(selectedPerson[RIGHTS_FIELDS.SONG_REQUEST_40K]) && (
+                <div
                   onClick={() => setSelectedBenefit(getBenefitByTitle('40k'))}
                   className="bg-deep-blue/50 p-4 md:p-6 rounded-xl border border-light-blue/20 cursor-pointer hover:border-amber transition-all text-center flex flex-col overflow-hidden"
                 >
                   {/* ボトルラベル */}
-                  {getBenefitByTitle('40k')?.[4] && (
+                  {getBenefitByTitle('40k')?.[BENEFIT_FIELDS.LABEL] && (
                     <div className="mb-4 pb-3 border-b border-amber/30 bg-amber/10 -mx-4 md:-mx-6 -mt-4 md:-mt-6 px-4 md:px-6 py-3 rounded-t-xl">
                       <div className="flex items-center justify-center pt-1">
-                        <span className="text-sm md:text-base text-amber font-body">{getBenefitByTitle('40k')[0]} {getBenefitByTitle('40k')[4]}</span>
+                        <span className="text-sm md:text-base text-amber font-body">{getBenefitByTitle('40k')[BENEFIT_FIELDS.TITLE]} {getBenefitByTitle('40k')[BENEFIT_FIELDS.LABEL]}</span>
                       </div>
                     </div>
                   )}
-                  
+
                   <div className="flex-1">
                     <div className="flex items-center justify-center mb-2">
-                      <span className="text-3xl">⚡</span>
+                      <span className="text-3xl">{BENEFIT_ICONS['40k']}</span>
                     </div>
-                    <p className="text-gray-300">強制リクエスト: {selectedPerson[5]}曲</p>
+                    <p className="text-gray-300">強制リクエスト: {selectedPerson[RIGHTS_FIELDS.SONG_REQUEST_40K]}曲</p>
                   </div>
                 </div>
               )}
               
-              {hasRight(selectedPerson[6]) && (
-                <div 
+              {hasRight(selectedPerson[RIGHTS_FIELDS.MIX_AUDIO_50K]) && (
+                <div
                   onClick={() => setSelectedBenefit(getBenefitByTitle('50k'))}
                   className="bg-deep-blue/50 p-4 md:p-6 rounded-xl border border-light-blue/20 cursor-pointer hover:border-amber transition-all text-center flex flex-col overflow-hidden"
                 >
                   {/* ボトルラベル */}
-                  {getBenefitByTitle('50k')?.[4] && (
+                  {getBenefitByTitle('50k')?.[BENEFIT_FIELDS.LABEL] && (
                     <div className="mb-4 pb-3 border-b border-amber/30 bg-amber/10 -mx-4 md:-mx-6 -mt-4 md:-mt-6 px-4 md:px-6 py-3 rounded-t-xl">
                       <div className="flex items-center justify-center pt-1">
-                        <span className="text-sm md:text-base text-amber font-body">{getBenefitByTitle('50k')[0]} {getBenefitByTitle('50k')[4]}</span>
+                        <span className="text-sm md:text-base text-amber font-body">{getBenefitByTitle('50k')[BENEFIT_FIELDS.TITLE]} {getBenefitByTitle('50k')[BENEFIT_FIELDS.LABEL]}</span>
                       </div>
                     </div>
                   )}
-                  
+
                   <div className="flex-1">
                     <div className="flex items-center justify-center mb-2">
-                      <span className="text-3xl">🏆</span>
+                      <span className="text-3xl">{BENEFIT_ICONS['50k']}</span>
                     </div>
                     <p className="text-gray-300">ミックス音源獲得済</p>
                   </div>
                 </div>
               )}
               
-              {hasRight(selectedPerson[7]) && (
-                <div 
+              {hasRight(selectedPerson[RIGHTS_FIELDS.MEMBERSHIP]) && (
+                <div
                   onClick={() => setSelectedBenefit(getBenefitByTitle('メンバーシップ'))}
                   className="bg-deep-blue/50 p-4 md:p-6 rounded-xl border border-amber/30 bg-gradient-to-r from-gold/10 to-transparent cursor-pointer hover:border-amber transition-all text-center flex flex-col overflow-hidden"
                 >
                   {/* ボトルラベル */}
-                  {getBenefitByTitle('メンバーシップ')?.[4] && (
+                  {getBenefitByTitle('メンバーシップ')?.[BENEFIT_FIELDS.LABEL] && (
                     <div className="mb-4 pb-3 border-b border-amber/30 bg-amber/10 -mx-4 md:-mx-6 -mt-4 md:-mt-6 px-4 md:px-6 py-3 rounded-t-xl">
                       <div className="flex items-center justify-center pt-1">
-                        <span className="text-sm md:text-base text-amber font-body">{getBenefitByTitle('メンバーシップ')[0]} {getBenefitByTitle('メンバーシップ')[4]}</span>
+                        <span className="text-sm md:text-base text-amber font-body">{getBenefitByTitle('メンバーシップ')[BENEFIT_FIELDS.TITLE]} {getBenefitByTitle('メンバーシップ')[BENEFIT_FIELDS.LABEL]}</span>
                       </div>
                     </div>
                   )}
-                  
+
                   <div className="flex-1">
                     <div className="flex items-center justify-center mb-2">
-                      <span className="text-3xl">👑</span>
+                      <span className="text-3xl">{BENEFIT_ICONS['メンバーシップ']}</span>
                     </div>
                     <p className="text-gray-300">月内リクエスト対応中</p>
                   </div>
                 </div>
               )}
-              
-              {selectedPerson[8] && (
+
+              {selectedPerson[RIGHTS_FIELDS.SPECIAL] && (
                 <div className="bg-gradient-to-r from-amber/20 to-light-blue/20 p-6 rounded-xl border border-amber/30 text-center">
                   <div className="flex items-center justify-center gap-3 mb-2">
                     <span className="text-3xl">✨</span>
                     <h3 className="text-xl font-body text-amber">Special権利</h3>
                   </div>
-                  <p className="text-gray-300">{selectedPerson[8]}</p>
+                  <p className="text-gray-300">{selectedPerson[RIGHTS_FIELDS.SPECIAL]}</p>
                 </div>
               )}
             </div>
@@ -526,10 +684,10 @@ function App() {
             
             <div className="text-center">
               <div className="flex items-center justify-center gap-3 mb-4">
-                <span className="text-5xl">{selectedBenefit[3]}</span>
+                <span className="text-5xl">{selectedBenefit[BENEFIT_FIELDS.ICON]}</span>
               </div>
-              <p className="text-lg font-bold mb-4 whitespace-pre-line">{selectedBenefit[1]}</p>
-              <p className="text-sm text-gray-400">{selectedBenefit[2]}</p>
+              <p className="text-lg font-bold mb-4 whitespace-pre-line">{selectedBenefit[BENEFIT_FIELDS.NAME]}</p>
+              <p className="text-sm text-gray-400">{selectedBenefit[BENEFIT_FIELDS.DESCRIPTION]}</p>
             </div>
           </div>
         </div>
