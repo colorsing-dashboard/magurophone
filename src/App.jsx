@@ -86,6 +86,40 @@ const fetchSheetData = async (sheetName, retries = 3) => {
   return []
 }
 
+// カウントアップアニメーション（一度だけ実行）
+const CountUp = ({ end, duration = 2000 }) => {
+  const [count, setCount] = useState(0)
+  const hasAnimated = useRef(false)
+
+  useEffect(() => {
+    // 既にアニメーション済みならスキップ
+    if (hasAnimated.current) {
+      const endNum = parseInt(end.replace('k', '')) || 0
+      setCount(endNum)
+      return
+    }
+
+    hasAnimated.current = true
+    const endNum = parseInt(end.replace('k', '')) || 0
+    const increment = endNum / (duration / 16)
+    let current = 0
+
+    const timer = setInterval(() => {
+      current += increment
+      if (current >= endNum) {
+        setCount(endNum)
+        clearInterval(timer)
+      } else {
+        setCount(Math.floor(current))
+      }
+    }, 16)
+
+    return () => clearInterval(timer)
+  }, [end, duration])
+
+  return <span>{count}k</span>
+}
+
 function App() {
   const [ranking, setRanking] = useState([])
   const [goals, setGoals] = useState([])
@@ -177,40 +211,6 @@ function App() {
       person[RIGHTS_FIELDS.NAME].toLowerCase().includes(searchTerm.toLowerCase())
     )
   }, [sortedRights, searchTerm])
-
-  // カウントアップアニメーション（一度だけ実行）
-  const CountUp = ({ end, duration = 2000 }) => {
-    const [count, setCount] = useState(0)
-    const hasAnimated = useRef(false)
-
-    useEffect(() => {
-      // 既にアニメーション済みならスキップ
-      if (hasAnimated.current) {
-        const endNum = parseInt(end.replace('k', '')) || 0
-        setCount(endNum)
-        return
-      }
-
-      hasAnimated.current = true
-      const endNum = parseInt(end.replace('k', '')) || 0
-      const increment = endNum / (duration / 16)
-      let current = 0
-
-      const timer = setInterval(() => {
-        current += increment
-        if (current >= endNum) {
-          setCount(endNum)
-          clearInterval(timer)
-        } else {
-          setCount(Math.floor(current))
-        }
-      }, 16)
-
-      return () => clearInterval(timer)
-    }, [end, duration])
-
-    return <span>{count}k</span>
-  }
 
   // 権利を持っているかチェック
   const hasRight = (value) => {
