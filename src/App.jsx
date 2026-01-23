@@ -405,7 +405,7 @@ function App() {
                 {/* PC版：フル表示 */}
                 <div className="hidden md:block flex-1">
                   <div className="flex items-center justify-center mb-2 md:mb-4">
-                    <span className="text-3xl md:text-5xl group-hover:animate-float">{benefit[BENEFIT_FIELDS.ICON]}</span>
+                    <span className="text-3xl md:text-5xl animate-float">{benefit[BENEFIT_FIELDS.ICON]}</span>
                   </div>
                   <p className="text-base md:text-lg font-bold mb-1 md:mb-2 whitespace-pre-line">{benefit[BENEFIT_FIELDS.NAME]}</p>
                   <p className="text-xs md:text-sm text-gray-400">{benefit[BENEFIT_FIELDS.DESCRIPTION]}</p>
