@@ -86,20 +86,11 @@ const fetchSheetData = async (sheetName, retries = 3) => {
   return []
 }
 
-// カウントアップアニメーション（一度だけ実行）
+// カウントアップアニメーション（マウント時のみ実行）
 const CountUp = ({ end, duration = 2000 }) => {
   const [count, setCount] = useState(0)
-  const hasAnimated = useRef(false)
 
   useEffect(() => {
-    // 既にアニメーション済みならスキップ
-    if (hasAnimated.current) {
-      const endNum = parseInt(end.replace('k', '')) || 0
-      setCount(endNum)
-      return
-    }
-
-    hasAnimated.current = true
     const endNum = parseInt(end.replace('k', '')) || 0
     const increment = endNum / (duration / 16)
     let current = 0
@@ -115,7 +106,8 @@ const CountUp = ({ end, duration = 2000 }) => {
     }, 16)
 
     return () => clearInterval(timer)
-  }, [end, duration])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // 空の依存配列 = マウント時のみ実行
 
   return <span>{count}k</span>
 }
@@ -318,7 +310,7 @@ function App() {
           <h2 className="text-2xl md:text-4xl font-body mb-4 md:mb-8 text-glow-soft text-light-blue">Ranking</h2>
           <div className="grid grid-cols-1 xs:grid-cols-3 gap-3 md:gap-6">
             {ranking.slice(0, 3).map((person, index) => (
-              <div key={index} className={`
+              <div key={person[RANKING_FIELDS.NAME]} className={`
                 glass-effect rounded-2xl p-4 md:p-8 border transition-all hover:scale-105 water-shimmer
                 ${index === 0 ? 'border-tuna-red/50 box-glow-soft' : 'border-light-blue/30'}
               `}>
