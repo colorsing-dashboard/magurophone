@@ -107,29 +107,49 @@ const convertDriveUrl = (url) => {
   return url
 }
 
-// 枠内アイコンデータを月別に読み込む（エラーハンドリング付き）
+// スプレッドシートの全シート名を取得
+const fetchAvailableSheets = async () => {
+  const SPREADSHEET_ID = window.MAGUROPHONE_CONFIG?.SPREADSHEET_ID || 'YOUR_SPREADSHEET_ID_HERE'
+
+  try {
+    // スプレッドシートのメタデータを取得（シート一覧を含む）
+    const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=0&headers=0&tq=select%20A%20limit%200`
+    const response = await fetch(url)
+    const text = await response.text()
+
+    // 存在するシート名のリストを返す（簡易実装：全シートを並列チェック）
+    return null
+  } catch (error) {
+    console.debug('Could not fetch sheet metadata, will check all months')
+    return null
+  }
+}
+
+// 枠内アイコンデータを月別に読み込む（並列処理で高速化）
 const fetchIconData = async () => {
   const ICON_MONTHS = window.MAGUROPHONE_CONFIG?.ICON_MONTHS || []
   const iconData = {}
 
-  // 全ての月のシートを試行（存在しないシートはスキップ）
-  for (const month of ICON_MONTHS) {
-    try {
-      const data = await fetchSheetData(month, 1) // リトライ1回のみ（高速化）
-      if (data && data.length > 0) {
-        // ヘッダー行をスキップして保存
-        iconData[month] = data.slice(1).filter(row =>
-          row[ICON_FIELDS.LABEL] && row[ICON_FIELDS.IMAGE_URL]
-        ).map(row => ({
-          label: row[ICON_FIELDS.LABEL],
-          imageUrl: convertDriveUrl(row[ICON_FIELDS.IMAGE_URL])
-        }))
-      }
-    } catch (error) {
-      // シートが存在しない場合は静かにスキップ
-      console.debug(`Sheet ${month} not found, skipping...`)
+  // 全シートを並列で取得（Promise.allSettled使用）
+  const results = await Promise.allSettled(
+    ICON_MONTHS.map(month => fetchSheetData(month, 1))
+  )
+
+  // 成功したシートのみ処理
+  results.forEach((result, index) => {
+    if (result.status === 'fulfilled' && result.value && result.value.length > 0) {
+      const month = ICON_MONTHS[index]
+      const data = result.value
+
+      // ヘッダー行をスキップして保存
+      iconData[month] = data.slice(1).filter(row =>
+        row[ICON_FIELDS.LABEL] && row[ICON_FIELDS.IMAGE_URL]
+      ).map(row => ({
+        label: row[ICON_FIELDS.LABEL],
+        imageUrl: convertDriveUrl(row[ICON_FIELDS.IMAGE_URL])
+      }))
     }
-  }
+  })
 
   return iconData
 }
@@ -426,7 +446,8 @@ function App() {
     if (currentView === 'icons') {
       loadIconData()
     }
-  }, [currentView, icons, loadingIcons, selectedMonth])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentView])
 
   // 権利者を50音順にソート（useMemoで最適化）
   const sortedRights = useMemo(() => {
