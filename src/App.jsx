@@ -565,7 +565,8 @@ function App() {
 
       {/* メインコンテンツエリア（デスクトップではサイドバー分の余白を追加） */}
       <div className="md:ml-64">
-      {/* ヘッダー画像エリア */}
+      {/* ヘッダー画像エリア（HOMEビューのみ表示） */}
+      {currentView === 'home' && (
       <div className="w-full h-[300px] md:h-[600px] relative overflow-hidden bg-gradient-to-b from-deep-blue via-ocean-teal/30 to-deep-blue">
         {/* ヘッダー画像 */}
         <div
@@ -608,6 +609,7 @@ function App() {
           </button>
         </div>
       </div>
+      )}
 
       <div className="max-w-7xl mx-auto px-4 py-6 md:py-12 pb-24 md:pb-12 space-y-8 md:space-y-16">
         {/* Home View - ランキング + 目標 + FAQ */}
