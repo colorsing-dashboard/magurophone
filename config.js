@@ -15,5 +15,6 @@ function generateIconMonths() {
 
 window.MAGUROPHONE_CONFIG = {
   SPREADSHEET_ID: '1kOuigqrKwgyrCJDN448SRDZCFj4urliA5iet4nRtH08',
+  API_KEY: '', // Google Sheets API v4 キー（シート一覧取得用）
   ICON_MONTHS: generateIconMonths() // 202001, 202002, ..., 209912
 }

@@ -107,37 +107,69 @@ const convertDriveUrl = (url) => {
   return url
 }
 
-// 枠内アイコンデータを月別に読み込む（バッチ並列処理）
-const fetchIconData = async () => {
-  const ICON_MONTHS = window.MAGUROPHONE_CONFIG?.ICON_MONTHS || []
-  const iconData = {}
-  const BATCH_SIZE = 50 // 一度に50シートずつ並列処理
+// スプレッドシートの全シート名を取得（Google Sheets API v4使用）
+const fetchAllSheetNames = async () => {
+  const SPREADSHEET_ID = window.MAGUROPHONE_CONFIG?.SPREADSHEET_ID || 'YOUR_SPREADSHEET_ID_HERE'
+  const API_KEY = window.MAGUROPHONE_CONFIG?.API_KEY || ''
 
-  // バッチごとに並列処理
-  for (let i = 0; i < ICON_MONTHS.length; i += BATCH_SIZE) {
-    const batch = ICON_MONTHS.slice(i, i + BATCH_SIZE)
+  try {
+    const url = API_KEY
+      ? `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}?fields=sheets.properties.title&key=${API_KEY}`
+      : `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}?fields=sheets.properties.title`
 
-    // バッチ内のシートを並列取得
-    const results = await Promise.allSettled(
-      batch.map(month => fetchSheetData(month, 1))
-    )
+    const response = await fetch(url)
 
-    // 成功したシートのみ処理
-    results.forEach((result, index) => {
-      if (result.status === 'fulfilled' && result.value && result.value.length > 0) {
-        const month = batch[index]
-        const data = result.value
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`)
+    }
 
-        // ヘッダー行をスキップして保存
-        iconData[month] = data.slice(1).filter(row =>
-          row[ICON_FIELDS.LABEL] && row[ICON_FIELDS.IMAGE_URL]
-        ).map(row => ({
-          label: row[ICON_FIELDS.LABEL],
-          imageUrl: convertDriveUrl(row[ICON_FIELDS.IMAGE_URL])
-        }))
-      }
-    })
+    const data = await response.json()
+    const allSheetNames = data.sheets?.map(sheet => sheet.properties.title) || []
+
+    // YYYYMM形式（6桁数字）のシート名のみフィルタ
+    return allSheetNames.filter(name => /^\d{6}$/.test(name))
+  } catch (error) {
+    console.error('Failed to fetch sheet names, falling back to config:', error)
+    return null
   }
+}
+
+// 枠内アイコンデータを月別に読み込む
+const fetchIconData = async () => {
+  const iconData = {}
+
+  // ステップ1: 実際に存在するYYYYMM形式のシート名を取得（1リクエスト）
+  let sheetsToFetch = await fetchAllSheetNames()
+
+  // フォールバック: API失敗時はconfig.jsの全月リストを使用
+  if (!sheetsToFetch) {
+    sheetsToFetch = window.MAGUROPHONE_CONFIG?.ICON_MONTHS || []
+  }
+
+  if (sheetsToFetch.length === 0) {
+    return iconData
+  }
+
+  // ステップ2: 存在するシートのみデータを並列取得（例：3シートなら3リクエスト）
+  const results = await Promise.allSettled(
+    sheetsToFetch.map(month => fetchSheetData(month, 1))
+  )
+
+  // 成功したシートのみ処理
+  results.forEach((result, index) => {
+    if (result.status === 'fulfilled' && result.value && result.value.length > 0) {
+      const month = sheetsToFetch[index]
+      const data = result.value
+
+      // ヘッダー行をスキップして保存
+      iconData[month] = data.slice(1).filter(row =>
+        row[ICON_FIELDS.LABEL] && row[ICON_FIELDS.IMAGE_URL]
+      ).map(row => ({
+        label: row[ICON_FIELDS.LABEL],
+        imageUrl: convertDriveUrl(row[ICON_FIELDS.IMAGE_URL])
+      }))
+    }
+  })
 
   return iconData
 }
