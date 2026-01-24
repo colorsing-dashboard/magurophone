@@ -49,10 +49,15 @@ const ICON_FIELDS = {
   IMAGE_URL: 1   // Google Drive URL
 }
 
-// Googleスプレッドシートから公開データを取得（再試行機能付き）
-const fetchSheetData = async (sheetName, retries = 3) => {
+// Googleスプレッドシートから公開データを取得（範囲指定対応、再試行機能付き）
+const fetchSheetData = async (sheetName, range = null, retries = 3) => {
   const SPREADSHEET_ID = window.MAGUROPHONE_CONFIG?.SPREADSHEET_ID || 'YOUR_SPREADSHEET_ID_HERE'
-  const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`
+
+  // 範囲指定がある場合はtqパラメータで範囲を指定
+  let url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`
+  if (range) {
+    url += `&range=${encodeURIComponent(range)}`
+  }
 
   for (let attempt = 0; attempt < retries; attempt++) {
     try {
@@ -77,7 +82,7 @@ const fetchSheetData = async (sheetName, retries = 3) => {
 
       return json.table.rows.map(row => row.c.map(cell => cell?.v || ''))
     } catch (error) {
-      console.error(`Error fetching ${sheetName} (attempt ${attempt + 1}/${retries}):`, error)
+      console.error(`Error fetching ${sheetName}${range ? ` (${range})` : ''} (attempt ${attempt + 1}/${retries}):`, error)
 
       if (attempt === retries - 1) {
         throw error // 最後の試行で失敗したらエラーを投げる
@@ -107,71 +112,46 @@ const convertDriveUrl = (url) => {
   return url
 }
 
-// スプレッドシートの全シート名を取得（Google Sheets API v4使用）
-const fetchAllSheetNames = async () => {
-  const SPREADSHEET_ID = window.MAGUROPHONE_CONFIG?.SPREADSHEET_ID || 'YOUR_SPREADSHEET_ID_HERE'
-  const API_KEY = window.MAGUROPHONE_CONFIG?.API_KEY || ''
-
-  try {
-    const url = API_KEY
-      ? `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}?fields=sheets.properties.title&key=${API_KEY}`
-      : `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}?fields=sheets.properties.title`
-
-    const response = await fetch(url)
-
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`)
-    }
-
-    const data = await response.json()
-    const allSheetNames = data.sheets?.map(sheet => sheet.properties.title) || []
-
-    // YYYYMM形式（6桁数字）のシート名のみフィルタ
-    return allSheetNames.filter(name => /^\d{6}$/.test(name))
-  } catch (error) {
-    console.error('Failed to fetch sheet names, falling back to config:', error)
-    return null
-  }
-}
-
-// 枠内アイコンデータを月別に読み込む
+// 枠内アイコンデータを読み込む（新形式：1シートで全月管理）
+// A列:yyyymm, B列:ユーザー名, C列:画像URL
 const fetchIconData = async () => {
   const iconData = {}
 
-  // ステップ1: 実際に存在するYYYYMM形式のシート名を取得（1リクエスト）
-  let sheetsToFetch = await fetchAllSheetNames()
+  try {
+    // 枠内アイコンシートから全データを取得（2行目以降、ヘッダー含む）
+    const data = await fetchSheetData('枠内アイコン')
 
-  // フォールバック: API失敗時はconfig.jsの全月リストを使用
-  if (!sheetsToFetch) {
-    sheetsToFetch = window.MAGUROPHONE_CONFIG?.ICON_MONTHS || []
-  }
-
-  if (sheetsToFetch.length === 0) {
-    return iconData
-  }
-
-  // ステップ2: 存在するシートのみデータを並列取得（例：3シートなら3リクエスト）
-  const results = await Promise.allSettled(
-    sheetsToFetch.map(month => fetchSheetData(month, 1))
-  )
-
-  // 成功したシートのみ処理
-  results.forEach((result, index) => {
-    if (result.status === 'fulfilled' && result.value && result.value.length > 0) {
-      const month = sheetsToFetch[index]
-      const data = result.value
-
-      // ヘッダー行をスキップして保存
-      iconData[month] = data.slice(1).filter(row =>
-        row[ICON_FIELDS.LABEL] && row[ICON_FIELDS.IMAGE_URL]
-      ).map(row => ({
-        label: row[ICON_FIELDS.LABEL],
-        imageUrl: convertDriveUrl(row[ICON_FIELDS.IMAGE_URL])
-      }))
+    if (!data || data.length < 2) {
+      return iconData
     }
-  })
 
-  return iconData
+    // ヘッダー行をスキップ（2行目がヘッダーなので1行目をスキップ）
+    const rows = data.slice(1)
+
+    // 月別にグループ化
+    rows.forEach(row => {
+      const month = row[0] // A列: yyyymm
+      const userName = row[1] // B列: ユーザー名
+      const imageUrl = row[2] // C列: 画像URL
+
+      // データが揃っている行のみ処理
+      if (month && userName && imageUrl) {
+        if (!iconData[month]) {
+          iconData[month] = []
+        }
+
+        iconData[month].push({
+          label: userName,
+          imageUrl: convertDriveUrl(imageUrl)
+        })
+      }
+    })
+
+    return iconData
+  } catch (error) {
+    console.error('Failed to load icon data:', error)
+    return {}
+  }
 }
 
 // カウントアップアニメーション（ページ読み込み時のみ実行）
@@ -379,17 +359,22 @@ function App() {
     setError(null)
 
     try {
-      const [rankingData, goalsData, rightsData, benefitsData] = await Promise.all([
-        fetchSheetData('ランキング'),
-        fetchSheetData('目標'),
-        fetchSheetData('権利者'),
-        fetchSheetData('特典説明')
+      // dataシートから範囲指定で4種のデータを取得
+      const [rankingData, goalsData, benefitsData, rightsData] = await Promise.all([
+        fetchSheetData('data', 'A2:D5'),      // ランキング：A2:D5（2行目ヘッダー）
+        fetchSheetData('data', 'A8:A12'),     // 目標：A8:A12（8行目ヘッダー）
+        fetchSheetData('data', 'G2:K12'),     // 特典説明：G2:K12（2行目ヘッダー）
+        fetchSheetData('data', 'A15:I')       // 権利者：A:I 15行目以降（15行目ヘッダー）
       ])
 
+      // ランキングはヘッダー含む（2行目がヘッダー）
       setRanking(rankingData)
+
+      // 目標、特典説明、権利者はヘッダーをスキップ
       setGoals(goalsData.slice(1))
-      setRights(rightsData.slice(1))
       setBenefits(benefitsData.slice(1))
+      setRights(rightsData.slice(1))
+
       setLastUpdate(new Date())
       setError(null)
     } catch (err) {
