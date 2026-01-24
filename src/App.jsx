@@ -109,11 +109,23 @@ const convertDriveUrl = (url) => {
 
 // 枠内アイコンデータを月別に読み込む（エラーハンドリング付き）
 const fetchIconData = async () => {
-  const ICON_MONTHS = window.MAGUROPHONE_CONFIG?.ICON_MONTHS || []
+  const ALL_MONTHS = window.MAGUROPHONE_CONFIG?.ICON_MONTHS || []
   const iconData = {}
 
-  // 全ての月のシートを試行（存在しないシートはスキップ）
-  for (const month of ICON_MONTHS) {
+  // 現在の年月を取得
+  const now = new Date()
+  const currentYearMonth = parseInt(`${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}`)
+
+  // 現在の月の前後12ヶ月分のみ読み込む（効率化）
+  const MONTHS_TO_CHECK = ALL_MONTHS.filter(month => {
+    const monthNum = parseInt(month)
+    const diff = monthNum - currentYearMonth
+    return diff >= -6 && diff <= 12 // 過去6ヶ月〜未来12ヶ月
+  })
+
+
+  // 選択した月のシートを試行（存在しないシートはスキップ）
+  for (const month of MONTHS_TO_CHECK) {
     try {
       const data = await fetchSheetData(month, 1) // リトライ1回のみ（高速化）
       if (data && data.length > 0) {
@@ -426,7 +438,8 @@ function App() {
     if (currentView === 'icons') {
       loadIconData()
     }
-  }, [currentView, icons, loadingIcons, selectedMonth])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentView])
 
   // 権利者を50音順にソート（useMemoで最適化）
   const sortedRights = useMemo(() => {
