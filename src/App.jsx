@@ -121,13 +121,14 @@ const fetchIconData = async () => {
     // 枠内アイコンシートから全データを取得
     const data = await fetchSheetData('枠内アイコン')
 
-    if (!data || data.length < 3) {
-      // 最低3行必要（1行目空、2行目ヘッダー、3行目データ）
+    if (!data || data.length < 2) {
+      // 最低2行必要（gviz APIが1行目をヘッダーとして除外、2行目ヘッダー、3行目以降データ）
       return iconData
     }
 
-    // 1行目と2行目（ヘッダー）をスキップして3行目以降を取得
-    const rows = data.slice(2)
+    // gviz APIが1行目（空行）をヘッダーとして自動除外するため、
+    // data[0]=2行目（ヘッダー）をスキップして3行目以降を取得
+    const rows = data.slice(1)
 
     // 月別にグループ化
     rows.forEach(row => {
