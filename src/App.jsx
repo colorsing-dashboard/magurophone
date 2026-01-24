@@ -892,7 +892,7 @@ function App() {
                     <div className="flex items-center justify-center mb-2">
                       <span className="text-3xl">{BENEFIT_ICONS['10k']}</span>
                     </div>
-                    <p className="text-gray-300">権利: {selectedPerson[RIGHTS_FIELDS.GAME_RIGHT_10K]}回分</p>
+                    <p className="text-gray-300">権利: {selectedPerson[RIGHTS_FIELDS.GAME_RIGHT_10K]}時間分</p>
                   </div>
                 </div>
               )}
@@ -938,7 +938,7 @@ function App() {
                     <div className="flex items-center justify-center mb-2">
                       <span className="text-3xl">{BENEFIT_ICONS['30k']}</span>
                     </div>
-                    <p className="text-gray-300">アカペラ音源: {selectedPerson[RIGHTS_FIELDS.ACAPELLA_30K]}回</p>
+                    <p className="text-gray-300">アカペラ音源獲得: {selectedPerson[RIGHTS_FIELDS.ACAPELLA_30K]}曲</p>
                   </div>
                 </div>
               )}
@@ -984,7 +984,7 @@ function App() {
                     <div className="flex items-center justify-center mb-2">
                       <span className="text-3xl">{BENEFIT_ICONS['50k']}</span>
                     </div>
-                    <p className="text-gray-300">ミックス音源獲得済</p>
+                    <p className="text-gray-300">ミックス音源獲得: {selectedPerson[RIGHTS_FIELDS.MIX_AUDIO_50K]}曲</p>
                   </div>
                 </div>
               )}
