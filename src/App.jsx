@@ -371,10 +371,11 @@ function App() {
       // ランキングはヘッダー含む（2行目がヘッダー）
       setRanking(rankingData)
 
-      // 目標、特典説明、権利者はヘッダーをスキップ
+      // 目標、特典説明はヘッダーをスキップ
+      // 権利者はgviz APIが15行目をヘッダーとして自動除外するためslice不要
       setGoals(goalsData.slice(1))
       setBenefits(benefitsData.slice(1))
-      setRights(rightsData.slice(1))
+      setRights(rightsData)
 
       setLastUpdate(new Date())
       setError(null)
