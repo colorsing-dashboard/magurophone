@@ -121,20 +121,32 @@ const fetchIconData = async () => {
     // 枠内アイコンシートから全データを取得
     const data = await fetchSheetData('枠内アイコン')
 
-    if (!data || data.length < 2) {
-      // 最低2行必要（gviz APIが1行目をヘッダーとして除外、2行目ヘッダー、3行目以降データ）
+    // デバッグ: 取得したデータを確認
+    console.log('枠内アイコン raw data:', data)
+    console.log('枠内アイコン data.length:', data?.length)
+    if (data && data.length > 0) {
+      console.log('枠内アイコン first row:', data[0])
+      console.log('枠内アイコン second row:', data[1])
+      console.log('枠内アイコン third row:', data[2])
+    }
+
+    if (!data || data.length < 1) {
+      console.log('枠内アイコン: データが不足しています')
       return iconData
     }
 
-    // gviz APIが1行目（空行）をヘッダーとして自動除外するため、
-    // data[0]=2行目（ヘッダー）をスキップして3行目以降を取得
-    const rows = data.slice(1)
+    // gviz APIの挙動を確認し、適切な行からデータを取得
+    // 1行目が空行の場合、APIがどう扱うかで変わる
+    // まずはsliceなしで試す
+    const rows = data
 
     // 月別にグループ化
-    rows.forEach(row => {
+    rows.forEach((row, index) => {
       const month = row[0] // A列: yyyymm
       const userName = row[1] // B列: ユーザー名
       const imageUrl = row[2] // C列: 画像URL
+
+      console.log(`Row ${index}:`, { month, userName, imageUrl: imageUrl?.substring(0, 50) })
 
       // データが揃っている行のみ処理
       if (month && userName && imageUrl) {
