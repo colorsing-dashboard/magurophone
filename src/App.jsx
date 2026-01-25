@@ -96,17 +96,18 @@ const fetchSheetData = async (sheetName, range = null, retries = 3) => {
   return []
 }
 
-// Google DriveのURLを直接表示可能なURLに変換
+// Google DriveのURLをサムネイル表示可能なURLに変換
 const convertDriveUrl = (url) => {
   if (!url || typeof url !== 'string') return ''
 
   // 既に変換済みの場合はそのまま返す
-  if (url.includes('/uc?export=view')) return url
+  if (url.includes('/thumbnail?id=')) return url
 
-  // /file/d/FILE_ID/view 形式を /uc?export=view&id=FILE_ID に変換
+  // /file/d/FILE_ID/view 形式を /thumbnail?id=FILE_ID&sz=w400 に変換
+  // thumbnailを使うことで大きなファイルでも確実に表示できる
   const match = url.match(/\/file\/d\/([^/]+)/)
   if (match && match[1]) {
-    return `https://drive.google.com/uc?export=view&id=${match[1]}`
+    return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w400`
   }
 
   return url
