@@ -141,7 +141,8 @@ const fetchIconData = async () => {
 
         iconData[month].push({
           label: userName,
-          imageUrl: convertDriveUrl(imageUrl)
+          thumbnailUrl: convertDriveUrl(imageUrl),  // サムネイル表示用
+          originalUrl: imageUrl  // クリック時用（元のURL）
         })
       }
     })
@@ -300,13 +301,13 @@ const IconGallery = ({ icons, selectedMonth, setSelectedMonth, selectedUser, set
                   {userIcons.map((icon, index) => (
                     <a
                       key={index}
-                      href={icon.imageUrl}
+                      href={icon.originalUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="glass-effect rounded-lg overflow-hidden border border-light-blue/30 hover:border-amber transition-all group aspect-square"
                     >
                       <img
-                        src={icon.imageUrl}
+                        src={icon.thumbnailUrl}
                         alt={`${icon.label}のアイコン`}
                         className="w-full h-full object-contain bg-deep-blue/30 group-hover:scale-105 transition-transform"
                         loading="lazy"
