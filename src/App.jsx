@@ -80,7 +80,7 @@ const fetchSheetData = async (sheetName, range = null, retries = 3) => {
         throw new Error('Invalid data structure from Google Sheets')
       }
 
-      return json.table.rows.map(row => row.c.map(cell => cell?.v || ''))
+      return json.table.rows.map(row => (row.c ?? []).map(cell => cell?.v || ''))
     } catch (error) {
       console.error(`Error fetching ${sheetName}${range ? ` (${range})` : ''} (attempt ${attempt + 1}/${retries}):`, error)
 
@@ -156,7 +156,8 @@ const fetchIconData = async () => {
 
 // カウントアップアニメーション（ページ読み込み時のみ実行）
 const CountUp = ({ end, duration = 2000 }) => {
-  const endNum = parseInt(end.replace('k', '')) || 0
+  const rawEnd = typeof end === 'number' ? end : parseInt(String(end).replace('k', ''), 10)
+  const endNum = Number.isFinite(rawEnd) ? rawEnd : 0
 
   const [count, setCount] = useState(0)
   const hasAnimatedRef = useRef(false)
@@ -452,21 +453,21 @@ function App() {
     if (currentView === 'icons') {
       loadIconData()
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentView])
+  }, [currentView, icons, loadingIcons])
 
   // 権利者を50音順にソート（useMemoで最適化）
   const sortedRights = useMemo(() => {
     return [...rights].sort((a, b) =>
-      a[RIGHTS_FIELDS.NAME].localeCompare(b[RIGHTS_FIELDS.NAME], 'ja')
+      String(a[RIGHTS_FIELDS.NAME] ?? '').localeCompare(String(b[RIGHTS_FIELDS.NAME] ?? ''), 'ja')
     )
   }, [rights])
 
   // 検索フィルター（useMemoで最適化）
   const filteredRights = useMemo(() => {
-    return sortedRights.filter(person =>
-      person[RIGHTS_FIELDS.NAME].toLowerCase().includes(searchTerm.toLowerCase())
-    )
+    return sortedRights.filter(person => {
+      const name = String(person[RIGHTS_FIELDS.NAME] ?? '')
+      return name.toLowerCase().includes(searchTerm.toLowerCase())
+    })
   }, [sortedRights, searchTerm])
 
   // 権利を持っているかチェック
@@ -647,7 +648,7 @@ function App() {
           <h2 className="text-2xl md:text-4xl font-body mb-4 md:mb-8 text-glow-soft text-light-blue">Ranking</h2>
           <div className="grid grid-cols-1 xs:grid-cols-3 gap-3 md:gap-6">
             {ranking.slice(0, 3).map((person, index) => (
-              <div key={person[RANKING_FIELDS.NAME]} className={`
+              <div key={`${person[RANKING_FIELDS.NAME] ?? 'rank'}-${index}`} className={`
                 glass-effect rounded-2xl p-4 md:p-8 border transition-all hover:scale-105 water-shimmer
                 ${index === 0 ? 'border-tuna-red/50 box-glow-soft' : 'border-light-blue/30'}
               `}>
