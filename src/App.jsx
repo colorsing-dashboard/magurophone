@@ -505,9 +505,12 @@ function App() {
         RIGHTS_FIELDS.MEMBERSHIP
       ].some(field => hasRight(person[field]))
 
-      const hasSpecial = Boolean(
-        String(person[RIGHTS_FIELDS.SPECIAL] ?? '').trim()
-      )
+const specialValue = String(person[RIGHTS_FIELDS.SPECIAL] ?? '').trim()
+const normalizedSpecial = specialValue.toUpperCase()
+const hasSpecial =
+  normalizedSpecial !== '' &&
+  normalizedSpecial !== 'FALSE' &&
+  normalizedSpecial !== '0'
 
       return hasAnyRight || hasSpecial
     })
