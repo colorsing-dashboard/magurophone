@@ -68,7 +68,7 @@ const fetchSheetData = async (sheetName, range = null, retries = 3) => {
       }
 
       const text = await response.text()
-      const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S\w]+)\)/)
+      const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)
 
       if (!match || !match[1]) {
         throw new Error('Invalid response format from Google Sheets')
@@ -180,17 +180,29 @@ const CountUp = ({ end, duration = 2000 }) => {
     const incr = finalValue / (durationRef.current / 16)
     let current = 0
 
-    const timer = setInterval(() => {
-      current += incr
-      if (current >= finalValue) {
-        setCount(finalValue)
-        clearInterval(timer)
-      } else {
-        setCount(Math.floor(current))
-      }
-    }, 16)
+    let animationFrameId
+    let startTime = null
 
-    return () => clearInterval(timer)
+    const step = (timestamp) => {
+      if (startTime === null) {
+        startTime = timestamp
+      }
+
+      const elapsed = timestamp - startTime
+      const progress = Math.min(elapsed / durationRef.current, 1)
+      const nextValue = Math.floor(finalValue * progress)
+      setCount(nextValue)
+
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(step)
+      } else {
+        setCount(finalValue)
+      }
+    }
+
+    animationFrameId = requestAnimationFrame(step)
+
+    return () => cancelAnimationFrame(animationFrameId)
     // 空の依存配列 = マウント時のみ実行
   }, [])
 
@@ -453,7 +465,7 @@ function App() {
     if (currentView === 'icons') {
       loadIconData()
     }
-  }, [currentView, icons, loadingIcons])
+  }, [currentView, icons, loadingIcons, selectedMonth])
 
   // 権利者を50音順にソート（useMemoで最適化）
   const sortedRights = useMemo(() => {
@@ -462,21 +474,44 @@ function App() {
     )
   }, [rights])
 
+  // 権利を持っているかチェック
+  const hasRight = (value) => {
+    if (typeof value === 'string') {
+      const normalized = value.trim().toUpperCase()
+      if (normalized === 'TRUE') {
+        return true
+      }
+      const parsed = Number(normalized)
+      return Number.isFinite(parsed) && parsed > 0
+    }
+    return value > 0
+  }
+
   // 検索フィルター（useMemoで最適化）
   const filteredRights = useMemo(() => {
     return sortedRights.filter(person => {
       const name = String(person[RIGHTS_FIELDS.NAME] ?? '')
-      return name.toLowerCase().includes(searchTerm.toLowerCase())
-    })
-  }, [sortedRights, searchTerm])
+      if (!name.toLowerCase().includes(searchTerm.toLowerCase())) {
+        return false
+      }
 
-  // 権利を持っているかチェック
-  const hasRight = (value) => {
-    if (typeof value === 'string') {
-      return value.toUpperCase() === 'TRUE'
-    }
-    return value > 0
-  }
+      const hasAnyRight = [
+        RIGHTS_FIELDS.SONG_REQUEST_5K,
+        RIGHTS_FIELDS.GAME_RIGHT_10K,
+        RIGHTS_FIELDS.OPENCHAT_20K,
+        RIGHTS_FIELDS.ACAPELLA_30K,
+        RIGHTS_FIELDS.SONG_REQUEST_40K,
+        RIGHTS_FIELDS.MIX_AUDIO_50K,
+        RIGHTS_FIELDS.MEMBERSHIP
+      ].some(field => hasRight(person[field]))
+
+      const hasSpecial = Boolean(
+        String(person[RIGHTS_FIELDS.SPECIAL] ?? '').trim()
+      )
+
+      return hasAnyRight || hasSpecial
+    })
+  }, [sortedRights, searchTerm, hasRight])
 
   // 権利のアイコンを取得
   const getRightsIcons = useCallback((person) => {
