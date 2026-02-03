@@ -534,6 +534,10 @@ function App() {
     if (hasRight(person[RIGHTS_FIELDS.SONG_REQUEST_40K])) icons.push(BENEFIT_ICONS['40k'])
     if (hasRight(person[RIGHTS_FIELDS.MIX_AUDIO_50K])) icons.push(BENEFIT_ICONS['50k'])
     if (hasRight(person[RIGHTS_FIELDS.MEMBERSHIP])) icons.push(BENEFIT_ICONS['メンバーシップ'])
+    const specialValue = String(person[RIGHTS_FIELDS.SPECIAL] ?? '').trim()
+    if (specialValue && specialValue.toUpperCase() !== 'FALSE' && specialValue !== '0') {
+      icons.push('✨')
+    }
     return icons
   }, [])
 
