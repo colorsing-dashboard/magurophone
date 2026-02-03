@@ -490,7 +490,11 @@ function App() {
   // 検索フィルター（useMemoで最適化）
   const filteredRights = useMemo(() => {
     return sortedRights.filter(person => {
-      const name = String(person[RIGHTS_FIELDS.NAME] ?? '')
+      const name = String(person[RIGHTS_FIELDS.NAME] ?? '').trim()
+      if (!name) {
+        return false
+      }
+
       if (!name.toLowerCase().includes(searchTerm.toLowerCase())) {
         return false
       }
@@ -505,14 +509,18 @@ function App() {
         RIGHTS_FIELDS.MEMBERSHIP
       ].some(field => hasRight(person[field]))
 
-const specialValue = String(person[RIGHTS_FIELDS.SPECIAL] ?? '').trim()
-const normalizedSpecial = specialValue.toUpperCase()
-const hasSpecial =
-  normalizedSpecial !== '' &&
-  normalizedSpecial !== 'FALSE' &&
-  normalizedSpecial !== '0'
+      const specialValue = String(person[RIGHTS_FIELDS.SPECIAL] ?? '').trim()
+      const normalizedSpecial = specialValue.toUpperCase()
+      const hasSpecial =
+        normalizedSpecial !== '' &&
+        normalizedSpecial !== 'FALSE' &&
+        normalizedSpecial !== '0'
 
-      return hasAnyRight || hasSpecial
+      if (!hasAnyRight && !hasSpecial) {
+        return false
+      }
+
+      return true
     })
   }, [sortedRights, searchTerm, hasRight])
 
