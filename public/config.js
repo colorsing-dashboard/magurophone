@@ -98,6 +98,6 @@ window.DASHBOARD_CONFIG = {
   },
 
   admin: {
-    password: ''
+    password: 'CSadmin'
   }
 }
