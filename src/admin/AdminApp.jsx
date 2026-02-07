@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { loadConfig, loadBaseConfig, saveConfig, clearConfig, downloadConfigJS, importConfigFromText } from '../lib/configIO'
 import BrandingTab from './tabs/BrandingTab'
 import ColorsTab from './tabs/ColorsTab'
-import ImagesTab from './tabs/ImagesTab'
+
 import SheetsTab from './tabs/SheetsTab'
 import ViewsTab from './tabs/ViewsTab'
 import TiersTab from './tabs/TiersTab'
@@ -11,8 +11,7 @@ import ContentTab from './tabs/ContentTab'
 const TABS = [
   { id: 'branding', label: 'ブランディング', icon: '🏷️' },
   { id: 'colors', label: 'カラー', icon: '🎨' },
-  { id: 'images', label: '画像', icon: '🖼️' },
-  { id: 'sheets', label: 'Google Sheets', icon: '📊' },
+{ id: 'sheets', label: 'Google Sheets', icon: '📊' },
   { id: 'views', label: 'ビュー管理', icon: '📱' },
   { id: 'tiers', label: '特典ティア', icon: '🏆' },
   { id: 'content', label: 'コンテンツ', icon: '📝' },
@@ -143,8 +142,7 @@ function AdminApp() {
   const tabComponents = {
     branding: <BrandingTab config={config} updateConfig={updateConfig} />,
     colors: <ColorsTab config={config} updateConfig={updateConfig} />,
-    images: <ImagesTab config={config} updateConfig={updateConfig} />,
-    sheets: <SheetsTab config={config} updateConfig={updateConfig} />,
+sheets: <SheetsTab config={config} updateConfig={updateConfig} />,
     views: <ViewsTab config={config} updateConfig={updateConfig} updateArray={updateArray} />,
     tiers: <TiersTab config={config} updateConfig={updateConfig} updateArray={updateArray} />,
     content: <ContentTab config={config} updateConfig={updateConfig} updateArray={updateArray} />,
