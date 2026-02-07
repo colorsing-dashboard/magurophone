@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
-import { loadConfig, saveConfig, downloadConfigJS, importConfigFromText } from '../lib/configIO'
-import DEFAULT_CONFIG from '../lib/defaults'
+import { loadConfig, loadBaseConfig, saveConfig, clearConfig, downloadConfigJS, importConfigFromText } from '../lib/configIO'
 import BrandingTab from './tabs/BrandingTab'
 import ColorsTab from './tabs/ColorsTab'
 import ImagesTab from './tabs/ImagesTab'
@@ -109,9 +108,10 @@ function AdminApp() {
   }
 
   const handleReset = () => {
-    if (confirm('設定をデフォルトに戻しますか？この操作は元に戻せません。')) {
-      setConfig(DEFAULT_CONFIG)
-      saveConfig(DEFAULT_CONFIG)
+    if (confirm('設定をconfig.jsの値に戻しますか？管理画面での変更はクリアされます。')) {
+      clearConfig()
+      const baseConfig = loadBaseConfig()
+      setConfig(baseConfig)
       showSaveMessage()
     }
   }

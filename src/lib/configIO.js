@@ -32,16 +32,15 @@ function migrateOldConfig(oldConfig) {
   }
 }
 
-// 設定を読み込む（localStorage → window.DASHBOARD_CONFIG → 旧形式 → デフォルト）
-export function loadConfig() {
+// config.js + デフォルト値のみ（localStorage を含まないベース設定）
+export function loadBaseConfig() {
   let config = {}
 
-  // 1. window.DASHBOARD_CONFIG（config.js から）
   if (typeof window !== 'undefined' && window.DASHBOARD_CONFIG) {
     config = window.DASHBOARD_CONFIG
   }
 
-  // 2. 旧形式のMAPUROPHONE_CONFIG からのマイグレーション
+  // 旧形式からのマイグレーション
   if (
     typeof window !== 'undefined' &&
     window.MAGUROPHONE_CONFIG &&
@@ -53,7 +52,14 @@ export function loadConfig() {
     }
   }
 
-  // 3. localStorage からの上書き（管理画面で編集した値を優先）
+  return deepMerge(DEFAULT_CONFIG, config)
+}
+
+// 設定を読み込む（config.js + デフォルト → localStorage で上書き）
+export function loadConfig() {
+  let config = loadBaseConfig()
+
+  // localStorage からの上書き（管理画面で編集した値を優先）
   if (typeof window !== 'undefined') {
     try {
       const stored = localStorage.getItem(STORAGE_KEY)
@@ -66,8 +72,7 @@ export function loadConfig() {
     }
   }
 
-  // 4. デフォルト値とマージ
-  return deepMerge(DEFAULT_CONFIG, config)
+  return config
 }
 
 // 設定を localStorage に保存
