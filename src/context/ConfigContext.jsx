@@ -21,9 +21,13 @@ export function ConfigProvider({ config, children }) {
     const root = document.documentElement
     if (config.images.headerMobile) {
       root.style.setProperty('--header-image-mobile', `url('${config.images.headerMobile}')`)
+    } else {
+      root.style.removeProperty('--header-image-mobile')
     }
     if (config.images.headerDesktop) {
       root.style.setProperty('--header-image-desktop', `url('${config.images.headerDesktop}')`)
+    } else {
+      root.style.removeProperty('--header-image-desktop')
     }
   }, [config?.images])
 
