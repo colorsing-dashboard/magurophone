@@ -128,9 +128,7 @@ export function importConfigFromText(text) {
   }
 
   try {
-    // Function コンストラクタで安全にパース
-    const fn = new Function(`return ${match[1]}`)
-    return fn()
+    return JSON.parse(match[1])
   } catch {
     throw new Error('config.js のパースに失敗しました')
   }
