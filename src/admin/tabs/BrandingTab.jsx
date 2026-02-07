@@ -90,16 +90,17 @@ const BrandingTab = ({ config, updateConfig }) => {
 
       <hr className="border-light-blue/20 my-8" />
       <h3 className="text-lg font-body text-amber mb-4">フォント設定</h3>
-      <p className="text-xs text-gray-500 mb-4">タイトル用フォントのプリセットを選ぶか、カスタムで設定できます。</p>
+      <p className="text-xs text-gray-500 mb-4">プリセットを選ぶとタイトル・本文フォントが一括で切り替わります。カスタムで個別設定も可能です。</p>
 
-      <div className="flex flex-wrap gap-3 mb-6">
+      <div className="flex flex-wrap gap-2 mb-6">
         {FONT_PRESETS.map((preset) => (
           <button
             key={preset.name}
             onClick={() => applyFontPreset(preset)}
-            className="px-3 py-2 glass-effect border border-light-blue/30 rounded-lg hover:border-amber transition-all text-sm text-gray-300"
+            className="px-3 py-2 glass-effect border border-light-blue/30 rounded-lg hover:border-amber transition-all text-sm"
           >
-            {preset.name}
+            <span className="text-gray-300">{preset.name}</span>
+            <span className="text-xs text-gray-500 ml-1">({preset.category})</span>
           </button>
         ))}
       </div>
