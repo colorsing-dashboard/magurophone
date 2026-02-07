@@ -46,13 +46,13 @@ export const fetchSheetData = async (spreadsheetId, sheetName, range = null, ret
 }
 
 // Google DriveのURLをサムネイル表示可能なURLに変換
-export const convertDriveUrl = (url) => {
+export const convertDriveUrl = (url, size = 400) => {
   if (!url || typeof url !== 'string') return ''
   if (url.includes('/thumbnail?id=')) return url
 
   const match = url.match(/\/file\/d\/([^/]+)/)
   if (match && match[1]) {
-    return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w400`
+    return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w${size}`
   }
 
   return url

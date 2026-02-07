@@ -22,7 +22,7 @@ const HomeView = ({ ranking, goals }) => {
               <div className="mb-2 md:mb-4 flex justify-center">
                 {(person[RANKING_FIELDS.IMAGE] || config.images.medals[index]) && (
                   <img
-                    src={person[RANKING_FIELDS.IMAGE] ? convertDriveUrl(person[RANKING_FIELDS.IMAGE]) : config.images.medals[index]}
+                    src={person[RANKING_FIELDS.IMAGE] ? convertDriveUrl(person[RANKING_FIELDS.IMAGE], 128) : config.images.medals[index]}
                     alt={`${index + 1}位`}
                     className="w-12 h-12 md:w-16 md:h-16 object-cover rounded-full"
                   />

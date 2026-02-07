@@ -12,7 +12,15 @@ const Field = ({ label, value, onChange, placeholder, description }) => (
   </div>
 )
 
+import { FONT_PRESETS } from '../../lib/presets'
+
 const BrandingTab = ({ config, updateConfig }) => {
+  const applyFontPreset = (preset) => {
+    Object.entries(preset.fonts).forEach(([key, value]) => {
+      updateConfig(`fonts.${key}`, value)
+    })
+  }
+
   return (
     <div>
       <h2 className="text-2xl font-body text-light-blue mb-6">ブランディング</h2>
@@ -79,6 +87,44 @@ const BrandingTab = ({ config, updateConfig }) => {
           placeholder="Loading..."
         />
       </div>
+
+      <hr className="border-light-blue/20 my-8" />
+      <h3 className="text-lg font-body text-amber mb-4">フォント設定</h3>
+      <p className="text-xs text-gray-500 mb-4">タイトル用フォントのプリセットを選ぶか、カスタムで設定できます。</p>
+
+      <div className="flex flex-wrap gap-3 mb-6">
+        {FONT_PRESETS.map((preset) => (
+          <button
+            key={preset.name}
+            onClick={() => applyFontPreset(preset)}
+            className="px-3 py-2 glass-effect border border-light-blue/30 rounded-lg hover:border-amber transition-all text-sm text-gray-300"
+          >
+            {preset.name}
+          </button>
+        ))}
+      </div>
+
+      <Field
+        label="タイトルフォント（Display）"
+        value={config.fonts?.display}
+        onChange={(v) => updateConfig('fonts.display', v)}
+        placeholder="'Playfair Display', serif"
+        description="ヘッダーやサイドバーのタイトルに使われるフォント"
+      />
+      <Field
+        label="本文フォント（Body）"
+        value={config.fonts?.body}
+        onChange={(v) => updateConfig('fonts.body', v)}
+        placeholder="'Yu Gothic Medium', 'YuGothic', 'Inter', sans-serif"
+        description="一般テキスト・ボタン・ラベルなどに使われるフォント"
+      />
+      <Field
+        label="Google Fonts URL"
+        value={config.fonts?.googleFontsUrl}
+        onChange={(v) => updateConfig('fonts.googleFontsUrl', v)}
+        placeholder="https://fonts.googleapis.com/css2?family=..."
+        description="使用するフォントのGoogle Fonts読み込みURL（空欄でシステムフォントのみ使用）"
+      />
     </div>
   )
 }

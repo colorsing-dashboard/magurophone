@@ -15,7 +15,7 @@ export function ConfigProvider({ config, children }) {
     root.style.setProperty('--color-gold', config.colors.gold)
   }, [config?.colors])
 
-  // ヘッダー画像をCSS変数に注入
+  // ヘッダー画像をCSS変数に注入 + プリロード
   useEffect(() => {
     if (!config?.images) return
     const root = document.documentElement
@@ -29,7 +29,51 @@ export function ConfigProvider({ config, children }) {
     } else {
       root.style.removeProperty('--header-image-desktop')
     }
+
+    // ヘッダー画像をプリロード
+    const isMobile = window.matchMedia('(max-width: 767px)').matches
+    const preloadUrl = isMobile ? config.images.headerMobile : config.images.headerDesktop
+    if (preloadUrl) {
+      const id = 'preload-header'
+      let link = document.getElementById(id)
+      if (!link) {
+        link = document.createElement('link')
+        link.id = id
+        link.rel = 'preload'
+        link.as = 'image'
+        document.head.appendChild(link)
+      }
+      link.href = preloadUrl
+    }
   }, [config?.images])
+
+  // フォントをCSS変数に注入 + Google Fonts動的読み込み
+  useEffect(() => {
+    if (!config?.fonts) return
+    const root = document.documentElement
+    if (config.fonts.display) {
+      root.style.setProperty('--font-display', config.fonts.display)
+    }
+    if (config.fonts.body) {
+      root.style.setProperty('--font-body', config.fonts.body)
+      document.body.style.fontFamily = config.fonts.body
+    }
+
+    // Google Fonts URLが設定されていれば動的にロード
+    if (config.fonts.googleFontsUrl) {
+      const id = 'dynamic-google-fonts'
+      let link = document.getElementById(id)
+      if (link) {
+        link.href = config.fonts.googleFontsUrl
+      } else {
+        link = document.createElement('link')
+        link.id = id
+        link.rel = 'stylesheet'
+        link.href = config.fonts.googleFontsUrl
+        document.head.appendChild(link)
+      }
+    }
+  }, [config?.fonts])
 
   // ページタイトルを設定
   useEffect(() => {

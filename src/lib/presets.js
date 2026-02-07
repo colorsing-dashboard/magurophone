@@ -1,3 +1,38 @@
+export const FONT_PRESETS = [
+  {
+    name: 'Playfair Display',
+    fonts: {
+      display: "'Playfair Display', serif",
+      body: "'Yu Gothic Medium', 'YuGothic', 'Inter', sans-serif",
+      googleFontsUrl: 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&display=swap',
+    },
+  },
+  {
+    name: 'Cinzel',
+    fonts: {
+      display: "'Cinzel', serif",
+      body: "'Yu Gothic Medium', 'YuGothic', 'Inter', sans-serif",
+      googleFontsUrl: 'https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&display=swap',
+    },
+  },
+  {
+    name: 'Orbitron',
+    fonts: {
+      display: "'Orbitron', sans-serif",
+      body: "'Yu Gothic Medium', 'YuGothic', 'Inter', sans-serif",
+      googleFontsUrl: 'https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap',
+    },
+  },
+  {
+    name: 'Raleway',
+    fonts: {
+      display: "'Raleway', sans-serif",
+      body: "'Yu Gothic Medium', 'YuGothic', 'Inter', sans-serif",
+      googleFontsUrl: 'https://fonts.googleapis.com/css2?family=Raleway:wght@400;700;900&display=swap',
+    },
+  },
+]
+
 export const COLOR_PRESETS = [
   {
     name: '深海ブルー',

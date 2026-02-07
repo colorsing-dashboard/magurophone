@@ -20,6 +20,12 @@ const DEFAULT_CONFIG = {
     gold: '#ffd700',
   },
 
+  fonts: {
+    display: "'Playfair Display', serif",
+    body: "'Yu Gothic Medium', 'YuGothic', 'Inter', sans-serif",
+    googleFontsUrl: 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&display=swap',
+  },
+
   images: {
     headerDesktop: './header.png',
     headerMobile: './header-mobile.png',
