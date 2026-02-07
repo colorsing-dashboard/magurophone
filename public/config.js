@@ -3,13 +3,13 @@
 
 window.DASHBOARD_CONFIG = {
   brand: {
-    name: '',
-    sidebarTitle: '',
-    footerText: '',
-    footerSubText: '',
-    footerNote: '',
-    pageTitle: '',
-    loadingEmoji: '',
+    name: 'BAR MAGUROPHONE',
+    sidebarTitle: 'MAGUROPHONE',
+    footerText: '深海BAR MAGUROPHONE 🐟🎧',
+    footerSubText: '単推し・最推し様・メンシプ様募集中です',
+    footerNote: 'ファンマ: 🐟🎧',
+    pageTitle: '深海BAR MAGUROPHONE - 特典管理',
+    loadingEmoji: '🐟',
     loadingText: 'Loading...'
   },
 
@@ -23,15 +23,19 @@ window.DASHBOARD_CONFIG = {
   },
 
   images: {
-    headerDesktop: '',
-    headerMobile: '',
-    medals: []
+    headerDesktop: './header.png',
+    headerMobile: './header-mobile.png',
+    medals: [
+      './medal-1st.jpg',
+      './medal-2nd.jpg',
+      './medal-3rd.jpg'
+    ]
   },
 
   sheets: {
-    spreadsheetId: '',
+    spreadsheetId: '1kOuigqrKwgyrCJDN448SRDZCFj4urliA5iet4nRtH08',
     dataSheetName: 'data',
-    iconSheetName: '',
+    iconSheetName: '枠内アイコン',
     ranges: {
       ranking: 'A2:D5',
       goals: 'A8:B12',
@@ -42,25 +46,34 @@ window.DASHBOARD_CONFIG = {
   },
 
   views: [
-    { id: 'home', label: 'Home', icon: '', enabled: true },
-    { id: 'menu', label: 'Menu', icon: '', enabled: true },
-    { id: 'rights', label: '', icon: '', enabled: true, title: '' },
-    { id: 'icons', label: '', icon: '', enabled: false, title: '' }
+    { id: 'home', label: 'Home', icon: '🏠', enabled: true },
+    { id: 'menu', label: 'Menu', icon: '🍾', enabled: true },
+    { id: 'rights', label: 'ボトルキープ', icon: '👥', enabled: true, title: '🍾 ボトルキープ一覧' },
+    { id: 'icons', label: '枠内アイコン', icon: '🖼️', enabled: true, title: '🖼️ 枠内アイコン' }
   ],
 
   benefitTiers: [
-    { key: '5k', icon: '', columnIndex: 1, displayTemplate: '{value}' },
-    { key: '10k', icon: '', columnIndex: 2, displayTemplate: '{value}' }
+    { key: '5k', icon: '🎵', columnIndex: 1, displayTemplate: '強制リクエスト: {value}曲' },
+    { key: '10k', icon: '🎮', columnIndex: 2, displayTemplate: '権利: {value}時間分' },
+    { key: '20k', icon: '💬', columnIndex: 3, displayTemplate: 'オープンチャット招待済', isBoolean: true },
+    { key: '30k', icon: '🎤', columnIndex: 4, displayTemplate: 'アカペラ音源獲得: {value}曲' },
+    { key: '40k', icon: '⚡', columnIndex: 5, displayTemplate: '強制リクエスト: {value}曲' },
+    { key: '50k', icon: '🏆', columnIndex: 6, displayTemplate: 'ミックス音源獲得: {value}曲' },
+    { key: 'メンバーシップ', icon: '👑', columnIndex: 7, displayTemplate: '月内リクエスト対応中', isMembership: true }
   ],
 
   home: {
     rankingTitle: 'Ranking',
-    pointsLabel: '',
+    pointsLabel: '歌推しPt',
     targetsTitle: 'Targets',
-    targetLabels: ['', ''],
+    targetLabels: ['今旬の目標', '今月の目標'],
     faq: {
-      title: '',
-      items: []
+      title: '📝 FAQ・注意事項',
+      items: [
+        { question: '特典の使用方法は？', answer: '枠内でリクエストするか、XのDMでお知らせください。' },
+        { question: '10k以上の特典について', answer: '永続権利です。月が替わっても消えることがありません。' },
+        { question: 'メンバーシップ特典について', answer: 'メンバーシップ特典で得られた10ｋ及び20ｋ特典は、それぞれの箇所に合算して記載しています。' }
+      ]
     }
   },
 
@@ -79,8 +92,8 @@ window.DASHBOARD_CONFIG = {
     iconNoImages: 'アイコンがありません',
     userListTitle: '獲得者一覧',
     userIconTitle: '{user} のアイコン',
-    searchPlaceholder: '名前で検索...',
-    specialRightLabel: 'Special',
+    searchPlaceholder: '🔍 名前で検索...',
+    specialRightLabel: 'Special権利',
     imageError: '画像エラー'
   },
 
