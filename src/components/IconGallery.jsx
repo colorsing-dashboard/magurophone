@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useConfig } from '../context/ConfigContext'
 
-const IconGallery = ({ icons, selectedMonth, setSelectedMonth, selectedUser, setSelectedUser, loading }) => {
+const IconGallery = ({ icons, selectedMonth, setSelectedMonth, selectedUser, setSelectedUser, loading, iconError }) => {
   const config = useConfig()
 
   const availableMonths = useMemo(() => {
@@ -29,6 +29,15 @@ const IconGallery = ({ icons, selectedMonth, setSelectedMonth, selectedUser, set
       <div className="text-center py-16">
         <div className="text-4xl mb-4 animate-pulse">🖼️</div>
         <div className="text-xl text-light-blue animate-shimmer">{config.ui.iconLoading}</div>
+      </div>
+    )
+  }
+
+  if (iconError) {
+    return (
+      <div className="text-center py-16">
+        <div className="text-4xl mb-4">⚠️</div>
+        <div className="text-xl text-tuna-red">{iconError}</div>
       </div>
     )
   }

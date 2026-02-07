@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&display=swap');
 @import "tailwindcss";
 
 /* デフォルトCSS変数（config.jsの値でランタイムに上書きされる） */
@@ -53,7 +52,7 @@ body {
   background-attachment: fixed;
   color: white;
   min-height: 100vh;
-  font-family: 'Yu Gothic Medium', 'YuGothic', 'Inter', sans-serif;
+  font-family: var(--font-body, 'Yu Gothic Medium', 'YuGothic', 'Inter', sans-serif);
 }
 
 * {

@@ -12,7 +12,19 @@ const Field = ({ label, value, onChange, placeholder, description }) => (
   </div>
 )
 
+import { FONT_PRESETS, BODY_FONT_PRESETS } from '../../lib/presets'
+
 const BrandingTab = ({ config, updateConfig }) => {
+  const applyDisplayPreset = (preset) => {
+    updateConfig('fonts.display', preset.fonts.display)
+    updateConfig('fonts.displayUrl', preset.fonts.displayUrl)
+  }
+
+  const applyBodyPreset = (preset) => {
+    updateConfig('fonts.body', preset.body)
+    updateConfig('fonts.bodyUrl', preset.googleFontsUrl || '')
+  }
+
   return (
     <div>
       <h2 className="text-2xl font-body text-light-blue mb-6">ブランディング</h2>
@@ -79,6 +91,54 @@ const BrandingTab = ({ config, updateConfig }) => {
           placeholder="Loading..."
         />
       </div>
+
+      <hr className="border-light-blue/20 my-8" />
+      <h3 className="text-lg font-body text-amber mb-4">タイトルフォント</h3>
+      <p className="text-xs text-gray-500 mb-3">ヘッダーやサイドバーのブランド名に使われる装飾フォント</p>
+
+      <div className="flex flex-wrap gap-2 mb-4">
+        {FONT_PRESETS.map((preset) => (
+          <button
+            key={preset.name}
+            onClick={() => applyDisplayPreset(preset)}
+            className="px-3 py-2 glass-effect border border-light-blue/30 rounded-lg hover:border-amber transition-all text-sm"
+          >
+            <span className="text-gray-300">{preset.name}</span>
+            <span className="text-xs text-gray-500 ml-1">({preset.category})</span>
+          </button>
+        ))}
+      </div>
+
+      <Field
+        label="タイトルフォント"
+        value={config.fonts?.display}
+        onChange={(v) => updateConfig('fonts.display', v)}
+        placeholder="'Playfair Display', serif"
+      />
+
+      <hr className="border-light-blue/20 my-8" />
+      <h3 className="text-lg font-body text-amber mb-4">本文フォント</h3>
+      <p className="text-xs text-gray-500 mb-3">ボタン、ラベル、説明文など一般テキストに使われるフォント</p>
+
+      <div className="flex flex-wrap gap-2 mb-4">
+        {BODY_FONT_PRESETS.map((preset) => (
+          <button
+            key={preset.name}
+            onClick={() => applyBodyPreset(preset)}
+            className="px-3 py-2 glass-effect border border-light-blue/30 rounded-lg hover:border-amber transition-all text-sm"
+          >
+            <span className="text-gray-300">{preset.name}</span>
+            <span className="text-xs text-gray-500 ml-1">({preset.category})</span>
+          </button>
+        ))}
+      </div>
+
+      <Field
+        label="本文フォント"
+        value={config.fonts?.body}
+        onChange={(v) => updateConfig('fonts.body', v)}
+        placeholder="'Yu Gothic Medium', 'YuGothic', 'Inter', sans-serif"
+      />
     </div>
   )
 }

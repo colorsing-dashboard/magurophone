@@ -1,3 +1,127 @@
+// 本文フォントプリセット（可読性重視）
+export const BODY_FONT_PRESETS = [
+  {
+    name: 'Yu Gothic',
+    category: 'ゴシック',
+    body: "'Yu Gothic Medium', 'YuGothic', 'Inter', sans-serif",
+    googleFontsUrl: null,
+  },
+  {
+    name: 'Noto Sans JP',
+    category: 'ゴシック',
+    body: "'Noto Sans JP', sans-serif",
+    googleFontsUrl: 'https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap',
+  },
+  {
+    name: 'M PLUS 2',
+    category: '丸ゴシック',
+    body: "'M PLUS 2', sans-serif",
+    googleFontsUrl: 'https://fonts.googleapis.com/css2?family=M+PLUS+2:wght@400;500;700&display=swap',
+  },
+  {
+    name: 'Noto Serif JP',
+    category: '明朝',
+    body: "'Noto Serif JP', serif",
+    googleFontsUrl: 'https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;700&display=swap',
+  },
+  {
+    name: 'BIZ UDGothic',
+    category: 'UD',
+    body: "'BIZ UDGothic', sans-serif",
+    googleFontsUrl: 'https://fonts.googleapis.com/css2?family=BIZ+UDGothic:wght@400;700&display=swap',
+  },
+  {
+    name: 'Zen Kaku Gothic New',
+    category: 'すっきり',
+    body: "'Zen Kaku Gothic New', sans-serif",
+    googleFontsUrl: 'https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap',
+  },
+]
+
+// タイトルフォントプリセット
+export const FONT_PRESETS = [
+  {
+    name: 'Playfair Display',
+    category: 'エレガント',
+    fonts: {
+      display: "'Playfair Display', serif",
+      displayUrl: 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&display=swap',
+    },
+  },
+  {
+    name: 'Cinzel',
+    category: 'クラシック',
+    fonts: {
+      display: "'Cinzel', serif",
+      displayUrl: 'https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&display=swap',
+    },
+  },
+  {
+    name: 'Orbitron',
+    category: 'サイバー',
+    fonts: {
+      display: "'Orbitron', sans-serif",
+      displayUrl: 'https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap',
+    },
+  },
+  {
+    name: 'Raleway',
+    category: 'モダン',
+    fonts: {
+      display: "'Raleway', sans-serif",
+      displayUrl: 'https://fonts.googleapis.com/css2?family=Raleway:wght@400;700;900&display=swap',
+    },
+  },
+  {
+    name: 'Bebas Neue',
+    category: 'インパクト',
+    fonts: {
+      display: "'Bebas Neue', sans-serif",
+      displayUrl: 'https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap',
+    },
+  },
+  {
+    name: 'Montserrat',
+    category: 'クリーン',
+    fonts: {
+      display: "'Montserrat', sans-serif",
+      displayUrl: 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap',
+    },
+  },
+  {
+    name: 'Poppins',
+    category: 'ポップ',
+    fonts: {
+      display: "'Poppins', sans-serif",
+      displayUrl: 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap',
+    },
+  },
+  {
+    name: 'Dancing Script',
+    category: '手書き風',
+    fonts: {
+      display: "'Dancing Script', cursive",
+      displayUrl: 'https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap',
+    },
+  },
+  {
+    name: 'Noto Serif JP',
+    category: '和風・明朝',
+    fonts: {
+      display: "'Noto Serif JP', serif",
+      displayUrl: 'https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700;900&display=swap',
+    },
+  },
+  {
+    name: 'Noto Sans JP',
+    category: '和風・ゴシック',
+    fonts: {
+      display: "'Noto Sans JP', sans-serif",
+      displayUrl: 'https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap',
+    },
+  },
+]
+
 export const COLOR_PRESETS = [
   {
     name: '深海ブルー',

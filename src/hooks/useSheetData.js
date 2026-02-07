@@ -13,6 +13,7 @@ export function useSheetData(sheetsConfig) {
   // アイコン関連
   const [icons, setIcons] = useState({})
   const [loadingIcons, setLoadingIcons] = useState(false)
+  const [iconError, setIconError] = useState(null)
 
   const { spreadsheetId, dataSheetName, iconSheetName, ranges, refreshIntervalMs } = sheetsConfig
 
@@ -61,11 +62,13 @@ export function useSheetData(sheetsConfig) {
     if (Object.keys(icons).length > 0 || loadingIcons || !spreadsheetId) return
 
     setLoadingIcons(true)
+    setIconError(null)
     try {
       const iconData = await fetchIconData(spreadsheetId, iconSheetName)
       setIcons(iconData)
-    } catch (error) {
-      console.error('Failed to load icon data:', error)
+    } catch (err) {
+      console.error('Failed to load icon data:', err)
+      setIconError('アイコンデータの読み込みに失敗しました')
     } finally {
       setLoadingIcons(false)
     }
@@ -79,6 +82,7 @@ export function useSheetData(sheetsConfig) {
     icons,
     loading,
     loadingIcons,
+    iconError,
     error,
     lastUpdate,
     loadData,

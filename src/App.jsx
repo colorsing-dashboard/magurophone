@@ -18,7 +18,7 @@ function App() {
 
   const {
     ranking, goals, rights, benefits, icons,
-    loading, loadingIcons, error, lastUpdate,
+    loading, loadingIcons, iconError, error, lastUpdate,
     loadData, loadIcons,
   } = useSheetData(config.sheets)
 
@@ -104,7 +104,7 @@ function App() {
     rights: { rights, onSelectPerson: setSelectedPerson },
     icons: {
       icons, selectedMonth, setSelectedMonth,
-      selectedUser, setSelectedUser, loading: loadingIcons,
+      selectedUser, setSelectedUser, loading: loadingIcons, iconError,
     },
   }
 

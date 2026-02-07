@@ -22,6 +22,13 @@ window.DASHBOARD_CONFIG = {
     gold: '#ffd700'
   },
 
+  fonts: {
+    display: "'Playfair Display', serif",
+    displayUrl: 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&display=swap',
+    body: "'Yu Gothic Medium', 'YuGothic', 'Inter', sans-serif",
+    bodyUrl: ''
+  },
+
   images: {
     headerDesktop: './header.png',
     headerMobile: './header-mobile.png',
@@ -98,6 +105,6 @@ window.DASHBOARD_CONFIG = {
   },
 
   admin: {
-    password: ''
+    password: 'CSadmin'
   }
 }
