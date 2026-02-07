@@ -90,7 +90,7 @@ const BrandingTab = ({ config, updateConfig }) => {
 
       <hr className="border-light-blue/20 my-8" />
       <h3 className="text-lg font-body text-amber mb-4">フォント設定</h3>
-      <p className="text-xs text-gray-500 mb-4">プリセットを選ぶとタイトル・本文フォントが一括で切り替わります。カスタムで個別設定も可能です。</p>
+      <p className="text-xs text-gray-500 mb-4">プリセットはタイトルフォントのみ変更します。本文は日本語の可読性のため変更されません。</p>
 
       <div className="flex flex-wrap gap-2 mb-6">
         {FONT_PRESETS.map((preset) => (
