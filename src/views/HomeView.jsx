@@ -1,7 +1,8 @@
 import { useConfig } from '../context/ConfigContext'
+import { convertDriveUrl } from '../lib/sheets'
 import CountUp from '../components/CountUp'
 
-const RANKING_FIELDS = { RANK: 0, NAME: 1, POINTS: 2 }
+const RANKING_FIELDS = { RANK: 0, NAME: 1, POINTS: 2, IMAGE: 3 }
 const GOAL_FIELDS = { THIS_WEEK: 0, THIS_MONTH: 1 }
 
 const HomeView = ({ ranking, goals }) => {
@@ -19,9 +20,9 @@ const HomeView = ({ ranking, goals }) => {
               ${index === 0 ? 'border-tuna-red/50 box-glow-soft' : 'border-light-blue/30'}
             `}>
               <div className="mb-2 md:mb-4 flex justify-center">
-                {config.images.medals[index] && (
+                {(person[RANKING_FIELDS.IMAGE] || config.images.medals[index]) && (
                   <img
-                    src={config.images.medals[index]}
+                    src={person[RANKING_FIELDS.IMAGE] ? convertDriveUrl(person[RANKING_FIELDS.IMAGE]) : config.images.medals[index]}
                     alt={`${index + 1}位`}
                     className="w-12 h-12 md:w-16 md:h-16 object-cover rounded-full"
                   />

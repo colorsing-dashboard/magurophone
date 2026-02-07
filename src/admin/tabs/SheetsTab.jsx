@@ -103,7 +103,7 @@ const SheetsTab = ({ config, updateConfig }) => {
         <div className="px-4 pb-4 text-xs text-gray-400 space-y-3">
           <div>
             <p className="text-light-blue font-bold mb-1">dataシート</p>
-            <pre className="bg-black/30 rounded p-2 overflow-x-auto">{`A2:D5  ... ランキング（順位, 名前, ポイント, 差分）
+            <pre className="bg-black/30 rounded p-2 overflow-x-auto">{`A2:D5  ... ランキング（順位, 名前, ポイント, メダル画像URL）
 A8:B12 ... 目標（ラベル, 値）
 G2:K12 ... 特典説明（タイトル, 名前, 説明, アイコン, ラベル）
 A15:I  ... 権利者リスト（名前, 各ティアの値...）`}</pre>
