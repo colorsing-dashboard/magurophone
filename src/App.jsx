@@ -110,6 +110,10 @@ function App() {
 
   return (
     <div className="min-h-screen">
+      <div className="bubbles-container">
+        {[...Array(6)].map((_, i) => <div key={i} className="bubble" />)}
+      </div>
+
       <Sidebar currentView={currentView} onViewChange={setCurrentView} lastUpdate={lastUpdate} />
 
       <div className="md:ml-64">
