@@ -12,13 +12,17 @@ const Field = ({ label, value, onChange, placeholder, description }) => (
   </div>
 )
 
-import { FONT_PRESETS } from '../../lib/presets'
+import { FONT_PRESETS, BODY_FONT_PRESETS } from '../../lib/presets'
 
 const BrandingTab = ({ config, updateConfig }) => {
-  const applyFontPreset = (preset) => {
-    Object.entries(preset.fonts).forEach(([key, value]) => {
-      updateConfig(`fonts.${key}`, value)
-    })
+  const applyDisplayPreset = (preset) => {
+    updateConfig('fonts.display', preset.fonts.display)
+    updateConfig('fonts.displayUrl', preset.fonts.displayUrl)
+  }
+
+  const applyBodyPreset = (preset) => {
+    updateConfig('fonts.body', preset.body)
+    updateConfig('fonts.bodyUrl', preset.googleFontsUrl || '')
   }
 
   return (
@@ -89,14 +93,14 @@ const BrandingTab = ({ config, updateConfig }) => {
       </div>
 
       <hr className="border-light-blue/20 my-8" />
-      <h3 className="text-lg font-body text-amber mb-4">フォント設定</h3>
-      <p className="text-xs text-gray-500 mb-4">プリセットはタイトルフォントのみ変更します。本文は日本語の可読性のため変更されません。</p>
+      <h3 className="text-lg font-body text-amber mb-4">タイトルフォント</h3>
+      <p className="text-xs text-gray-500 mb-3">ヘッダーやサイドバーのブランド名に使われる装飾フォント</p>
 
-      <div className="flex flex-wrap gap-2 mb-6">
+      <div className="flex flex-wrap gap-2 mb-4">
         {FONT_PRESETS.map((preset) => (
           <button
             key={preset.name}
-            onClick={() => applyFontPreset(preset)}
+            onClick={() => applyDisplayPreset(preset)}
             className="px-3 py-2 glass-effect border border-light-blue/30 rounded-lg hover:border-amber transition-all text-sm"
           >
             <span className="text-gray-300">{preset.name}</span>
@@ -106,25 +110,34 @@ const BrandingTab = ({ config, updateConfig }) => {
       </div>
 
       <Field
-        label="タイトルフォント（Display）"
+        label="タイトルフォント"
         value={config.fonts?.display}
         onChange={(v) => updateConfig('fonts.display', v)}
         placeholder="'Playfair Display', serif"
-        description="ヘッダーやサイドバーのタイトルに使われるフォント"
       />
+
+      <hr className="border-light-blue/20 my-8" />
+      <h3 className="text-lg font-body text-amber mb-4">本文フォント</h3>
+      <p className="text-xs text-gray-500 mb-3">ボタン、ラベル、説明文など一般テキストに使われるフォント</p>
+
+      <div className="flex flex-wrap gap-2 mb-4">
+        {BODY_FONT_PRESETS.map((preset) => (
+          <button
+            key={preset.name}
+            onClick={() => applyBodyPreset(preset)}
+            className="px-3 py-2 glass-effect border border-light-blue/30 rounded-lg hover:border-amber transition-all text-sm"
+          >
+            <span className="text-gray-300">{preset.name}</span>
+            <span className="text-xs text-gray-500 ml-1">({preset.category})</span>
+          </button>
+        ))}
+      </div>
+
       <Field
-        label="本文フォント（Body）"
+        label="本文フォント"
         value={config.fonts?.body}
         onChange={(v) => updateConfig('fonts.body', v)}
         placeholder="'Yu Gothic Medium', 'YuGothic', 'Inter', sans-serif"
-        description="一般テキスト・ボタン・ラベルなどに使われるフォント"
-      />
-      <Field
-        label="Google Fonts URL"
-        value={config.fonts?.googleFontsUrl}
-        onChange={(v) => updateConfig('fonts.googleFontsUrl', v)}
-        placeholder="https://fonts.googleapis.com/css2?family=..."
-        description="使用するフォントのGoogle Fonts読み込みURL（空欄でシステムフォントのみ使用）"
       />
     </div>
   )

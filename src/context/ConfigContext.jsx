@@ -59,20 +59,28 @@ export function ConfigProvider({ config, children }) {
       document.body.style.fontFamily = config.fonts.body
     }
 
-    // Google Fonts URLが設定されていれば動的にロード
-    if (config.fonts.googleFontsUrl) {
-      const id = 'dynamic-google-fonts'
+    // タイトルフォントURL
+    const loadFontLink = (id, url) => {
       let link = document.getElementById(id)
-      if (link) {
-        link.href = config.fonts.googleFontsUrl
-      } else {
-        link = document.createElement('link')
-        link.id = id
-        link.rel = 'stylesheet'
-        link.href = config.fonts.googleFontsUrl
-        document.head.appendChild(link)
+      if (url) {
+        if (link) {
+          link.href = url
+        } else {
+          link = document.createElement('link')
+          link.id = id
+          link.rel = 'stylesheet'
+          link.href = url
+          document.head.appendChild(link)
+        }
+      } else if (link) {
+        link.remove()
       }
     }
+
+    // 旧形式(googleFontsUrl)との互換性
+    const displayUrl = config.fonts.displayUrl || config.fonts.googleFontsUrl || ''
+    loadFontLink('google-fonts-display', displayUrl)
+    loadFontLink('google-fonts-body', config.fonts.bodyUrl || '')
   }, [config?.fonts])
 
   // ページタイトルを設定
