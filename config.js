@@ -1,5 +1,0 @@
-// 深海BAR MAGUROPHONE 設定ファイル
-
-window.MAGUROPHONE_CONFIG = {
-  SPREADSHEET_ID: '1kOuigqrKwgyrCJDN448SRDZCFj4urliA5iet4nRtH08'
-}

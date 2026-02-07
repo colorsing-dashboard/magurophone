@@ -1,0 +1,35 @@
+import { useConfig } from '../context/ConfigContext'
+
+const BottomNav = ({ currentView, onViewChange }) => {
+  const config = useConfig()
+  const enabledViews = config.views.filter(v => v.enabled)
+
+  return (
+    <nav
+      className="md:hidden fixed bottom-0 left-0 right-0 glass-effect border-t border-light-blue/30 z-40"
+      style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+    >
+      <div
+        className="h-16"
+        style={{ display: 'grid', gridTemplateColumns: `repeat(${enabledViews.length}, minmax(0, 1fr))` }}
+      >
+        {enabledViews.map((view) => (
+          <button
+            key={view.id}
+            onClick={() => onViewChange(view.id)}
+            className={`flex flex-col items-center justify-center gap-1 transition-all ${
+              currentView === view.id
+                ? 'text-light-blue'
+                : 'text-gray-400 hover:text-light-blue'
+            }`}
+          >
+            <span className="text-xl">{view.icon}</span>
+            <span className="text-xs font-body">{view.label}</span>
+          </button>
+        ))}
+      </div>
+    </nav>
+  )
+}
+
+export default BottomNav
