@@ -1,9 +1,9 @@
-const ViewsTab = ({ config, updateConfig, updateArray }) => {
+const ViewsTab = ({ config, updateConfig }) => {
   const views = config.views || []
 
   const updateView = (index, field, value) => {
     const next = views.map((v, i) => i === index ? { ...v, [field]: value } : v)
-    updateArray('views', next)
+    updateConfig('views', next)
   }
 
   const moveView = (index, direction) => {
@@ -11,7 +11,7 @@ const ViewsTab = ({ config, updateConfig, updateArray }) => {
     const newIndex = index + direction
     if (newIndex < 0 || newIndex >= next.length) return
     ;[next[index], next[newIndex]] = [next[newIndex], next[index]]
-    updateArray('views', next)
+    updateConfig('views', next)
   }
 
   return (

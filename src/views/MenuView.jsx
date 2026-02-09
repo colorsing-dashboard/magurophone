@@ -1,6 +1,5 @@
 import { useConfig } from '../context/ConfigContext'
-
-const BENEFIT_FIELDS = { TITLE: 0, NAME: 1, DESCRIPTION: 2, ICON: 3, LABEL: 4 }
+import { BENEFIT_FIELDS } from '../components/BenefitPopup'
 
 const MenuView = ({ benefits, onSelectBenefit }) => {
   const config = useConfig()

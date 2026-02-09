@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { loadConfig, loadBaseConfig, saveConfig, clearConfig, downloadConfigJS, importConfigFromText } from '../lib/configIO'
+import { useState, useEffect, useRef } from 'react'
+import { loadConfig, loadBaseConfig, saveConfig, clearConfig, downloadConfigJS, importConfigFromText, deepMerge } from '../lib/configIO'
 import BrandingTab from './tabs/BrandingTab'
 import ColorsTab from './tabs/ColorsTab'
 
@@ -11,7 +11,7 @@ import ContentTab from './tabs/ContentTab'
 const TABS = [
   { id: 'branding', label: 'ブランディング', icon: '🏷️' },
   { id: 'colors', label: 'カラー', icon: '🎨' },
-{ id: 'sheets', label: 'Google Sheets', icon: '📊' },
+  { id: 'sheets', label: 'Google Sheets', icon: '📊' },
   { id: 'views', label: 'ビュー管理', icon: '📱' },
   { id: 'tiers', label: '特典ティア', icon: '🏆' },
   { id: 'content', label: 'コンテンツ', icon: '📝' },
@@ -57,21 +57,22 @@ function AdminApp() {
       }
 
       current[keys[keys.length - 1]] = value
-      saveConfig(next)
-      showSaveMessage()
       return next
     })
   }
 
-  // 配列全体を更新
-  const updateArray = (path, value) => {
-    updateConfig(path, value)
-  }
-
-  const showSaveMessage = () => {
+  // 設定変更後に保存（副作用をupdater外で実行）
+  const isInitialMount = useRef(true)
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false
+      return
+    }
+    saveConfig(config)
     setSaveMessage('保存しました')
-    setTimeout(() => setSaveMessage(null), 2000)
-  }
+    const timer = setTimeout(() => setSaveMessage(null), 2000)
+    return () => clearTimeout(timer)
+  }, [config])
 
   const handlePasswordSubmit = (e) => {
     e.preventDefault()
@@ -95,10 +96,7 @@ function AdminApp() {
     try {
       const text = await file.text()
       const imported = importConfigFromText(text)
-      const merged = { ...config, ...imported }
-      setConfig(merged)
-      saveConfig(merged)
-      showSaveMessage()
+      setConfig(prev => deepMerge(prev, imported))
     } catch (err) {
       setImportError(err.message)
     }
@@ -109,9 +107,7 @@ function AdminApp() {
   const handleReset = () => {
     if (confirm('設定をconfig.jsの値に戻しますか？管理画面での変更はクリアされます。')) {
       clearConfig()
-      const baseConfig = loadBaseConfig()
-      setConfig(baseConfig)
-      showSaveMessage()
+      setConfig(loadBaseConfig())
     }
   }
 
@@ -142,10 +138,10 @@ function AdminApp() {
   const tabComponents = {
     branding: <BrandingTab config={config} updateConfig={updateConfig} />,
     colors: <ColorsTab config={config} updateConfig={updateConfig} />,
-sheets: <SheetsTab config={config} updateConfig={updateConfig} />,
-    views: <ViewsTab config={config} updateConfig={updateConfig} updateArray={updateArray} />,
-    tiers: <TiersTab config={config} updateConfig={updateConfig} updateArray={updateArray} />,
-    content: <ContentTab config={config} updateConfig={updateConfig} updateArray={updateArray} />,
+    sheets: <SheetsTab config={config} updateConfig={updateConfig} />,
+    views: <ViewsTab config={config} updateConfig={updateConfig} />,
+    tiers: <TiersTab config={config} updateConfig={updateConfig} />,
+    content: <ContentTab config={config} updateConfig={updateConfig} />,
   }
 
   return (

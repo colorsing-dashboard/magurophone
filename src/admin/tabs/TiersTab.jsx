@@ -1,9 +1,9 @@
-const TiersTab = ({ config, updateConfig, updateArray }) => {
+const TiersTab = ({ config, updateConfig }) => {
   const tiers = config.benefitTiers || []
 
   const updateTier = (index, field, value) => {
     const next = tiers.map((t, i) => i === index ? { ...t, [field]: value } : t)
-    updateArray('benefitTiers', next)
+    updateConfig('benefitTiers', next)
   }
 
   const addTier = () => {
@@ -13,12 +13,12 @@ const TiersTab = ({ config, updateConfig, updateArray }) => {
       columnIndex: tiers.length + 1,
       displayTemplate: '特典: {value}',
     }]
-    updateArray('benefitTiers', next)
+    updateConfig('benefitTiers', next)
   }
 
   const removeTier = (index) => {
     if (!confirm(`「${tiers[index].key}」を削除しますか？`)) return
-    updateArray('benefitTiers', tiers.filter((_, i) => i !== index))
+    updateConfig('benefitTiers', tiers.filter((_, i) => i !== index))
   }
 
   const moveTier = (index, direction) => {
@@ -26,7 +26,7 @@ const TiersTab = ({ config, updateConfig, updateArray }) => {
     const newIndex = index + direction
     if (newIndex < 0 || newIndex >= next.length) return
     ;[next[index], next[newIndex]] = [next[newIndex], next[index]]
-    updateArray('benefitTiers', next)
+    updateConfig('benefitTiers', next)
   }
 
   return (
@@ -95,7 +95,10 @@ const TiersTab = ({ config, updateConfig, updateArray }) => {
                   type="number"
                   min="1"
                   value={tier.columnIndex || 1}
-                  onChange={(e) => updateTier(index, 'columnIndex', parseInt(e.target.value))}
+                  onChange={(e) => {
+                    const v = parseInt(e.target.value)
+                    if (!isNaN(v) && v > 0) updateTier(index, 'columnIndex', v)
+                  }}
                   className="w-full px-3 py-1.5 glass-effect border border-light-blue/30 rounded-lg text-white text-sm focus:outline-none focus:border-amber"
                 />
               </div>

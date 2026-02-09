@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { fetchSheetData, fetchIconData } from '../lib/sheets'
 
 export function useSheetData(sheetsConfig) {
@@ -14,8 +14,14 @@ export function useSheetData(sheetsConfig) {
   const [icons, setIcons] = useState({})
   const [loadingIcons, setLoadingIcons] = useState(false)
   const [iconError, setIconError] = useState(null)
+  const iconsLoadedRef = useRef(false)
 
   const { spreadsheetId, dataSheetName, iconSheetName, ranges, refreshIntervalMs } = sheetsConfig
+  // rangesオブジェクトを個別の文字列に分解して安定した依存関係にする
+  const rankingRange = ranges.ranking
+  const goalsRange = ranges.goals
+  const benefitsRange = ranges.benefits
+  const rightsRange = ranges.rights
 
   const loadData = useCallback(async () => {
     if (!spreadsheetId) {
@@ -29,10 +35,10 @@ export function useSheetData(sheetsConfig) {
 
     try {
       const [rankingData, goalsData, benefitsData, rightsData] = await Promise.all([
-        fetchSheetData(spreadsheetId, dataSheetName, ranges.ranking),
-        fetchSheetData(spreadsheetId, dataSheetName, ranges.goals),
-        fetchSheetData(spreadsheetId, dataSheetName, ranges.benefits),
-        fetchSheetData(spreadsheetId, dataSheetName, ranges.rights),
+        fetchSheetData(spreadsheetId, dataSheetName, rankingRange),
+        fetchSheetData(spreadsheetId, dataSheetName, goalsRange),
+        fetchSheetData(spreadsheetId, dataSheetName, benefitsRange),
+        fetchSheetData(spreadsheetId, dataSheetName, rightsRange),
       ])
 
       setRanking(rankingData)
@@ -47,7 +53,7 @@ export function useSheetData(sheetsConfig) {
     } finally {
       setLoading(false)
     }
-  }, [spreadsheetId, dataSheetName, ranges])
+  }, [spreadsheetId, dataSheetName, rankingRange, goalsRange, benefitsRange, rightsRange])
 
   // 初回読み込み + 自動更新
   useEffect(() => {
@@ -59,20 +65,21 @@ export function useSheetData(sheetsConfig) {
 
   // アイコンデータ読み込み
   const loadIcons = useCallback(async () => {
-    if (Object.keys(icons).length > 0 || loadingIcons || !spreadsheetId) return
+    if (iconsLoadedRef.current || loadingIcons || !spreadsheetId) return
 
     setLoadingIcons(true)
     setIconError(null)
     try {
       const iconData = await fetchIconData(spreadsheetId, iconSheetName)
       setIcons(iconData)
+      iconsLoadedRef.current = true
     } catch (err) {
       console.error('Failed to load icon data:', err)
       setIconError('アイコンデータの読み込みに失敗しました')
     } finally {
       setLoadingIcons(false)
     }
-  }, [icons, loadingIcons, spreadsheetId, iconSheetName])
+  }, [loadingIcons, spreadsheetId, iconSheetName])
 
   return {
     ranking,
