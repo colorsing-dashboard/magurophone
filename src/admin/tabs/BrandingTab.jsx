@@ -115,6 +115,13 @@ const BrandingTab = ({ config, updateConfig }) => {
         onChange={(v) => updateConfig('fonts.display', v)}
         placeholder="'Playfair Display', serif"
       />
+      <Field
+        label="タイトルフォントURL（Google Fonts）"
+        value={config.fonts?.displayUrl}
+        onChange={(v) => updateConfig('fonts.displayUrl', v)}
+        placeholder="https://fonts.googleapis.com/css2?family=..."
+        description="プリセット以外のフォントを使う場合にGoogle FontsのURLを指定"
+      />
 
       <hr className="border-light-blue/20 my-8" />
       <h3 className="text-lg font-body text-amber mb-4">本文フォント</h3>
@@ -138,6 +145,13 @@ const BrandingTab = ({ config, updateConfig }) => {
         value={config.fonts?.body}
         onChange={(v) => updateConfig('fonts.body', v)}
         placeholder="'Yu Gothic Medium', 'YuGothic', 'Inter', sans-serif"
+      />
+      <Field
+        label="本文フォントURL（Google Fonts）"
+        value={config.fonts?.bodyUrl}
+        onChange={(v) => updateConfig('fonts.bodyUrl', v)}
+        placeholder="https://fonts.googleapis.com/css2?family=..."
+        description="プリセット以外のフォントを使う場合にGoogle FontsのURLを指定"
       />
     </div>
   )

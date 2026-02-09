@@ -30,7 +30,7 @@ export const fetchSheetData = async (spreadsheetId, sheetName, range = null, ret
         throw new Error('Invalid data structure from Google Sheets')
       }
 
-      return json.table.rows.map(row => (row.c ?? []).map(cell => cell?.v || ''))
+      return json.table.rows.map(row => (row.c ?? []).map(cell => cell?.v ?? ''))
     } catch (error) {
       console.error(`Error fetching ${sheetName}${range ? ` (${range})` : ''} (attempt ${attempt + 1}/${retries}):`, error)
 

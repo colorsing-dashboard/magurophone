@@ -3,7 +3,7 @@ import DEFAULT_CONFIG from './defaults'
 const STORAGE_KEY = 'dashboard_config'
 
 // オブジェクトの深いマージ（配列はそのまま上書き）
-function deepMerge(target, source) {
+export function deepMerge(target, source) {
   const result = { ...target }
   for (const key of Object.keys(source)) {
     if (

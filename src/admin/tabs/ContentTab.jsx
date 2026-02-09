@@ -11,20 +11,20 @@ const Field = ({ label, value, onChange, placeholder }) => (
   </div>
 )
 
-const ContentTab = ({ config, updateConfig, updateArray }) => {
+const ContentTab = ({ config, updateConfig }) => {
   const faqItems = config.home?.faq?.items || []
 
   const updateFaqItem = (index, field, value) => {
     const next = faqItems.map((item, i) => i === index ? { ...item, [field]: value } : item)
-    updateArray('home.faq.items', next)
+    updateConfig('home.faq.items', next)
   }
 
   const addFaqItem = () => {
-    updateArray('home.faq.items', [...faqItems, { question: '', answer: '' }])
+    updateConfig('home.faq.items', [...faqItems, { question: '', answer: '' }])
   }
 
   const removeFaqItem = (index) => {
-    updateArray('home.faq.items', faqItems.filter((_, i) => i !== index))
+    updateConfig('home.faq.items', faqItems.filter((_, i) => i !== index))
   }
 
   return (

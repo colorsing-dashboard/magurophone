@@ -82,7 +82,7 @@ function App() {
         <div className="glass-effect rounded-2xl p-8 border border-tuna-red/30 max-w-md w-full text-center">
           <div className="text-5xl mb-4">⚠️</div>
           <h2 className="text-2xl font-body mb-4 text-tuna-red">{config.ui.errorTitle}</h2>
-          <p className="text-gray-300 mb-6">{error}</p>
+          <p className="text-gray-300 mb-6">{config.ui.errorMessage || error}</p>
           <button
             onClick={loadData}
             className="px-6 py-3 bg-amber/20 hover:bg-amber/30 border border-amber/50 rounded-xl transition-all text-amber font-body"

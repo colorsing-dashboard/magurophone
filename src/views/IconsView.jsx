@@ -1,7 +1,7 @@
 import { useConfig } from '../context/ConfigContext'
 import IconGallery from '../components/IconGallery'
 
-const IconsView = ({ icons, selectedMonth, setSelectedMonth, selectedUser, setSelectedUser, loading }) => {
+const IconsView = ({ icons, selectedMonth, setSelectedMonth, selectedUser, setSelectedUser, loading, iconError }) => {
   const config = useConfig()
   const viewConfig = config.views.find(v => v.id === 'icons') || {}
 
@@ -17,6 +17,7 @@ const IconsView = ({ icons, selectedMonth, setSelectedMonth, selectedUser, setSe
         selectedUser={selectedUser}
         setSelectedUser={setSelectedUser}
         loading={loading}
+        iconError={iconError}
       />
     </section>
   )
