@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(npm run build:*)",
+      "Bash(ls:*)",
+      "Bash(npx vite:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(gh run list:*)",
+      "Bash(where:*)",
+      "Bash(git checkout:*)",
+      "Bash(git ls-files:*)",
+      "Bash(powershell -Command:*)",
+      "Bash(del \"c:\\\\Users\\\\iimy\\\\Desktop\\\\ColorSing_LP\\\\src\\\\admin\\\\tabs\\\\ImagesTab.jsx\")",
+      "Bash(gh repo view --json homepageUrl,url)",
+      "Bash(gh api repos/magurophone/ColorSing_LP/pages)",
+      "WebFetch(domain:chatgpt.com)"
+    ]
+  }
+}

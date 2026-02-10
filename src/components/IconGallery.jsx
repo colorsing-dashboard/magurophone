@@ -1,12 +1,24 @@
 import { useMemo } from 'react'
 import { useConfig } from '../context/ConfigContext'
+import { isMonthlyFormat } from '../lib/sheets'
 
 const IconGallery = ({ icons, selectedMonth, setSelectedMonth, selectedUser, setSelectedUser, loading, iconError }) => {
   const config = useConfig()
 
-  const availableMonths = useMemo(() => {
-    return Object.keys(icons).filter(month => icons[month].length > 0).sort().reverse()
+  const isMonthly = useMemo(() => {
+    const keys = Object.keys(icons).filter(k => k !== '_orderedKeys')
+    return isMonthlyFormat(keys)
   }, [icons])
+
+  const availableMonths = useMemo(() => {
+    const keys = Object.keys(icons).filter(k => k !== '_orderedKeys' && icons[k].length > 0)
+    if (isMonthly) {
+      return keys.sort().reverse()
+    }
+    // カテゴリモード: スプレッドシートの出現順を保持
+    const orderedKeys = icons._orderedKeys || []
+    return orderedKeys.filter(k => icons[k] && icons[k].length > 0)
+  }, [icons, isMonthly])
 
   const users = useMemo(() => {
     if (!selectedMonth || !icons[selectedMonth]) return []
@@ -51,11 +63,14 @@ const IconGallery = ({ icons, selectedMonth, setSelectedMonth, selectedUser, set
     )
   }
 
-  const formatMonth = (month) => {
-    if (!month || month.length < 6) return month || ''
-    const year = month.substring(0, 4)
-    const m = parseInt(month.substring(4, 6), 10)
-    return `${year}年${m}月`
+  const formatKey = (key) => {
+    if (!key) return ''
+    if (isMonthly && key.length >= 6) {
+      const year = key.substring(0, 4)
+      const m = parseInt(key.substring(4, 6), 10)
+      return `${year}年${m}月`
+    }
+    return key
   }
 
   return (
@@ -72,7 +87,7 @@ const IconGallery = ({ icons, selectedMonth, setSelectedMonth, selectedUser, set
                   : 'glass-effect border border-light-blue/20 text-gray-400 hover:text-light-blue hover:border-light-blue/40'
               }`}
             >
-              {formatMonth(month)}
+              {formatKey(month)}
             </button>
           ))}
         </div>

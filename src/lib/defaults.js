@@ -20,6 +20,18 @@ const DEFAULT_CONFIG = {
     gold: '#ffd700',
   },
 
+  colorOverrides: {
+    headerGradientStart: '',
+    headerGradientEnd: '',
+    cardBorder: '',
+    cardBorderHover: '',
+    primaryText: '',
+    accentText: '',
+    rank1Card: '',
+    backgroundMain: '',
+    backgroundMid: '',
+  },
+
   fonts: {
     display: "'Playfair Display', serif",
     displayUrl: 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&display=swap',

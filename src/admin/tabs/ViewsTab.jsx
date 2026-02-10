@@ -1,3 +1,6 @@
+import IconRenderer from '../../components/IconRenderer'
+import IconPicker from '../components/IconPicker'
+
 const ViewsTab = ({ config, updateConfig }) => {
   const views = config.views || []
 
@@ -53,7 +56,7 @@ const ViewsTab = ({ config, updateConfig }) => {
                 {view.enabled ? 'ON' : 'OFF'}
               </button>
 
-              <span className="text-2xl">{view.icon}</span>
+              <IconRenderer icon={view.icon} size={24} className="text-light-blue" />
               <span className="text-sm font-body text-light-blue font-bold">{view.id}</span>
             </div>
 
@@ -68,12 +71,10 @@ const ViewsTab = ({ config, updateConfig }) => {
                 />
               </div>
               <div>
-                <label className="block text-xs text-gray-500 mb-1">アイコン（絵文字）</label>
-                <input
-                  type="text"
+                <label className="block text-xs text-gray-500 mb-1">アイコン</label>
+                <IconPicker
                   value={view.icon || ''}
-                  onChange={(e) => updateView(index, 'icon', e.target.value)}
-                  className="w-full px-3 py-1.5 glass-effect border border-light-blue/30 rounded-lg text-white text-sm focus:outline-none focus:border-amber"
+                  onChange={(v) => updateView(index, 'icon', v)}
                 />
               </div>
               <div>

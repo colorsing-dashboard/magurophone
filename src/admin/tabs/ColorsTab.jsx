@@ -91,8 +91,66 @@ const ColorsTab = ({ config, updateConfig }) => {
         onChange={(v) => updateConfig('colors.gold', v)}
         description="メンバーシップなどプレミアム要素のカラー"
       />
+
+      <hr className="border-light-blue/20 my-8" />
+      <h3 className="text-lg font-body text-amber mb-2">エリア別カラー（オプション）</h3>
+      <p className="text-xs text-gray-500 mb-6">
+        未設定の場合、上のベースカラーが適用されます。特定のUI要素だけ色を変えたい場合に設定してください。
+      </p>
+
+      {AREA_COLOR_FIELDS.map(({ key, label, description }) => {
+        const value = config.colorOverrides?.[key] || ''
+        return (
+          <div key={key} className="mb-5">
+            <label className="block text-sm font-body text-light-blue mb-1">{label}</label>
+            {description && <p className="text-xs text-gray-500 mb-1">{description}</p>}
+            <div className="flex items-center gap-3">
+              <input
+                type="color"
+                value={value || '#000000'}
+                onChange={(e) => updateConfig(`colorOverrides.${key}`, e.target.value)}
+                className="w-12 h-10 rounded-lg border border-light-blue/30 cursor-pointer bg-transparent"
+              />
+              <input
+                type="text"
+                value={value}
+                onChange={(e) => updateConfig(`colorOverrides.${key}`, e.target.value)}
+                placeholder="未設定（ベースカラー使用）"
+                className="flex-1 px-4 py-2 glass-effect border border-light-blue/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber transition-all text-sm font-mono"
+              />
+              {value && (
+                <button
+                  onClick={() => updateConfig(`colorOverrides.${key}`, '')}
+                  className="px-3 py-2 text-xs text-gray-400 hover:text-tuna-red transition-all"
+                  title="リセット"
+                >
+                  クリア
+                </button>
+              )}
+              {value && (
+                <div
+                  className="w-10 h-10 rounded-lg border border-light-blue/30"
+                  style={{ backgroundColor: value }}
+                />
+              )}
+            </div>
+          </div>
+        )
+      })}
     </div>
   )
 }
+
+const AREA_COLOR_FIELDS = [
+  { key: 'backgroundMain', label: 'ページ背景（メイン）', description: '未設定 → Deep Blue' },
+  { key: 'backgroundMid', label: 'ページ背景（中間）', description: '未設定 → Ocean Teal' },
+  { key: 'headerGradientStart', label: 'ヘッダーグラデーション（中央）', description: '未設定 → Ocean Teal' },
+  { key: 'headerGradientEnd', label: 'ヘッダーグラデーション（両端）', description: '未設定 → Deep Blue' },
+  { key: 'primaryText', label: 'メインテキスト色', description: '未設定 → Light Blue' },
+  { key: 'accentText', label: 'アクセントテキスト色', description: '未設定 → Amber' },
+  { key: 'cardBorder', label: 'カードボーダー', description: '未設定 → Light Blue' },
+  { key: 'cardBorderHover', label: 'カードボーダー（ホバー）', description: '未設定 → Amber' },
+  { key: 'rank1Card', label: '1位カード強調色', description: '未設定 → Accent' },
+]
 
 export default ColorsTab

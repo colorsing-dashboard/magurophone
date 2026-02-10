@@ -11,7 +11,12 @@ const Header = ({ lastUpdate, loading, onRefresh }) => {
   const config = useConfig()
 
   return (
-    <div className="w-full h-[300px] md:h-[600px] relative overflow-hidden bg-gradient-to-b from-deep-blue via-ocean-teal/30 to-deep-blue">
+    <div
+      className="w-full h-[300px] md:h-[600px] relative overflow-hidden"
+      style={{
+        background: `linear-gradient(to bottom, var(--color-header-gradient-end, var(--color-deep-blue)), var(--color-header-gradient-start, var(--color-ocean-teal)) 50%, var(--color-header-gradient-end, var(--color-deep-blue)))`,
+      }}
+    >
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat md:hidden"
         style={{ backgroundImage: sanitizeCssUrl(config.images.headerMobile) || undefined }}

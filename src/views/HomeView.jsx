@@ -15,10 +15,11 @@ const HomeView = ({ ranking, goals }) => {
         <h2 className="text-2xl md:text-4xl font-body mb-4 md:mb-8 text-glow-soft text-light-blue">{config.home.rankingTitle}</h2>
         <div className="grid grid-cols-1 xs:grid-cols-3 gap-3 md:gap-6">
           {ranking.slice(0, 3).map((person, index) => (
-            <div key={`${person[RANKING_FIELDS.NAME] ?? 'rank'}-${index}`} className={`
-              glass-effect rounded-2xl p-4 md:p-8 border transition-all hover:scale-105 water-shimmer
-              ${index === 0 ? 'border-tuna-red/50 box-glow-soft' : 'border-light-blue/30'}
-            `}>
+            <div
+              key={`${person[RANKING_FIELDS.NAME] ?? 'rank'}-${index}`}
+              className={`glass-effect rounded-2xl p-4 md:p-8 border transition-all hover:scale-105 water-shimmer ${index === 0 ? 'box-glow-soft' : 'border-light-blue/30'}`}
+              style={index === 0 ? { borderColor: `var(--color-rank1-card, var(--color-accent))` } : undefined}
+            >
               <div className="mb-2 md:mb-4 flex justify-center">
                 {(person[RANKING_FIELDS.IMAGE] || config.images.medals?.[index]) && (
                   <img
@@ -29,7 +30,10 @@ const HomeView = ({ ranking, goals }) => {
                 )}
               </div>
               <div className="text-xs md:text-2xl font-body mb-1 md:mb-2 whitespace-nowrap overflow-hidden h-4 md:h-8">{person[RANKING_FIELDS.NAME]}</div>
-              <div className={`text-2xl md:text-4xl font-black ${index === 0 ? 'text-tuna-red' : 'text-amber'}`}>
+              <div
+                className={`text-2xl md:text-4xl font-black ${index !== 0 ? 'text-amber' : ''}`}
+                style={index === 0 ? { color: `var(--color-rank1-card, var(--color-accent))` } : undefined}
+              >
                 <CountUp end={person[RANKING_FIELDS.POINTS]} />
               </div>
               <div className="text-xs md:text-sm text-gray-400 mt-1 md:mt-2">{config.home.pointsLabel}</div>

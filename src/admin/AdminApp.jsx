@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { loadConfig, loadBaseConfig, saveConfig, clearConfig, downloadConfigJS, importConfigFromText, deepMerge } from '../lib/configIO'
+import IconRenderer from '../components/IconRenderer'
 import BrandingTab from './tabs/BrandingTab'
 import ColorsTab from './tabs/ColorsTab'
 
@@ -10,13 +11,13 @@ import ContentTab from './tabs/ContentTab'
 import DeployTab from './tabs/DeployTab'
 
 const TABS = [
-  { id: 'branding', label: 'ブランディング', icon: '🏷️' },
-  { id: 'colors', label: 'カラー', icon: '🎨' },
-  { id: 'sheets', label: 'Google Sheets', icon: '📊' },
-  { id: 'views', label: 'ビュー管理', icon: '📱' },
-  { id: 'tiers', label: '特典ティア', icon: '🏆' },
-  { id: 'content', label: 'コンテンツ', icon: '📝' },
-  { id: 'deploy', label: 'デプロイ', icon: '🚀' },
+  { id: 'branding', label: 'ブランディング', icon: 'tag' },
+  { id: 'colors', label: 'カラー', icon: 'palette' },
+  { id: 'sheets', label: 'Google Sheets', icon: 'bar-chart-3' },
+  { id: 'views', label: 'ビュー管理', icon: 'smartphone' },
+  { id: 'tiers', label: '特典ティア', icon: 'trophy' },
+  { id: 'content', label: 'コンテンツ', icon: 'file-text' },
+  { id: 'deploy', label: 'デプロイ', icon: 'rocket' },
 ]
 
 function AdminApp() {
@@ -169,7 +170,7 @@ function AdminApp() {
                   : 'hover:bg-light-blue/10 text-gray-300 hover:text-light-blue'
               }`}
             >
-              <span>{tab.icon}</span>
+              <IconRenderer icon={tab.icon} size={16} />
               <span className="font-body">{tab.label}</span>
             </button>
           ))}
@@ -194,6 +195,14 @@ function AdminApp() {
             className="block w-full px-4 py-2 bg-ocean-teal/30 hover:bg-ocean-teal/50 border border-ocean-teal/50 rounded-lg transition-all text-light-blue text-sm font-body text-center"
           >
             プレビューを開く
+          </a>
+          <a
+            href="./manual.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block w-full px-4 py-2 bg-light-blue/10 hover:bg-light-blue/20 border border-light-blue/30 rounded-lg transition-all text-light-blue text-sm font-body text-center"
+          >
+            顧客マニュアル
           </a>
           <button
             onClick={handleReset}

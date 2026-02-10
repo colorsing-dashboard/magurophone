@@ -20,6 +20,31 @@ export function ConfigProvider({ config, children }) {
     root.style.setProperty('--color-gold', config.colors.gold)
   }, [config?.colors])
 
+  // カラーオーバーライドをCSS変数に注入
+  useEffect(() => {
+    if (!config?.colorOverrides) return
+    const root = document.documentElement
+    const o = config.colorOverrides
+    const map = {
+      'header-gradient-start': o.headerGradientStart,
+      'header-gradient-end': o.headerGradientEnd,
+      'card-border': o.cardBorder,
+      'card-border-hover': o.cardBorderHover,
+      'primary-text': o.primaryText,
+      'accent-text': o.accentText,
+      'rank1-card': o.rank1Card,
+      'background-main': o.backgroundMain,
+      'background-mid': o.backgroundMid,
+    }
+    Object.entries(map).forEach(([key, value]) => {
+      if (value) {
+        root.style.setProperty(`--color-${key}`, value)
+      } else {
+        root.style.removeProperty(`--color-${key}`)
+      }
+    })
+  }, [config?.colorOverrides])
+
   // ヘッダー画像をCSS変数に注入 + プリロード
   useEffect(() => {
     if (!config?.images) return
