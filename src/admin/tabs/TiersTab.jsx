@@ -42,7 +42,7 @@ const TiersTab = ({ config, updateConfig }) => {
 
       <div className="space-y-4 mb-6">
         {tiers.map((tier, index) => (
-          <div key={index} className="glass-effect rounded-xl p-4 border border-light-blue/20">
+          <div key={tier.key} className="glass-effect rounded-xl p-4 border border-light-blue/20">
             <div className="flex items-center gap-2 mb-3">
               <div className="flex flex-col gap-1">
                 <button
@@ -99,7 +99,7 @@ const TiersTab = ({ config, updateConfig }) => {
                   min="1"
                   value={tier.columnIndex || 1}
                   onChange={(e) => {
-                    const v = parseInt(e.target.value)
+                    const v = parseInt(e.target.value, 10)
                     if (!isNaN(v) && v > 0) updateTier(index, 'columnIndex', v)
                   }}
                   className="w-full px-3 py-1.5 glass-effect border border-light-blue/30 rounded-lg text-white text-sm focus:outline-none focus:border-amber"

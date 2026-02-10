@@ -158,7 +158,7 @@ C列: Google Drive画像URL`}</pre>
           max="60"
           value={Math.round((config.sheets.refreshIntervalMs || 300000) / 60000)}
           onChange={(e) => {
-            const v = parseInt(e.target.value)
+            const v = parseInt(e.target.value, 10)
             if (!isNaN(v) && v > 0) updateConfig('sheets.refreshIntervalMs', v * 60000)
           }}
           className="w-32 px-4 py-2 glass-effect border border-light-blue/30 rounded-lg text-white focus:outline-none focus:border-amber transition-all text-sm"

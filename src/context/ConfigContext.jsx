@@ -2,6 +2,11 @@ import { createContext, useContext, useEffect } from 'react'
 
 const ConfigContext = createContext(null)
 
+const sanitizeCssUrl = (url) => {
+  if (!url || typeof url !== 'string') return null
+  return url.replace(/['");\s]/g, '')
+}
+
 export function ConfigProvider({ config, children }) {
   // CSS変数にカラーを注入
   useEffect(() => {
@@ -19,19 +24,21 @@ export function ConfigProvider({ config, children }) {
   useEffect(() => {
     if (!config?.images) return
     const root = document.documentElement
-    if (config.images.headerMobile) {
-      root.style.setProperty('--header-image-mobile', `url('${config.images.headerMobile}')`)
+    const safeMobile = sanitizeCssUrl(config.images.headerMobile)
+    if (safeMobile) {
+      root.style.setProperty('--header-image-mobile', `url('${safeMobile}')`)
     } else {
       root.style.removeProperty('--header-image-mobile')
     }
-    if (config.images.headerDesktop) {
-      root.style.setProperty('--header-image-desktop', `url('${config.images.headerDesktop}')`)
+    const safeDesktop = sanitizeCssUrl(config.images.headerDesktop)
+    if (safeDesktop) {
+      root.style.setProperty('--header-image-desktop', `url('${safeDesktop}')`)
     } else {
       root.style.removeProperty('--header-image-desktop')
     }
 
     // ヘッダー画像をプリロード
-    const isMobile = window.matchMedia('(max-width: 767px)').matches
+    const isMobile = window.matchMedia('(max-width: 767.98px)').matches
     const preloadUrl = isMobile ? config.images.headerMobile : config.images.headerDesktop
     if (preloadUrl) {
       const id = 'preload-header'

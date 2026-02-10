@@ -52,6 +52,7 @@ const IconGallery = ({ icons, selectedMonth, setSelectedMonth, selectedUser, set
   }
 
   const formatMonth = (month) => {
+    if (!month || month.length < 6) return month || ''
     const year = month.substring(0, 4)
     const m = parseInt(month.substring(4, 6), 10)
     return `${year}年${m}月`

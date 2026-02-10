@@ -63,9 +63,9 @@ const RightsView = ({ rights, onSelectPerson }) => {
       </div>
 
       <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredRights.map((person, index) => (
+        {filteredRights.map((person) => (
           <div
-            key={index}
+            key={person[RIGHTS_NAME_INDEX]}
             onClick={() => onSelectPerson(person)}
             className="glass-effect rounded-xl p-4 md:p-6 border border-light-blue/30 hover:border-amber transition-all hover:scale-105 cursor-pointer group h-32 md:h-36 text-center flex flex-col"
           >
@@ -80,7 +80,7 @@ const RightsView = ({ rights, onSelectPerson }) => {
               style={{ flexGrow: 2, flexShrink: 1, flexBasis: '0%', minHeight: 0, paddingTop: '13px', alignContent: 'flex-start', boxSizing: 'border-box' }}
             >
               {getRightsIcons(person).map((icon, i) => (
-                <span key={i} className="animate-float" style={{ animationDelay: `${i * 0.2}s` }}>
+                <span key={`${icon}-${i}`} className="animate-float" style={{ animationDelay: `${i * 0.2}s` }}>
                   {icon}
                 </span>
               ))}

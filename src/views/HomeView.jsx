@@ -20,7 +20,7 @@ const HomeView = ({ ranking, goals }) => {
               ${index === 0 ? 'border-tuna-red/50 box-glow-soft' : 'border-light-blue/30'}
             `}>
               <div className="mb-2 md:mb-4 flex justify-center">
-                {(person[RANKING_FIELDS.IMAGE] || config.images.medals[index]) && (
+                {(person[RANKING_FIELDS.IMAGE] || config.images.medals?.[index]) && (
                   <img
                     src={person[RANKING_FIELDS.IMAGE] ? convertDriveUrl(person[RANKING_FIELDS.IMAGE], 128) : config.images.medals[index]}
                     alt={`${index + 1}位`}
@@ -52,7 +52,7 @@ const HomeView = ({ ranking, goals }) => {
               <h3 className="text-lg md:text-2xl font-body mb-2 md:mb-4 text-light-blue">{label}</h3>
               {goals.map((goal, index) => (
                 goal[colIndex] && (
-                  <div key={index} className="text-sm md:text-lg mb-2 md:mb-4 last:mb-0">
+                  <div key={`goal-${colIndex}-${index}`} className="text-sm md:text-lg mb-2 md:mb-4 last:mb-0">
                     <span className="text-amber">▸</span> {goal[colIndex]}
                   </div>
                 )
@@ -68,7 +68,7 @@ const HomeView = ({ ranking, goals }) => {
           <h2 className="text-2xl md:text-4xl font-body mb-8 text-center text-glow-soft text-light-blue">{config.home.faq.title}</h2>
           <div className="glass-effect rounded-2xl p-8 border border-light-blue/30 space-y-6">
             {config.home.faq.items.map((item, index) => (
-              <div key={index}>
+              <div key={`faq-${index}-${item.question}`}>
                 <h3 className="text-xl font-body text-amber mb-2">▸ {item.question}</h3>
                 <p className="text-gray-300 ml-6">{item.answer}</p>
               </div>
