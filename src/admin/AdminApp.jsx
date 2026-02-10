@@ -48,7 +48,9 @@ function AdminApp() {
       let current = next
 
       for (let i = 0; i < keys.length - 1; i++) {
-        if (Array.isArray(current[keys[i]])) {
+        if (current[keys[i]] == null) {
+          current[keys[i]] = {}
+        } else if (Array.isArray(current[keys[i]])) {
           current[keys[i]] = [...current[keys[i]]]
         } else {
           current[keys[i]] = { ...current[keys[i]] }

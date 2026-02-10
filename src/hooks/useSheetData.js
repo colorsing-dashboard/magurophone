@@ -64,6 +64,13 @@ export function useSheetData(sheetsConfig) {
     return () => clearInterval(intervalId)
   }, [loadData, refreshIntervalMs])
 
+  // スプレッドシート設定変更時にアイコンキャッシュをリセット
+  useEffect(() => {
+    iconsLoadedRef.current = false
+    setIcons({})
+    setIconError(null)
+  }, [spreadsheetId, iconSheetName])
+
   // アイコンデータ読み込み
   const loadIcons = useCallback(async () => {
     if (iconsLoadedRef.current || loadingIconsRef.current || !spreadsheetId) return

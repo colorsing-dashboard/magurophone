@@ -41,8 +41,6 @@ export const fetchSheetData = async (spreadsheetId, sheetName, range = null, ret
       await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt)))
     }
   }
-
-  return []
 }
 
 // Google DriveのURLをサムネイル表示可能なURLに変換
