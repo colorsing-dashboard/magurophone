@@ -1,7 +1,18 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
-import IconRenderer, { AVAILABLE_ICONS } from '../../components/IconRenderer'
+import IconRenderer from '../../components/IconRenderer'
 
-const ICON_GROUPS = {
+// 絵文字プリセット（variation selector U+FE0F 付きで正しくカラー表示される）
+const EMOJI_GROUPS = {
+  '定番': ['🏠', '🍾', '👥', '🖼\uFE0F', '📝', '🎵', '🎮', '💬', '🎤', '⚡', '🏆', '👑', '🎧', '📱', '🚀', '🔔'],
+  '音楽・エンタメ': ['🎶', '🎼', '🎹', '🎸', '🎺', '🎻', '🥁', '🎬', '🎭', '🎪', '🎠', '🎡', '🎢'],
+  '食事・ドリンク': ['🍷', '🥂', '🍸', '🍹', '🍺', '🍻', '☕', '🍰', '🎂', '🍩', '🍫', '🍿'],
+  'ハート・感情': ['❤\uFE0F', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '💖', '💗', '💝', '✨', '🌟', '⭐', '💫'],
+  '動物': ['🐟', '🐱', '🐶', '🐰', '🦊', '🐻', '🐼', '🐨', '🦁', '🐯', '🐮', '🐷', '🐸', '🐵', '🦄', '🐲'],
+  '自然': ['🌸', '🌺', '🌻', '🌹', '🌷', '💐', '🍀', '🌙', '☀\uFE0F', '🌈', '❄\uFE0F', '🔥', '💧', '🌊'],
+  '記号・マーク': ['📊', '📈', '📉', '🏷\uFE0F', '🎨', '🔑', '🛡\uFE0F', '💡', '🔒', '📷', '💎', '🎁', '🎯', '🏅', '🥇', '🥈', '🥉'],
+}
+
+const LUCIDE_GROUPS = {
   'ナビゲーション': ['home', 'search', 'menu', 'arrow-up', 'arrow-down', 'external-link', 'link', 'eye', 'filter', 'layout-grid', 'list', 'check', 'refresh-cw'],
   '音楽・エンタメ': ['music', 'mic', 'headphones', 'radio', 'volume-2', 'play', 'pause', 'skip-forward', 'skip-back', 'disc-3', 'tv', 'clapperboard', 'popcorn', 'drama', 'dices'],
   'ユーザー': ['users', 'user', 'user-plus', 'user-check', 'contact'],
@@ -25,6 +36,7 @@ const ICON_GROUPS = {
 
 const IconPicker = ({ value, onChange, label }) => {
   const [open, setOpen] = useState(false)
+  const [tab, setTab] = useState('emoji')
   const [search, setSearch] = useState('')
   const [customEmoji, setCustomEmoji] = useState('')
   const pickerRef = useRef(null)
@@ -41,15 +53,17 @@ const IconPicker = ({ value, onChange, label }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [open])
 
+  const activeGroups = tab === 'emoji' ? EMOJI_GROUPS : LUCIDE_GROUPS
+
   const filteredGroups = useMemo(() => {
-    if (!search) return ICON_GROUPS
+    if (!search) return activeGroups
     const result = {}
-    Object.entries(ICON_GROUPS).forEach(([group, icons]) => {
+    Object.entries(activeGroups).forEach(([group, icons]) => {
       const filtered = icons.filter(icon => icon.includes(search.toLowerCase()))
       if (filtered.length > 0) result[group] = filtered
     })
     return result
-  }, [search])
+  }, [search, activeGroups])
 
   return (
     <div className="relative" ref={pickerRef}>
@@ -67,15 +81,28 @@ const IconPicker = ({ value, onChange, label }) => {
 
       {open && (
         <div className="absolute z-50 mt-2 w-80 glass-effect border border-light-blue/30 rounded-xl overflow-hidden shadow-lg">
-          {/* ヘッダー: 検索 + 閉じるボタン */}
+          {/* ヘッダー: タブ切り替え + 閉じるボタン */}
           <div className="p-2 border-b border-light-blue/20 flex gap-2 items-center">
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="アイコン名で検索..."
-              className="flex-1 px-3 py-1.5 glass-effect border border-light-blue/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber text-xs"
-            />
+            <div className="flex gap-1 flex-1">
+              <button
+                type="button"
+                onClick={() => { setTab('emoji'); setSearch('') }}
+                className={`px-2.5 py-1 rounded-lg text-xs transition-all ${
+                  tab === 'emoji' ? 'bg-amber/20 text-amber border border-amber/50' : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                絵文字
+              </button>
+              <button
+                type="button"
+                onClick={() => { setTab('lucide'); setSearch('') }}
+                className={`px-2.5 py-1 rounded-lg text-xs transition-all ${
+                  tab === 'lucide' ? 'bg-light-blue/20 text-light-blue border border-light-blue/50' : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                Lucide
+              </button>
+            </div>
             <button
               type="button"
               onClick={() => setOpen(false)}
@@ -85,6 +112,19 @@ const IconPicker = ({ value, onChange, label }) => {
               <IconRenderer icon="x" size={16} />
             </button>
           </div>
+
+          {/* 検索（Lucideタブのみ） */}
+          {tab === 'lucide' && (
+            <div className="p-2 border-b border-light-blue/20">
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="アイコン名で検索..."
+                className="w-full px-3 py-1.5 glass-effect border border-light-blue/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber text-xs"
+              />
+            </div>
+          )}
 
           <div className="max-h-64 overflow-y-auto p-2">
             {Object.entries(filteredGroups).map(([group, icons]) => (
@@ -101,9 +141,12 @@ const IconPicker = ({ value, onChange, label }) => {
                           ? 'bg-light-blue/20 border border-light-blue/50'
                           : 'hover:bg-light-blue/10'
                       }`}
-                      title={icon}
+                      title={tab === 'lucide' ? icon : undefined}
                     >
-                      <IconRenderer icon={icon} size={16} className="text-gray-300" />
+                      {tab === 'emoji'
+                        ? <span className="text-base leading-none">{icon}</span>
+                        : <IconRenderer icon={icon} size={16} className="text-gray-300" />
+                      }
                     </button>
                   ))}
                 </div>
@@ -111,14 +154,15 @@ const IconPicker = ({ value, onChange, label }) => {
             ))}
           </div>
 
+          {/* カスタム絵文字入力 */}
           <div className="p-2 border-t border-light-blue/20">
-            <div className="text-[10px] text-gray-500 mb-1">カスタム絵文字</div>
+            <div className="text-[10px] text-gray-500 mb-1">カスタム入力</div>
             <div className="flex gap-1">
               <input
                 type="text"
                 value={customEmoji}
                 onChange={(e) => setCustomEmoji(e.target.value)}
-                placeholder="絵文字を入力"
+                placeholder="絵文字またはLucide名"
                 className="flex-1 px-2 py-1 glass-effect border border-light-blue/30 rounded text-white text-xs focus:outline-none focus:border-amber"
               />
               <button
