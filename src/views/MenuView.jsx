@@ -12,7 +12,7 @@ const MenuView = ({ benefits, onSelectBenefit }) => {
           <div
             key={index}
             onClick={(e) => {
-              if (window.innerWidth < 768) {
+              if (window.matchMedia('(max-width: 767.98px)').matches) {
                 onSelectBenefit(benefit)
               }
             }}

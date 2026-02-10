@@ -61,35 +61,29 @@ export const convertDriveUrl = (url, size = 400) => {
 // 枠内アイコンデータを読み込む（A列:yyyymm, B列:ユーザー名, C列:画像URL）
 export const fetchIconData = async (spreadsheetId, iconSheetName) => {
   const iconData = {}
+  const data = await fetchSheetData(spreadsheetId, iconSheetName)
 
-  try {
-    const data = await fetchSheetData(spreadsheetId, iconSheetName)
-
-    if (!data || data.length < 1) {
-      return iconData
-    }
-
-    data.forEach(row => {
-      const month = String(row[0] || '')
-      const userName = row[1]
-      const imageUrl = row[2]
-
-      if (month && userName && imageUrl) {
-        if (!iconData[month]) {
-          iconData[month] = []
-        }
-
-        iconData[month].push({
-          label: userName,
-          thumbnailUrl: convertDriveUrl(imageUrl),
-          originalUrl: imageUrl,
-        })
-      }
-    })
-
+  if (!data || data.length < 1) {
     return iconData
-  } catch (error) {
-    console.error('Failed to load icon data:', error)
-    return {}
   }
+
+  data.forEach(row => {
+    const month = String(row[0] || '')
+    const userName = row[1]
+    const imageUrl = row[2]
+
+    if (month && userName && imageUrl) {
+      if (!iconData[month]) {
+        iconData[month] = []
+      }
+
+      iconData[month].push({
+        label: userName,
+        thumbnailUrl: convertDriveUrl(imageUrl),
+        originalUrl: imageUrl,
+      })
+    }
+  })
+
+  return iconData
 }

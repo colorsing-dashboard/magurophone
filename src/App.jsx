@@ -30,12 +30,17 @@ function App() {
   const [selectedMonth, setSelectedMonth] = useState(null)
   const [selectedUser, setSelectedUser] = useState(null)
 
+  // 現在のビューが無効化されていたらフォールバック
+  const effectiveView = enabledViews.some(v => v.id === currentView)
+    ? currentView
+    : (enabledViews[0]?.id || 'home')
+
   // アイコンビューに切り替えた時にデータ読み込み + デフォルト月選択
   useEffect(() => {
-    if (currentView === 'icons') {
+    if (effectiveView === 'icons') {
       loadIcons()
     }
-  }, [currentView, loadIcons])
+  }, [effectiveView, loadIcons])
 
   // アイコンデータ読み込み後にデフォルト月を設定
   useEffect(() => {
@@ -95,7 +100,7 @@ function App() {
   }
 
   // 現在のビューのコンポーネントを取得
-  const ActiveView = VIEW_REGISTRY[currentView]
+  const ActiveView = VIEW_REGISTRY[effectiveView]
 
   // ビューに渡すprops
   const viewProps = {
@@ -114,15 +119,15 @@ function App() {
         {[...Array(6)].map((_, i) => <div key={i} className="bubble" />)}
       </div>
 
-      <Sidebar currentView={currentView} onViewChange={setCurrentView} lastUpdate={lastUpdate} />
+      <Sidebar currentView={effectiveView} onViewChange={setCurrentView} lastUpdate={lastUpdate} />
 
       <div className="md:ml-64">
-        {currentView === 'home' && (
+        {effectiveView === 'home' && (
           <Header lastUpdate={lastUpdate} loading={loading} onRefresh={loadData} />
         )}
 
         <div className="max-w-7xl mx-auto px-4 py-6 md:py-12 pb-24 md:pb-12 space-y-8 md:space-y-16">
-          {ActiveView && <ActiveView {...(viewProps[currentView] || {})} />}
+          {ActiveView && <ActiveView {...(viewProps[effectiveView] || {})} />}
           <Footer />
         </div>
 
@@ -138,7 +143,7 @@ function App() {
         />
       </div>
 
-      <BottomNav currentView={currentView} onViewChange={setCurrentView} />
+      <BottomNav currentView={effectiveView} onViewChange={setCurrentView} />
     </div>
   )
 }
