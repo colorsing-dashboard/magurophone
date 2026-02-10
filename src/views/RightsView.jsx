@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback } from 'react'
 import { useConfig } from '../context/ConfigContext'
 import { hasRight, RIGHTS_NAME_INDEX, RIGHTS_SPECIAL_INDEX } from '../components/PersonPopup'
+import IconRenderer from '../components/IconRenderer'
 
 const RightsView = ({ rights, onSelectPerson }) => {
   const config = useConfig()
@@ -81,7 +82,7 @@ const RightsView = ({ rights, onSelectPerson }) => {
             >
               {getRightsIcons(person).map((icon, i) => (
                 <span key={`${icon}-${i}`} className="animate-float" style={{ animationDelay: `${i * 0.2}s` }}>
-                  {icon}
+                  <IconRenderer icon={icon} size={24} className="text-amber" />
                 </span>
               ))}
             </div>

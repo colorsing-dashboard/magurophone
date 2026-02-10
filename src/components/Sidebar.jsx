@@ -1,4 +1,5 @@
 import { useConfig } from '../context/ConfigContext'
+import IconRenderer from './IconRenderer'
 
 const Sidebar = ({ currentView, onViewChange, lastUpdate }) => {
   const config = useConfig()
@@ -23,7 +24,7 @@ const Sidebar = ({ currentView, onViewChange, lastUpdate }) => {
                 : 'hover:bg-light-blue/10 text-gray-300 hover:text-light-blue'
             }`}
           >
-            <span className="text-xl">{view.icon}</span>
+            <IconRenderer icon={view.icon} size={20} />
             <span className="font-body">{view.label}</span>
           </button>
         ))}
