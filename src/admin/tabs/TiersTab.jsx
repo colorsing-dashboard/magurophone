@@ -7,8 +7,11 @@ const TiersTab = ({ config, updateConfig }) => {
   }
 
   const addTier = () => {
+    const existingKeys = new Set(tiers.map(t => t.key))
+    let num = tiers.length + 1
+    while (existingKeys.has(`tier${num}`)) num++
     const next = [...tiers, {
-      key: `tier${tiers.length + 1}`,
+      key: `tier${num}`,
       icon: '⭐',
       columnIndex: tiers.length + 1,
       displayTemplate: '特典: {value}',

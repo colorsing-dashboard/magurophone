@@ -13,6 +13,7 @@ export function useSheetData(sheetsConfig) {
   // アイコン関連
   const [icons, setIcons] = useState({})
   const [loadingIcons, setLoadingIcons] = useState(false)
+  const loadingIconsRef = useRef(false)
   const [iconError, setIconError] = useState(null)
   const iconsLoadedRef = useRef(false)
 
@@ -65,8 +66,9 @@ export function useSheetData(sheetsConfig) {
 
   // アイコンデータ読み込み
   const loadIcons = useCallback(async () => {
-    if (iconsLoadedRef.current || loadingIcons || !spreadsheetId) return
+    if (iconsLoadedRef.current || loadingIconsRef.current || !spreadsheetId) return
 
+    loadingIconsRef.current = true
     setLoadingIcons(true)
     setIconError(null)
     try {
@@ -77,9 +79,10 @@ export function useSheetData(sheetsConfig) {
       console.error('Failed to load icon data:', err)
       setIconError('アイコンデータの読み込みに失敗しました')
     } finally {
+      loadingIconsRef.current = false
       setLoadingIcons(false)
     }
-  }, [loadingIcons, spreadsheetId, iconSheetName])
+  }, [spreadsheetId, iconSheetName])
 
   return {
     ranking,

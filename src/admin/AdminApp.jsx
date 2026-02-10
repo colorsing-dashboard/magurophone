@@ -135,14 +135,15 @@ function AdminApp() {
     )
   }
 
-  const tabComponents = {
-    branding: <BrandingTab config={config} updateConfig={updateConfig} />,
-    colors: <ColorsTab config={config} updateConfig={updateConfig} />,
-    sheets: <SheetsTab config={config} updateConfig={updateConfig} />,
-    views: <ViewsTab config={config} updateConfig={updateConfig} />,
-    tiers: <TiersTab config={config} updateConfig={updateConfig} />,
-    content: <ContentTab config={config} updateConfig={updateConfig} />,
+  const TAB_COMPONENTS = {
+    branding: BrandingTab,
+    colors: ColorsTab,
+    sheets: SheetsTab,
+    views: ViewsTab,
+    tiers: TiersTab,
+    content: ContentTab,
   }
+  const ActiveTab = TAB_COMPONENTS[activeTab]
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
@@ -214,7 +215,7 @@ function AdminApp() {
         )}
 
         <div className="max-w-3xl">
-          {tabComponents[activeTab]}
+          <ActiveTab config={config} updateConfig={updateConfig} />
         </div>
 
         {/* モバイル用アクションボタン */}

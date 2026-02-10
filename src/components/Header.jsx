@@ -1,5 +1,12 @@
 import { useConfig } from '../context/ConfigContext'
 
+const sanitizeCssUrl = (url) => {
+  if (!url || typeof url !== 'string') return null
+  // CSS url()インジェクション防止: 引用符・括弧・セミコロンを除去
+  const sanitized = url.replace(/['");\s]/g, '')
+  return sanitized ? `url('${sanitized}')` : null
+}
+
 const Header = ({ lastUpdate, loading, onRefresh }) => {
   const config = useConfig()
 
@@ -7,11 +14,11 @@ const Header = ({ lastUpdate, loading, onRefresh }) => {
     <div className="w-full h-[300px] md:h-[600px] relative overflow-hidden bg-gradient-to-b from-deep-blue via-ocean-teal/30 to-deep-blue">
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat md:hidden"
-        style={{ backgroundImage: config.images.headerMobile ? `url('${config.images.headerMobile}')` : undefined }}
+        style={{ backgroundImage: sanitizeCssUrl(config.images.headerMobile) || undefined }}
       ></div>
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat hidden md:block"
-        style={{ backgroundImage: config.images.headerDesktop ? `url('${config.images.headerDesktop}')` : undefined }}
+        style={{ backgroundImage: sanitizeCssUrl(config.images.headerDesktop) || undefined }}
       ></div>
       <div className="absolute inset-0 bg-black/30"></div>
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEuNSIgZmlsbD0icmdiYSgxMzgsIDE4MCwgMjQ4LCAwLjA1KSIvPjxjaXJjbGUgY3g9IjIwIiBjeT0iMjAiIHI9IjIiIGZpbGw9InJnYmEoMTM4LCAxODAsIDI0OCwgMC4wOCkiLz48Y2lyY2xlIGN4PSIzNSIgY3k9IjEwIiByPSIxIiBmaWxsPSJyZ2JhKDEzOCwgMTgwLCAyNDgsIDAuMDMpIi8+PC9zdmc+')] opacity-20 animate-float"></div>

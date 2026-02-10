@@ -6,20 +6,17 @@ const CountUp = ({ end, duration = 2000 }) => {
 
   const [count, setCount] = useState(0)
   const hasAnimatedRef = useRef(false)
-  const endNumRef = useRef(endNum)
   const durationRef = useRef(duration)
 
-  endNumRef.current = endNum
   durationRef.current = duration
 
   useEffect(() => {
     if (hasAnimatedRef.current) {
-      setCount(endNumRef.current)
+      setCount(endNum)
       return
     }
 
     hasAnimatedRef.current = true
-    const finalValue = endNumRef.current
 
     let animationFrameId
     let startTime = null
@@ -31,20 +28,20 @@ const CountUp = ({ end, duration = 2000 }) => {
 
       const elapsed = timestamp - startTime
       const progress = Math.min(elapsed / durationRef.current, 1)
-      const nextValue = Math.floor(finalValue * progress)
+      const nextValue = Math.floor(endNum * progress)
       setCount(nextValue)
 
       if (progress < 1) {
         animationFrameId = requestAnimationFrame(step)
       } else {
-        setCount(finalValue)
+        setCount(endNum)
       }
     }
 
     animationFrameId = requestAnimationFrame(step)
 
     return () => cancelAnimationFrame(animationFrameId)
-  }, [])
+  }, [endNum])
 
   return <span>{count}k</span>
 }
