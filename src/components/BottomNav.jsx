@@ -1,4 +1,5 @@
 import { useConfig } from '../context/ConfigContext'
+import IconRenderer from './IconRenderer'
 
 const BottomNav = ({ currentView, onViewChange }) => {
   const config = useConfig()
@@ -23,7 +24,7 @@ const BottomNav = ({ currentView, onViewChange }) => {
                 : 'text-gray-400 hover:text-light-blue'
             }`}
           >
-            <span className="text-xl">{view.icon}</span>
+            <IconRenderer icon={view.icon} size={20} />
             <span className="text-xs font-body">{view.label}</span>
           </button>
         ))}

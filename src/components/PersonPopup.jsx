@@ -1,5 +1,6 @@
 import { useConfig } from '../context/ConfigContext'
 import { BENEFIT_FIELDS } from './BenefitPopup'
+import IconRenderer from './IconRenderer'
 
 const RIGHTS_NAME_INDEX = 0
 const RIGHTS_SPECIAL_INDEX = 8
@@ -76,7 +77,7 @@ const PersonPopup = ({ person, benefits, onClose, onSelectBenefit }) => {
 
                 <div className="flex-1">
                   <div className="flex items-center justify-center mb-2">
-                    <span className="text-3xl">{tier.icon}</span>
+                    <IconRenderer icon={tier.icon} size={32} className="text-amber" />
                   </div>
                   <p className="text-gray-300">{displayText}</p>
                 </div>
