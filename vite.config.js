@@ -14,6 +14,7 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'index.html'),
         admin: resolve(__dirname, 'admin.html'),
+        manual: resolve(__dirname, 'manual.html'),
       },
       output: {
         entryFileNames: 'assets/[name]-[hash].js',

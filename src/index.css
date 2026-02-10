@@ -48,7 +48,7 @@
 
 /* ベーススタイル */
 body {
-  background: linear-gradient(180deg, var(--color-deep-blue), var(--color-ocean-teal), var(--color-deep-blue));
+  background: linear-gradient(180deg, var(--color-background-main, var(--color-deep-blue)), var(--color-background-mid, var(--color-ocean-teal)), var(--color-background-main, var(--color-deep-blue)));
   background-attachment: fixed;
   color: white;
   min-height: 100vh;

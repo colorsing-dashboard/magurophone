@@ -56,9 +56,16 @@ export const convertDriveUrl = (url, size = 400) => {
   return url
 }
 
-// 枠内アイコンデータを読み込む（A列:yyyymm, B列:ユーザー名, C列:画像URL）
+// キーが月別形式（YYYYMM）かカテゴリ名かを判定
+export const isMonthlyFormat = (keys) => {
+  if (keys.length === 0) return true
+  return keys.every(key => /^\d{6}$/.test(key))
+}
+
+// 枠内アイコンデータを読み込む（A列:yyyymmまたはカテゴリ名, B列:ユーザー名, C列:画像URL）
 export const fetchIconData = async (spreadsheetId, iconSheetName) => {
   const iconData = {}
+  const orderedKeys = []
   const data = await fetchSheetData(spreadsheetId, iconSheetName)
 
   if (!data || data.length < 1) {
@@ -66,16 +73,17 @@ export const fetchIconData = async (spreadsheetId, iconSheetName) => {
   }
 
   data.forEach(row => {
-    const month = String(row[0] || '')
+    const key = String(row[0] || '')
     const userName = row[1]
     const imageUrl = row[2]
 
-    if (month && userName && imageUrl) {
-      if (!iconData[month]) {
-        iconData[month] = []
+    if (key && userName && imageUrl) {
+      if (!iconData[key]) {
+        iconData[key] = []
+        orderedKeys.push(key)
       }
 
-      iconData[month].push({
+      iconData[key].push({
         label: userName,
         thumbnailUrl: convertDriveUrl(imageUrl),
         originalUrl: imageUrl,
@@ -83,5 +91,6 @@ export const fetchIconData = async (spreadsheetId, iconSheetName) => {
     }
   })
 
+  iconData._orderedKeys = orderedKeys
   return iconData
 }

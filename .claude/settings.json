@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(if not exist \"c:\\\\Users\\\\iimy\\\\Desktop\\\\ColorSing_LP\\\\src\\\\manual\" mkdir \"c:\\\\Users\\\\iimy\\\\Desktop\\\\ColorSing_LP\\\\src\\\\manual\")"
+    ]
+  }
+}

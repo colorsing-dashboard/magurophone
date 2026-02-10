@@ -1,3 +1,6 @@
+import IconRenderer from '../../components/IconRenderer'
+import IconPicker from '../components/IconPicker'
+
 const TiersTab = ({ config, updateConfig }) => {
   const tiers = config.benefitTiers || []
 
@@ -60,7 +63,7 @@ const TiersTab = ({ config, updateConfig }) => {
                   ▼
                 </button>
               </div>
-              <span className="text-2xl">{tier.icon}</span>
+              <IconRenderer icon={tier.icon} size={24} className="text-amber" />
               <span className="text-sm font-body text-amber font-bold">{tier.key}</span>
               <button
                 onClick={() => removeTier(index)}
@@ -81,12 +84,10 @@ const TiersTab = ({ config, updateConfig }) => {
                 />
               </div>
               <div>
-                <label className="block text-xs text-gray-500 mb-1">アイコン（絵文字）</label>
-                <input
-                  type="text"
+                <label className="block text-xs text-gray-500 mb-1">アイコン</label>
+                <IconPicker
                   value={tier.icon || ''}
-                  onChange={(e) => updateTier(index, 'icon', e.target.value)}
-                  className="w-full px-3 py-1.5 glass-effect border border-light-blue/30 rounded-lg text-white text-sm focus:outline-none focus:border-amber"
+                  onChange={(v) => updateTier(index, 'icon', v)}
                 />
               </div>
             </div>

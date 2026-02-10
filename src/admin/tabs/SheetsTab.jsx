@@ -110,9 +110,11 @@ A15:I  ... 権利者リスト（名前, 各ティアの値...）`}</pre>
           </div>
           <div>
             <p className="text-light-blue font-bold mb-1">枠内アイコンシート</p>
-            <pre className="bg-black/30 rounded p-2 overflow-x-auto">{`A列: yyyymm（例: 202602）
+            <pre className="bg-black/30 rounded p-2 overflow-x-auto">{`A列: yyyymm（例: 202602）またはカテゴリ名（例: ゲーム実況, 歌枠）
 B列: ユーザー名
-C列: Google Drive画像URL`}</pre>
+C列: Google Drive画像URL
+
+※ A列が全て6桁数字の場合は月別表示、それ以外はカテゴリ表示になります`}</pre>
           </div>
         </div>
       </details>

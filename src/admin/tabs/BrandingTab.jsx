@@ -12,9 +12,14 @@ const Field = ({ label, value, onChange, placeholder, description }) => (
   </div>
 )
 
+import { useState } from 'react'
 import { FONT_PRESETS, BODY_FONT_PRESETS } from '../../lib/presets'
+import FontPicker from '../components/FontPicker'
 
 const BrandingTab = ({ config, updateConfig }) => {
+  const [showDisplayPicker, setShowDisplayPicker] = useState(false)
+  const [showBodyPicker, setShowBodyPicker] = useState(false)
+
   const applyDisplayPreset = (preset) => {
     updateConfig('fonts.display', preset.fonts.display)
     updateConfig('fonts.displayUrl', preset.fonts.displayUrl)
@@ -23,6 +28,18 @@ const BrandingTab = ({ config, updateConfig }) => {
   const applyBodyPreset = (preset) => {
     updateConfig('fonts.body', preset.body)
     updateConfig('fonts.bodyUrl', preset.googleFontsUrl || '')
+  }
+
+  const handleDisplayFontSelect = (font) => {
+    updateConfig('fonts.display', font.cssFamily)
+    updateConfig('fonts.displayUrl', font.cssUrl)
+    setShowDisplayPicker(false)
+  }
+
+  const handleBodyFontSelect = (font) => {
+    updateConfig('fonts.body', font.cssFamily)
+    updateConfig('fonts.bodyUrl', font.cssUrl)
+    setShowBodyPicker(false)
   }
 
   return (
@@ -109,6 +126,19 @@ const BrandingTab = ({ config, updateConfig }) => {
         ))}
       </div>
 
+      <button
+        onClick={() => setShowDisplayPicker(!showDisplayPicker)}
+        className="mb-4 px-4 py-2 bg-light-blue/10 hover:bg-light-blue/20 border border-light-blue/30 rounded-lg transition-all text-light-blue text-xs font-body"
+      >
+        {showDisplayPicker ? 'フォントブラウザを閉じる' : 'もっと探す（60+フォント）'}
+      </button>
+
+      {showDisplayPicker && (
+        <div className="mb-4">
+          <FontPicker onSelect={handleDisplayFontSelect} onClose={() => setShowDisplayPicker(false)} />
+        </div>
+      )}
+
       <Field
         label="タイトルフォント"
         value={config.fonts?.display}
@@ -139,6 +169,19 @@ const BrandingTab = ({ config, updateConfig }) => {
           </button>
         ))}
       </div>
+
+      <button
+        onClick={() => setShowBodyPicker(!showBodyPicker)}
+        className="mb-4 px-4 py-2 bg-light-blue/10 hover:bg-light-blue/20 border border-light-blue/30 rounded-lg transition-all text-light-blue text-xs font-body"
+      >
+        {showBodyPicker ? 'フォントブラウザを閉じる' : 'もっと探す（60+フォント）'}
+      </button>
+
+      {showBodyPicker && (
+        <div className="mb-4">
+          <FontPicker onSelect={handleBodyFontSelect} onClose={() => setShowBodyPicker(false)} />
+        </div>
+      )}
 
       <Field
         label="本文フォント"
