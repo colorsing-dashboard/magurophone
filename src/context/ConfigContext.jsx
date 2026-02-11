@@ -8,42 +8,51 @@ const sanitizeCssUrl = (url) => {
 }
 
 export function ConfigProvider({ config, children }) {
-  // CSS変数にカラーを注入
+  // ベースカラー + オーバーライドをCSS変数に注入
   useEffect(() => {
     if (!config?.colors) return
     const root = document.documentElement
-    root.style.setProperty('--color-deep-blue', config.colors.deepBlue)
-    root.style.setProperty('--color-ocean-teal', config.colors.oceanTeal)
-    root.style.setProperty('--color-light-blue', config.colors.lightBlue)
-    root.style.setProperty('--color-amber', config.colors.amber)
-    root.style.setProperty('--color-accent', config.colors.accent)
-    root.style.setProperty('--color-gold', config.colors.gold)
-  }, [config?.colors])
+    const o = config.colorOverrides || {}
 
-  // カラーオーバーライドをCSS変数に注入
-  useEffect(() => {
-    if (!config?.colorOverrides) return
-    const root = document.documentElement
-    const o = config.colorOverrides
-    const map = {
-      'header-gradient-start': o.headerGradientStart,
-      'header-gradient-end': o.headerGradientEnd,
-      'card-border': o.cardBorder,
-      'card-border-hover': o.cardBorderHover,
-      'primary-text': o.primaryText,
-      'accent-text': o.accentText,
-      'rank1-card': o.rank1Card,
-      'background-main': o.backgroundMain,
-      'background-mid': o.backgroundMid,
+    // ベースカラー（--base-* → @theme が参照）
+    root.style.setProperty('--base-deep-blue', config.colors.deepBlue)
+    root.style.setProperty('--base-ocean-teal', config.colors.oceanTeal)
+    root.style.setProperty('--base-light-blue', config.colors.lightBlue)
+    root.style.setProperty('--base-amber', config.colors.amber)
+    root.style.setProperty('--base-accent', config.colors.accent)
+    root.style.setProperty('--base-gold', config.colors.gold)
+
+    // オーバーライド（--override-* → @theme でベースより優先される）
+    const overrides = {
+      'override-primary-text': o.primaryText,
+      'override-accent-text': o.accentText,
+      'override-background-main': o.backgroundMain,
+      'override-background-mid': o.backgroundMid,
     }
-    Object.entries(map).forEach(([key, value]) => {
+    Object.entries(overrides).forEach(([key, value]) => {
       if (value) {
-        root.style.setProperty(`--color-${key}`, value)
+        root.style.setProperty(`--${key}`, value)
       } else {
-        root.style.removeProperty(`--color-${key}`)
+        root.style.removeProperty(`--${key}`)
       }
     })
-  }, [config?.colorOverrides])
+
+    // ヘッダーグラデーション（Header.jsx が直接参照）
+    if (o.headerGradientStart) root.style.setProperty('--color-header-gradient-start', o.headerGradientStart)
+    else root.style.removeProperty('--color-header-gradient-start')
+    if (o.headerGradientEnd) root.style.setProperty('--color-header-gradient-end', o.headerGradientEnd)
+    else root.style.removeProperty('--color-header-gradient-end')
+
+    // 1位カード強調色（HomeView.jsx が直接参照）
+    if (o.rank1Card) root.style.setProperty('--color-rank1-card', o.rank1Card)
+    else root.style.removeProperty('--color-rank1-card')
+
+    // カードボーダー（Tailwindクラスのlight-blue/amberに連動するが、個別に上書きしたい場合用）
+    if (o.cardBorder) root.style.setProperty('--color-card-border', o.cardBorder)
+    else root.style.removeProperty('--color-card-border')
+    if (o.cardBorderHover) root.style.setProperty('--color-card-border-hover', o.cardBorderHover)
+    else root.style.removeProperty('--color-card-border-hover')
+  }, [config?.colors, config?.colorOverrides])
 
   // ヘッダー画像をCSS変数に注入 + プリロード
   useEffect(() => {
