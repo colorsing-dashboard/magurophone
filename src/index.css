@@ -1,23 +1,23 @@
 @import "tailwindcss";
 
-/* デフォルトCSS変数（config.jsの値でランタイムに上書きされる） */
+/* ベースカラー（ConfigContextでランタイムに上書きされる） */
 :root {
-  --color-deep-blue: #0a1628;
-  --color-ocean-teal: #1b4965;
-  --color-light-blue: #8ab4f8;
-  --color-amber: #d4a574;
-  --color-accent: #c1121f;
-  --color-gold: #ffd700;
+  --base-deep-blue: #0a1628;
+  --base-ocean-teal: #1b4965;
+  --base-light-blue: #8ab4f8;
+  --base-amber: #d4a574;
+  --base-accent: #c1121f;
+  --base-gold: #ffd700;
 }
 
-/* カスタムカラー・フォント・アニメーションをTailwindに登録 */
+/* Tailwindテーマ: オーバーライド変数 → ベース変数の優先順で解決 */
 @theme {
-  --color-deep-blue: var(--color-deep-blue);
-  --color-ocean-teal: var(--color-ocean-teal);
-  --color-light-blue: var(--color-light-blue);
-  --color-amber: var(--color-amber);
-  --color-tuna-red: var(--color-accent);
-  --color-gold: var(--color-gold);
+  --color-deep-blue: var(--override-background-main, var(--base-deep-blue));
+  --color-ocean-teal: var(--override-background-mid, var(--base-ocean-teal));
+  --color-light-blue: var(--override-primary-text, var(--base-light-blue));
+  --color-amber: var(--override-accent-text, var(--base-amber));
+  --color-tuna-red: var(--base-accent);
+  --color-gold: var(--base-gold);
 
   --font-display: 'Playfair Display', serif;
   --font-body: 'Yu Gothic Medium', 'YuGothic', 'Inter', sans-serif;
@@ -48,7 +48,7 @@
 
 /* ベーススタイル */
 body {
-  background: linear-gradient(180deg, var(--color-background-main, var(--color-deep-blue)), var(--color-background-mid, var(--color-ocean-teal)), var(--color-background-main, var(--color-deep-blue)));
+  background: linear-gradient(180deg, var(--color-deep-blue), var(--color-ocean-teal), var(--color-deep-blue));
   background-attachment: fixed;
   color: white;
   min-height: 100vh;
