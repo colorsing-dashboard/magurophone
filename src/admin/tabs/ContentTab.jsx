@@ -1,3 +1,5 @@
+import IconRenderer from '../../components/IconRenderer'
+
 const Field = ({ label, value, onChange, placeholder }) => (
   <div className="mb-4">
     <label className="block text-xs text-gray-500 mb-1">{label}</label>
@@ -132,6 +134,21 @@ const ContentTab = ({ config, updateConfig }) => {
         onChange={(v) => updateConfig('menu.title', v)}
         placeholder="Menu"
       />
+
+      {(config.benefitTiers || []).length > 0 && (
+        <div className="mt-4 glass-effect rounded-lg p-4 border border-light-blue/20">
+          <label className="block text-xs text-gray-500 mb-3">Menu アイコンプレビュー</label>
+          <div className="flex flex-wrap gap-3">
+            {(config.benefitTiers || []).map((tier) => (
+              <div key={tier.key} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-light-blue/5 border border-light-blue/10">
+                <IconRenderer icon={tier.icon} size={18} className="text-amber" />
+                <span className="text-xs text-gray-300">{tier.key}</span>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-gray-500 mt-3">※ アイコンの変更は「特典ティア設定」タブで行えます</p>
+        </div>
+      )}
 
       {/* UI テキスト */}
       <hr className="border-light-blue/20 my-8" />

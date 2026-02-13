@@ -52,7 +52,7 @@ const SheetsTab = ({ config, updateConfig }) => {
         label="スプレッドシートID"
         value={config.sheets.spreadsheetId}
         onChange={(v) => updateConfig('sheets.spreadsheetId', v)}
-        placeholder="1kOuigqrKwgyrCJDN448SRDZCFj4urliA5iet4nRtH08"
+        placeholder="スプレッドシートURLの /d/ と /edit の間のID"
         description="GoogleスプレッドシートのURLから取得できます。https://docs.google.com/spreadsheets/d/[ここのID]/edit"
       />
 
