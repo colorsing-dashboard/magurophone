@@ -33,7 +33,6 @@
 
   --animate-shimmer: shimmer 2s ease-in-out infinite;
   --animate-float: float 3s ease-in-out infinite;
-  --animate-bubble: bubble 15s ease-in infinite;
 
   @keyframes shimmer {
     0%, 100% { opacity: 0.5; }
@@ -45,12 +44,6 @@
     50% { transform: translateY(-10px); }
   }
 
-  @keyframes bubble {
-    0% { bottom: -10%; opacity: 0; }
-    10% { opacity: 0.5; }
-    90% { opacity: 0.3; }
-    100% { bottom: 110%; opacity: 0; }
-  }
 }
 
 /* ベーススタイル */
@@ -133,17 +126,3 @@ body {
   100% { left: 200%; }
 }
 
-/* パーティクルアニメーション */
-@keyframes particleRise {
-  0% { transform: translateY(0); opacity: 0; }
-  10% { opacity: 0.5; }
-  90% { opacity: 0.3; }
-  100% { transform: translateY(-110vh); opacity: 0; }
-}
-
-@keyframes particleFall {
-  0% { transform: translateY(0); opacity: 0; }
-  10% { opacity: 0.5; }
-  90% { opacity: 0.3; }
-  100% { transform: translateY(110vh); opacity: 0; }
-}

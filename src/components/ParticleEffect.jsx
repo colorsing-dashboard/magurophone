@@ -21,7 +21,6 @@ const StarShape = ({ size, color }) => (
   </svg>
 )
 
-// hex色 → rgba変換（透明度付き）
 const hexToRgba = (hex, alpha) => {
   if (!hex) return null
   const r = parseInt(hex.slice(1, 3), 16)
@@ -29,6 +28,21 @@ const hexToRgba = (hex, alpha) => {
   const b = parseInt(hex.slice(5, 7), 16)
   return `rgba(${r}, ${g}, ${b}, ${alpha})`
 }
+
+const KEYFRAMES_CSS = `
+@keyframes particleRise {
+  0% { transform: translateY(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 0.6; }
+  100% { transform: translateY(-110vh); opacity: 0; }
+}
+@keyframes particleFall {
+  0% { transform: translateY(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 0.6; }
+  100% { transform: translateY(110vh); opacity: 0; }
+}
+`
 
 const ParticleEffect = () => {
   const config = useConfig()
@@ -40,41 +54,44 @@ const ParticleEffect = () => {
 
   if (type === 'none') return null
 
-  const color = customColor ? hexToRgba(customColor, 0.12) : 'rgba(138, 180, 248, 0.08)'
+  const color = customColor ? hexToRgba(customColor, 0.3) : 'rgba(138, 180, 248, 0.18)'
   const isDown = direction === 'down'
   const animName = isDown ? 'particleFall' : 'particleRise'
 
   return (
-    <div style={{
-      position: 'fixed',
-      inset: 0,
-      overflow: 'hidden',
-      pointerEvents: 'none',
-      zIndex: 0,
-    }}>
-      {PARTICLES.map((p, i) => {
-        const size = Math.round(p.size * sizeScale)
-        return (
-          <div
-            key={i}
-            style={{
-              position: 'absolute',
-              left: p.left,
-              ...(isDown ? { top: '-5%' } : { bottom: '-5%' }),
-              animation: `${animName} ${p.duration}s ease-in ${p.delay}s infinite`,
-            }}
-          >
-            {type === 'heart' ? (
-              <HeartShape size={size} color={color} />
-            ) : type === 'star' ? (
-              <StarShape size={size} color={color} />
-            ) : (
-              <div style={{ width: size, height: size, borderRadius: '50%', background: color }} />
-            )}
-          </div>
-        )
-      })}
-    </div>
+    <>
+      <style>{KEYFRAMES_CSS}</style>
+      <div style={{
+        position: 'fixed',
+        inset: 0,
+        overflow: 'hidden',
+        pointerEvents: 'none',
+        zIndex: 0,
+      }}>
+        {PARTICLES.map((p, i) => {
+          const size = Math.round(p.size * sizeScale)
+          return (
+            <div
+              key={i}
+              style={{
+                position: 'absolute',
+                left: p.left,
+                ...(isDown ? { top: '-5%' } : { bottom: '-5%' }),
+                animation: `${animName} ${p.duration}s ease-in ${p.delay}s infinite`,
+              }}
+            >
+              {type === 'heart' ? (
+                <HeartShape size={size} color={color} />
+              ) : type === 'star' ? (
+                <StarShape size={size} color={color} />
+              ) : (
+                <div style={{ width: size, height: size, borderRadius: '50%', background: color }} />
+              )}
+            </div>
+          )
+        })}
+      </div>
+    </>
   )
 }
 
