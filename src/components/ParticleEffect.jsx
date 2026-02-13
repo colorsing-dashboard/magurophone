@@ -1,12 +1,16 @@
 import { useConfig } from '../context/ConfigContext'
 
 const PARTICLES = [
-  { left: '10%', size: 40, delay: 0, duration: 12 },
-  { left: '25%', size: 20, delay: 2, duration: 14 },
-  { left: '45%', size: 30, delay: 4, duration: 11 },
-  { left: '65%', size: 25, delay: 1, duration: 16 },
-  { left: '80%', size: 35, delay: 3, duration: 13 },
-  { left: '90%', size: 15, delay: 5, duration: 10 },
+  { left: '5%',  size: 35, delay: -8,  duration: 12 },
+  { left: '15%', size: 20, delay: -2,  duration: 14 },
+  { left: '25%', size: 28, delay: -11, duration: 11 },
+  { left: '35%', size: 15, delay: -5,  duration: 16 },
+  { left: '45%', size: 40, delay: -9,  duration: 13 },
+  { left: '55%', size: 22, delay: -3,  duration: 15 },
+  { left: '65%', size: 30, delay: -7,  duration: 10 },
+  { left: '75%', size: 18, delay: -1,  duration: 14 },
+  { left: '85%', size: 25, delay: -6,  duration: 12 },
+  { left: '92%', size: 32, delay: -4,  duration: 11 },
 ]
 
 const HeartShape = ({ size, color }) => (
@@ -55,7 +59,7 @@ const ParticleEffect = () => {
 
   if (type === 'none') return null
 
-  const baseAlpha = customColor ? 0.12 : 0.08
+  const baseAlpha = customColor ? 0.24 : 0.16
   const alpha = Math.min(baseAlpha * opacityScale, 1)
   const color = customColor ? hexToRgba(customColor, alpha) : `rgba(138, 180, 248, ${alpha})`
   const isDown = direction === 'down'
