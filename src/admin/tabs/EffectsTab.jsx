@@ -108,6 +108,26 @@ const EffectsTab = ({ config, updateConfig }) => {
             </div>
           </div>
 
+          {/* 濃さ */}
+          <div>
+            <label className="block text-xs text-gray-500 mb-2">
+              濃さ <span className="text-amber ml-2">×{effects.particleOpacity || 1}</span>
+            </label>
+            <input
+              type="range"
+              min="0.5"
+              max="5"
+              step="0.5"
+              value={effects.particleOpacity || 1}
+              onChange={(e) => updateConfig('effects.particleOpacity', parseFloat(e.target.value))}
+              className="w-full accent-amber"
+            />
+            <div className="flex justify-between text-xs text-gray-600 mt-1">
+              <span>薄い</span>
+              <span>濃い</span>
+            </div>
+          </div>
+
           {/* カラー */}
           <div>
             <label className="block text-xs text-gray-500 mb-2">パーティクルの色</label>

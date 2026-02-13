@@ -124,6 +124,7 @@ const DEFAULT_CONFIG = {
     particleDirection: 'up',
     particleColor: '',
     particleSize: 1,
+    particleOpacity: 1,
   },
 
   admin: {
