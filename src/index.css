@@ -10,14 +10,21 @@
   --base-gold: #ffd700;
 }
 
-/* Tailwindテーマ: オーバーライド変数 → ベース変数の優先順で解決 */
+/* Tailwindテーマ */
 @theme {
-  --color-deep-blue: var(--override-background-main, var(--base-deep-blue));
-  --color-ocean-teal: var(--override-background-mid, var(--base-ocean-teal));
-  --color-light-blue: var(--override-primary-text, var(--base-light-blue));
-  --color-amber: var(--override-accent-text, var(--base-amber));
+  /* ベースカラー（colors.*で変更、全体に影響） */
+  --color-deep-blue: var(--base-deep-blue);
+  --color-ocean-teal: var(--base-ocean-teal);
+  --color-light-blue: var(--base-light-blue);
+  --color-amber: var(--base-amber);
   --color-tuna-red: var(--base-accent);
   --color-gold: var(--base-gold);
+
+  /* エリア別オーバーライド（colorOverrides.*で変更、特定箇所のみ影響） */
+  --color-primary: var(--override-primary-text, var(--base-light-blue));
+  --color-highlight: var(--override-accent-text, var(--base-amber));
+  --color-card-border: var(--override-card-border, var(--base-light-blue));
+  --color-card-hover: var(--override-card-border-hover, var(--base-amber));
 
   --font-display: 'Playfair Display', serif;
   --font-body: 'Yu Gothic Medium', 'YuGothic', 'Inter', sans-serif;
@@ -48,7 +55,7 @@
 
 /* ベーススタイル */
 body {
-  background: linear-gradient(180deg, var(--color-deep-blue), var(--color-ocean-teal), var(--color-deep-blue));
+  background: linear-gradient(180deg, var(--override-background-main, var(--base-deep-blue)), var(--override-background-mid, var(--base-ocean-teal)), var(--override-background-main, var(--base-deep-blue)));
   background-attachment: fixed;
   color: white;
   min-height: 100vh;

@@ -44,7 +44,7 @@ const Header = ({ lastUpdate, loading, onRefresh }) => {
         <button
           onClick={onRefresh}
           disabled={loading}
-          className="glass-effect px-4 py-2 rounded-lg border border-light-blue/30 hover:border-amber transition-all text-sm font-body disabled:opacity-50 disabled:cursor-not-allowed"
+          className="glass-effect px-4 py-2 rounded-lg border border-card-border/30 hover:border-card-hover transition-all text-sm font-body disabled:opacity-50 disabled:cursor-not-allowed"
           title="データを再読み込み"
         >
           {loading ? '🔄' : '↻'} {config.ui.refreshButton}

@@ -22,12 +22,18 @@ export function ConfigProvider({ config, children }) {
     root.style.setProperty('--base-accent', config.colors.accent)
     root.style.setProperty('--base-gold', config.colors.gold)
 
-    // オーバーライド（--override-* → @theme でベースより優先される）
+    // エリア別オーバーライド（--override-* → @themeまたはCSS直接参照）
+    // 各オーバーライドは対応するエリアのみに影響する
     const overrides = {
-      'override-primary-text': o.primaryText,
-      'override-accent-text': o.accentText,
-      'override-background-main': o.backgroundMain,
-      'override-background-mid': o.backgroundMid,
+      'override-primary-text': o.primaryText,           // → text-primary
+      'override-accent-text': o.accentText,             // → text-highlight
+      'override-card-border': o.cardBorder,             // → border-card-border
+      'override-card-border-hover': o.cardBorderHover,  // → border-card-hover
+      'override-background-main': o.backgroundMain,     // → body背景グラデ
+      'override-background-mid': o.backgroundMid,       // → body背景グラデ
+      'color-header-gradient-start': o.headerGradientStart, // → Header.jsx
+      'color-header-gradient-end': o.headerGradientEnd,     // → Header.jsx
+      'color-rank1-card': o.rank1Card,                      // → HomeView.jsx
     }
     Object.entries(overrides).forEach(([key, value]) => {
       if (value) {
@@ -36,22 +42,6 @@ export function ConfigProvider({ config, children }) {
         root.style.removeProperty(`--${key}`)
       }
     })
-
-    // ヘッダーグラデーション（Header.jsx が直接参照）
-    if (o.headerGradientStart) root.style.setProperty('--color-header-gradient-start', o.headerGradientStart)
-    else root.style.removeProperty('--color-header-gradient-start')
-    if (o.headerGradientEnd) root.style.setProperty('--color-header-gradient-end', o.headerGradientEnd)
-    else root.style.removeProperty('--color-header-gradient-end')
-
-    // 1位カード強調色（HomeView.jsx が直接参照）
-    if (o.rank1Card) root.style.setProperty('--color-rank1-card', o.rank1Card)
-    else root.style.removeProperty('--color-rank1-card')
-
-    // カードボーダー（Tailwindクラスのlight-blue/amberに連動するが、個別に上書きしたい場合用）
-    if (o.cardBorder) root.style.setProperty('--color-card-border', o.cardBorder)
-    else root.style.removeProperty('--color-card-border')
-    if (o.cardBorderHover) root.style.setProperty('--color-card-border-hover', o.cardBorderHover)
-    else root.style.removeProperty('--color-card-border-hover')
   }, [config?.colors, config?.colorOverrides])
 
   // ヘッダー画像をCSS変数に注入 + プリロード

@@ -7,7 +7,7 @@ const BottomNav = ({ currentView, onViewChange }) => {
 
   return (
     <nav
-      className="md:hidden fixed bottom-0 left-0 right-0 glass-effect border-t border-light-blue/30 z-40"
+      className="md:hidden fixed bottom-0 left-0 right-0 glass-effect border-t border-card-border/30 z-40"
       style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
     >
       <div
@@ -20,8 +20,8 @@ const BottomNav = ({ currentView, onViewChange }) => {
             onClick={() => onViewChange(view.id)}
             className={`flex flex-col items-center justify-center gap-1 transition-all ${
               currentView === view.id
-                ? 'text-light-blue'
-                : 'text-gray-400 hover:text-light-blue'
+                ? 'text-primary'
+                : 'text-gray-400 hover:text-primary'
             }`}
           >
             <IconRenderer icon={view.icon} size={20} />
