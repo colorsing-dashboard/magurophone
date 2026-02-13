@@ -16,7 +16,7 @@ const BenefitPopup = ({ benefit, onClose }) => {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="glass-effect rounded-2xl p-8 border border-light-blue/30 max-w-md w-full relative"
+        className="glass-effect rounded-2xl p-8 border border-card-border/30 max-w-md w-full relative"
       >
         <button
           onClick={onClose}

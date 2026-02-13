@@ -49,7 +49,7 @@ const RightsView = ({ rights, onSelectPerson }) => {
 
   return (
     <section>
-      <h2 className="text-2xl md:text-4xl font-body mb-4 md:mb-8 text-center text-glow-soft text-amber">
+      <h2 className="text-2xl md:text-4xl font-body mb-4 md:mb-8 text-center text-glow-soft text-highlight">
         {viewConfig.title || '🍾 ボトルキープ一覧'}
       </h2>
 
@@ -59,7 +59,7 @@ const RightsView = ({ rights, onSelectPerson }) => {
           placeholder={config.ui.searchPlaceholder}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full px-6 py-3 glass-effect border border-light-blue/30 rounded-xl focus:outline-none focus:border-amber transition-all text-white placeholder-gray-500"
+          className="w-full px-6 py-3 glass-effect border border-card-border/30 rounded-xl focus:outline-none focus:border-card-hover transition-all text-white placeholder-gray-500"
         />
       </div>
 
@@ -68,10 +68,10 @@ const RightsView = ({ rights, onSelectPerson }) => {
           <div
             key={person[RIGHTS_NAME_INDEX]}
             onClick={() => onSelectPerson(person)}
-            className="glass-effect rounded-xl p-4 md:p-6 border border-light-blue/30 hover:border-amber transition-all hover:scale-105 cursor-pointer group h-32 md:h-36 text-center flex flex-col"
+            className="glass-effect rounded-xl p-4 md:p-6 border border-card-border/30 hover:border-card-hover transition-all hover:scale-105 cursor-pointer group h-32 md:h-36 text-center flex flex-col"
           >
             <h3
-              className="text-base md:text-xl font-body group-hover:text-amber transition-colors flex items-center justify-center"
+              className="text-base md:text-xl font-body group-hover:text-highlight transition-colors flex items-center justify-center"
               style={{ flexGrow: 1, flexShrink: 1, flexBasis: '0%', minHeight: 0 }}
             >
               {person[RIGHTS_NAME_INDEX]}
@@ -82,7 +82,7 @@ const RightsView = ({ rights, onSelectPerson }) => {
             >
               {getRightsIcons(person).map((icon, i) => (
                 <span key={`${icon}-${i}`} className="animate-float" style={{ animationDelay: `${i * 0.2}s` }}>
-                  <IconRenderer icon={icon} size={24} className="text-amber" />
+                  <IconRenderer icon={icon} size={24} className="text-highlight" />
                 </span>
               ))}
             </div>

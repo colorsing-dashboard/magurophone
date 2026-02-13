@@ -84,7 +84,7 @@ function App() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="text-4xl mb-4 animate-pulse">{config.brand.loadingEmoji}</div>
-          <div className="text-xl text-light-blue animate-shimmer">{config.brand.loadingText}</div>
+          <div className="text-xl text-primary animate-shimmer">{config.brand.loadingText}</div>
         </div>
       </div>
     )

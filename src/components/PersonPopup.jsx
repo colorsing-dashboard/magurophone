@@ -32,7 +32,7 @@ const PersonPopup = ({ person, benefits, onClose, onSelectBenefit }) => {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="glass-effect rounded-2xl p-8 border border-light-blue/30 box-glow-soft max-w-2xl w-full relative my-8 max-h-[90vh] flex flex-col"
+        className="glass-effect rounded-2xl p-8 border border-card-border/30 box-glow-soft max-w-2xl w-full relative my-8 max-h-[90vh] flex flex-col"
       >
         <button
           onClick={onClose}
@@ -41,7 +41,7 @@ const PersonPopup = ({ person, benefits, onClose, onSelectBenefit }) => {
           ×
         </button>
 
-        <h2 className="text-2xl md:text-4xl font-body mb-4 md:mb-8 text-glow-soft text-amber flex-shrink-0 text-center">
+        <h2 className="text-2xl md:text-4xl font-body mb-4 md:mb-8 text-glow-soft text-highlight flex-shrink-0 text-center">
           {person[RIGHTS_NAME_INDEX]}
         </h2>
 
@@ -59,10 +59,10 @@ const PersonPopup = ({ person, benefits, onClose, onSelectBenefit }) => {
               <div
                 key={tier.key}
                 onClick={() => benefit && onSelectBenefit(benefit)}
-                className={`bg-deep-blue/50 p-4 md:p-6 rounded-xl border cursor-pointer hover:border-amber transition-all text-center flex flex-col overflow-hidden ${
+                className={`bg-deep-blue/50 p-4 md:p-6 rounded-xl border cursor-pointer hover:border-card-hover transition-all text-center flex flex-col overflow-hidden ${
                   tier.isMembership
-                    ? 'border-amber/30 bg-gradient-to-r from-gold/10 to-transparent'
-                    : 'border-light-blue/20'
+                    ? 'border-highlight/30 bg-gradient-to-r from-gold/10 to-transparent'
+                    : 'border-card-border/20'
                 }`}
               >
                 {benefit?.[BENEFIT_FIELDS.LABEL] && (
@@ -77,7 +77,7 @@ const PersonPopup = ({ person, benefits, onClose, onSelectBenefit }) => {
 
                 <div className="flex-1">
                   <div className="flex items-center justify-center mb-2">
-                    <IconRenderer icon={tier.icon} size={32} className="text-amber" />
+                    <IconRenderer icon={tier.icon} size={32} className="text-highlight" />
                   </div>
                   <p className="text-gray-300">{displayText}</p>
                 </div>

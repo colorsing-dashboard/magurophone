@@ -12,12 +12,12 @@ const HomeView = ({ ranking, goals }) => {
     <>
       {/* ランキング */}
       <section className="text-center">
-        <h2 className="text-2xl md:text-4xl font-body mb-4 md:mb-8 text-glow-soft text-light-blue">{config.home.rankingTitle}</h2>
+        <h2 className="text-2xl md:text-4xl font-body mb-4 md:mb-8 text-glow-soft text-primary">{config.home.rankingTitle}</h2>
         <div className="grid grid-cols-1 xs:grid-cols-3 gap-3 md:gap-6">
           {ranking.slice(0, 3).map((person, index) => (
             <div
               key={`${person[RANKING_FIELDS.NAME] ?? 'rank'}-${index}`}
-              className={`glass-effect rounded-2xl p-4 md:p-8 border transition-all hover:scale-105 water-shimmer ${index === 0 ? 'box-glow-soft' : 'border-light-blue/30'}`}
+              className={`glass-effect rounded-2xl p-4 md:p-8 border transition-all hover:scale-105 water-shimmer ${index === 0 ? 'box-glow-soft' : 'border-card-border/30'}`}
               style={index === 0 ? { borderColor: `var(--color-rank1-card, var(--color-accent))` } : undefined}
             >
               <div className="mb-2 md:mb-4 flex justify-center">
@@ -31,7 +31,7 @@ const HomeView = ({ ranking, goals }) => {
               </div>
               <div className="text-xs md:text-2xl font-body mb-1 md:mb-2 whitespace-nowrap overflow-hidden h-4 md:h-8">{person[RANKING_FIELDS.NAME]}</div>
               <div
-                className={`text-2xl md:text-4xl font-black ${index !== 0 ? 'text-amber' : ''}`}
+                className={`text-2xl md:text-4xl font-black ${index !== 0 ? 'text-highlight' : ''}`}
                 style={index === 0 ? { color: `var(--color-rank1-card, var(--color-accent))` } : undefined}
               >
                 <CountUp end={person[RANKING_FIELDS.POINTS]} />
@@ -44,20 +44,20 @@ const HomeView = ({ ranking, goals }) => {
 
       {/* 目標 */}
       <section className="text-center">
-        <h2 className="text-2xl md:text-4xl font-body mb-4 md:mb-8 text-glow-soft text-amber">{config.home.targetsTitle}</h2>
+        <h2 className="text-2xl md:text-4xl font-body mb-4 md:mb-8 text-glow-soft text-highlight">{config.home.targetsTitle}</h2>
         <div className="grid grid-cols-2 gap-3 md:gap-6 max-w-4xl mx-auto">
           {config.home.targetLabels.map((label, colIndex) => (
             <div
               key={colIndex}
-              className={`glass-effect rounded-2xl p-4 md:p-6 border border-amber/30 ${
+              className={`glass-effect rounded-2xl p-4 md:p-6 border border-card-hover/30 ${
                 goals.length === 0 || !goals[0] || !goals[0][colIndex] ? 'opacity-50' : ''
               }`}
             >
-              <h3 className="text-lg md:text-2xl font-body mb-2 md:mb-4 text-light-blue">{label}</h3>
+              <h3 className="text-lg md:text-2xl font-body mb-2 md:mb-4 text-primary">{label}</h3>
               {goals.map((goal, index) => (
                 goal[colIndex] && (
                   <div key={`goal-${colIndex}-${index}`} className="text-sm md:text-lg mb-2 md:mb-4 last:mb-0">
-                    <span className="text-amber">▸</span> {goal[colIndex]}
+                    <span className="text-highlight">▸</span> {goal[colIndex]}
                   </div>
                 )
               ))}
@@ -69,11 +69,11 @@ const HomeView = ({ ranking, goals }) => {
       {/* FAQ */}
       {config.home.faq.items.length > 0 && (
         <section className="max-w-4xl mx-auto">
-          <h2 className="text-2xl md:text-4xl font-body mb-8 text-center text-glow-soft text-light-blue">{config.home.faq.title}</h2>
-          <div className="glass-effect rounded-2xl p-8 border border-light-blue/30 space-y-6">
+          <h2 className="text-2xl md:text-4xl font-body mb-8 text-center text-glow-soft text-primary">{config.home.faq.title}</h2>
+          <div className="glass-effect rounded-2xl p-8 border border-card-border/30 space-y-6">
             {config.home.faq.items.map((item, index) => (
               <div key={`faq-${index}-${item.question}`}>
-                <h3 className="text-xl font-body text-amber mb-2">▸ {item.question}</h3>
+                <h3 className="text-xl font-body text-highlight mb-2">▸ {item.question}</h3>
                 <p className="text-gray-300 ml-6">{item.answer}</p>
               </div>
             ))}
