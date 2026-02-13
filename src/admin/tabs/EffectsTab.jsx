@@ -115,14 +115,7 @@ const EffectsTab = ({ config, updateConfig }) => {
               <input
                 type="color"
                 value={effects.particleColor || '#8ab4f8'}
-                onChange={(e) => {
-                  const hex = e.target.value
-                  // 半透明に変換
-                  const r = parseInt(hex.slice(1, 3), 16)
-                  const g = parseInt(hex.slice(3, 5), 16)
-                  const b = parseInt(hex.slice(5, 7), 16)
-                  updateConfig('effects.particleColor', `rgba(${r}, ${g}, ${b}, 0.08)`)
-                }}
+                onChange={(e) => updateConfig('effects.particleColor', e.target.value)}
                 className="w-10 h-10 rounded-lg border border-light-blue/30 cursor-pointer bg-transparent"
               />
               <button
