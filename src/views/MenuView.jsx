@@ -44,10 +44,11 @@ const MenuView = ({ benefits, onSelectBenefit }) => {
               <div className="flex items-center justify-center mb-2 md:mb-4">
                 {(() => {
                   const tier = tiers.find(t => t.key === benefit[BENEFIT_FIELDS.TITLE])
+                  const floatClass = config.effects?.iconFloat !== false ? 'animate-float' : ''
                   return tier ? (
-                    <span className="animate-float"><IconRenderer icon={tier.icon} size={48} className="text-highlight" /></span>
+                    <span className={floatClass}><IconRenderer icon={tier.icon} size={48} className="text-highlight" /></span>
                   ) : (
-                    <span className="text-3xl md:text-5xl animate-float">{benefit[BENEFIT_FIELDS.ICON]}</span>
+                    <span className={`text-3xl md:text-5xl ${floatClass}`}>{benefit[BENEFIT_FIELDS.ICON]}</span>
                   )
                 })()}
               </div>
