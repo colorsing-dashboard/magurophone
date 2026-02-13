@@ -133,4 +133,17 @@ body {
   100% { left: 200%; }
 }
 
-/* パーティクルアニメーションは ParticleEffect.jsx で動的に生成 */
+/* パーティクルアニメーション */
+@keyframes particleRise {
+  0% { transform: translateY(0); opacity: 0; }
+  10% { opacity: 0.5; }
+  90% { opacity: 0.3; }
+  100% { transform: translateY(-110vh); opacity: 0; }
+}
+
+@keyframes particleFall {
+  0% { transform: translateY(0); opacity: 0; }
+  10% { opacity: 0.5; }
+  90% { opacity: 0.3; }
+  100% { transform: translateY(110vh); opacity: 0; }
+}
