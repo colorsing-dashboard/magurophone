@@ -53,7 +53,7 @@ LPをライバー専用のメンバーシップ特典として提供すること
 **この構造が成立する理由:**
 - 純リスナーは高いギフト効率そのものが特典 → LP不要でも不公平感が出にくい
 - ライバーはギフト効率低下の代わりにLPという実用ツールを得る → メンシプに留まる理由ができる
-- プラットフォームの仕様変更をビジネスチャンスに転換するタイミングの良さ
+- プラットフォームの仕様変更をビジネスチャンスに転換する
 
 ### メンバーシップ特典: 選択制プラン
 
@@ -118,7 +118,7 @@ GitHub Organization (Free)
 ### 開発者側の作業手順
 ```
 1. GitHub Org内に新規リポジトリを作成
-   例: colorsing-dashboards/customer-name-lp
+   例:                                       ng-dashboards/customer-name-lp
 
 2. テンプレートからリポジトリを複製
 
@@ -284,6 +284,83 @@ GitHub Organization (Free)
 ### 済: トークン発行フロー
 - Fine-grained PAT の発行手順は管理画面のデプロイタブに組み込み済み
 - 直リンク付きで迷わない導線を確保
+
+---
+
+## テンプレート同期（コード一元管理）
+
+### 概要
+テンプレートリポジトリでバグ修正や機能追加を行った際、全顧客リポジトリにコードを反映する仕組み。
+顧客固有の設定（`public/config.js`）は保持し、コード部分のみを更新する。
+
+### アーキテクチャ
+```
+テンプレートリポジトリ（開発用）
+  │  コード修正・機能追加
+  │
+  ├── 手動実行: bash scripts/sync-all.sh
+  │
+  ├─→ customer-a-lp（config.js保持、コードのみ更新）
+  │     └─→ GitHub Actions 自動ビルド＆デプロイ
+  ├─→ customer-b-lp（同上）
+  └─→ ...
+```
+
+### 顧客リポジトリの管理
+`customers.json` で同期対象の顧客リポジトリを管理する。
+```json
+{
+  "org": "colorsing-dashboards",
+  "repos": ["customer-a-lp", "customer-b-lp"]
+}
+```
+新規顧客を追加した際は、このファイルにリポジトリ名を追記する。
+
+### 更新手順
+
+#### 方法1: 一括更新スクリプト（推奨）
+```bash
+# テンプレートリポジトリのルートで実行
+bash scripts/sync-all.sh
+```
+- `customers.json` に登録された全顧客リポを自動更新
+- `public/config.js` は各顧客側を常に保持
+- プッシュにより各顧客リポの GitHub Actions が自動トリガー
+- 結果サマリー（成功/スキップ/失敗）を表示
+
+#### 方法2: 手動更新（個別対応）
+```bash
+# 1. 顧客リポをクローン
+git clone https://github.com/colorsing-dashboards/customer-name-lp.git
+cd customer-name-lp
+
+# 2. テンプレートをリモートに追加してマージ
+git remote add template /path/to/template-repo
+git fetch template main
+git merge template/main --no-edit
+
+# 3. config.js がコンフリクトした場合は顧客側を採用
+git checkout --ours public/config.js
+git add public/config.js
+git commit --no-edit
+
+# 4. プッシュ → GitHub Actions が自動デプロイ
+git push
+```
+
+### 新規顧客追加時のチェックリスト
+1. GitHub Org内に新規リポジトリを作成
+2. テンプレートからクローン
+3. 管理画面で設定 → デプロイ
+4. GitHub Pages を有効化
+5. **`customers.json` にリポジトリ名を追記**（忘れると同期対象外になる）
+
+### スケーリング計画
+| 顧客数 | 更新方式 | 備考 |
+|--------|---------|------|
+| 1〜10人 | `sync-all.sh` ローカル実行 | 現在の方式。十分実用的 |
+| 10〜50人 | 同上 | 実行時間が数分に延びるが問題なし |
+| 50人以上 | PR方式の自動化を検討 | GitHub App + 署名付きコミット + ブランチ保護 |
 
 ---
 
