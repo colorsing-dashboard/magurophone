@@ -86,7 +86,7 @@ LPをライバー専用のメンバーシップ特典として提供すること
 
 ```
 GitHub Organization (Free)
-  └─ colorsing-dashboards（例）
+  └─ colorsing-dashboard（例）
        ├─ customer-a-lp（リポジトリ）→ GitHub Pages で公開
        ├─ customer-b-lp（リポジトリ）→ GitHub Pages で公開
        └─ ...
@@ -130,7 +130,7 @@ GitHub Organization (Free)
    - 特典ティアタブ: ティア情報を設定
 
 4. デプロイタブで接続設定を入力
-   - Owner: colorsing-dashboards
+   - Owner: colorsing-dashboard
    - Repo: customer-name-lp
    - Branch: main
    - Token: Fine-grained PAT
@@ -141,7 +141,7 @@ GitHub Organization (Free)
    Settings → Pages → Source: GitHub Actions
 
 7. 顧客にURLを共有
-   例: https://colorsing-dashboards.github.io/customer-name-lp/
+   例: https://colorsing-dashboard.github.io/customer-name-lp/
 ```
 
 ### 設定変更が必要な場合
@@ -152,7 +152,7 @@ GitHub Organization (Free)
 ## GitHub Organization 運用
 
 ### Organization名の例
-- `colorsing-dashboards`
+- `colorsing-dashboard`
 - `colorsing-pages`
 
 ### メリット
@@ -310,7 +310,7 @@ GitHub Organization (Free)
 `customers.json` で同期対象の顧客リポジトリを管理する。
 ```json
 {
-  "org": "colorsing-dashboards",
+  "org": "colorsing-dashboard",
   "repos": ["customer-a-lp", "customer-b-lp"]
 }
 ```
@@ -331,7 +331,7 @@ bash scripts/sync-all.sh
 #### 方法2: 手動更新（個別対応）
 ```bash
 # 1. 顧客リポをクローン
-git clone https://github.com/colorsing-dashboards/customer-name-lp.git
+git clone https://github.com/colorsing-dashboard/customer-name-lp.git
 cd customer-name-lp
 
 # 2. テンプレートをリモートに追加してマージ
