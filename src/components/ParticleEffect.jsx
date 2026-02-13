@@ -51,10 +51,13 @@ const ParticleEffect = () => {
   const direction = effects.particleDirection || 'up'
   const sizeScale = effects.particleSize || 1
   const customColor = effects.particleColor || ''
+  const opacityScale = effects.particleOpacity || 1
 
   if (type === 'none') return null
 
-  const color = customColor ? hexToRgba(customColor, 0.3) : 'rgba(138, 180, 248, 0.18)'
+  const baseAlpha = customColor ? 0.12 : 0.08
+  const alpha = Math.min(baseAlpha * opacityScale, 1)
+  const color = customColor ? hexToRgba(customColor, alpha) : `rgba(138, 180, 248, ${alpha})`
   const isDown = direction === 'down'
   const animName = isDown ? 'particleFall' : 'particleRise'
 
@@ -62,7 +65,7 @@ const ParticleEffect = () => {
     <>
       <style>{KEYFRAMES_CSS}</style>
       <div style={{
-        position: 'fixed',
+        position: 'absolute',
         inset: 0,
         overflow: 'hidden',
         pointerEvents: 'none',
