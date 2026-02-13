@@ -8,6 +8,7 @@ import SheetsTab from './tabs/SheetsTab'
 import ViewsTab from './tabs/ViewsTab'
 import TiersTab from './tabs/TiersTab'
 import ContentTab from './tabs/ContentTab'
+import EffectsTab from './tabs/EffectsTab'
 import DeployTab from './tabs/DeployTab'
 
 const TABS = [
@@ -17,6 +18,7 @@ const TABS = [
   { id: 'views', label: 'ビュー管理', icon: 'smartphone' },
   { id: 'tiers', label: '特典ティア', icon: 'trophy' },
   { id: 'content', label: 'コンテンツ', icon: 'file-text' },
+  { id: 'effects', label: 'エフェクト', icon: 'sparkles' },
   { id: 'deploy', label: 'デプロイ', icon: 'rocket' },
 ]
 
@@ -147,6 +149,7 @@ function AdminApp() {
     views: ViewsTab,
     tiers: TiersTab,
     content: ContentTab,
+    effects: EffectsTab,
     deploy: DeployTab,
   }
   const ActiveTab = TAB_COMPONENTS[activeTab]

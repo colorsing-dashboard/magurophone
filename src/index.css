@@ -133,25 +133,4 @@ body {
   100% { left: 200%; }
 }
 
-/* バブルアニメーション */
-.bubbles-container {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.bubble {
-  position: absolute;
-  bottom: -10%;
-  border-radius: 50%;
-  background: rgba(138, 180, 248, 0.08);
-  animation: bubble 15s ease-in infinite;
-}
-
-.bubble:nth-child(1) { left: 10%; width: 40px; height: 40px; animation-delay: 0s; animation-duration: 12s; }
-.bubble:nth-child(2) { left: 25%; width: 20px; height: 20px; animation-delay: 2s; animation-duration: 14s; }
-.bubble:nth-child(3) { left: 45%; width: 30px; height: 30px; animation-delay: 4s; animation-duration: 11s; }
-.bubble:nth-child(4) { left: 65%; width: 25px; height: 25px; animation-delay: 1s; animation-duration: 16s; }
-.bubble:nth-child(5) { left: 80%; width: 35px; height: 35px; animation-delay: 3s; animation-duration: 13s; }
-.bubble:nth-child(6) { left: 90%; width: 15px; height: 15px; animation-delay: 5s; animation-duration: 10s; }
+/* パーティクルアニメーションは ParticleEffect.jsx で動的に生成 */

@@ -118,6 +118,14 @@ const DEFAULT_CONFIG = {
     imageError: '画像エラー',
   },
 
+  effects: {
+    iconFloat: true,
+    particles: 'bubble',
+    particleDirection: 'up',
+    particleColor: '',
+    particleSize: 1,
+  },
+
   admin: {
     password: '',
   },

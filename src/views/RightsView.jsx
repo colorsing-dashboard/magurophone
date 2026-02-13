@@ -81,7 +81,7 @@ const RightsView = ({ rights, onSelectPerson }) => {
               style={{ flexGrow: 2, flexShrink: 1, flexBasis: '0%', minHeight: 0, paddingTop: '13px', alignContent: 'flex-start', boxSizing: 'border-box' }}
             >
               {getRightsIcons(person).map((icon, i) => (
-                <span key={`${icon}-${i}`} className="animate-float" style={{ animationDelay: `${i * 0.2}s` }}>
+                <span key={`${icon}-${i}`} className={config.effects?.iconFloat !== false ? 'animate-float' : ''} style={config.effects?.iconFloat !== false ? { animationDelay: `${i * 0.2}s` } : undefined}>
                   <IconRenderer icon={icon} size={20} className="text-highlight" />
                 </span>
               ))}

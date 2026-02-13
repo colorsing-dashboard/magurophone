@@ -8,6 +8,7 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import PersonPopup from './components/PersonPopup'
 import BenefitPopup from './components/BenefitPopup'
+import ParticleEffect from './components/ParticleEffect'
 import VIEW_REGISTRY from './views/registry'
 
 function App() {
@@ -125,9 +126,7 @@ function App() {
 
   return (
     <div className="min-h-screen">
-      <div className="bubbles-container">
-        {[...Array(6)].map((_, i) => <div key={i} className="bubble" />)}
-      </div>
+      <ParticleEffect />
 
       <Sidebar currentView={effectiveView} onViewChange={setCurrentView} lastUpdate={lastUpdate} />
 
