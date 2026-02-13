@@ -147,7 +147,7 @@ const BrandingTab = ({ config, updateConfig }) => {
           label="ローディング絵文字"
           value={config.brand.loadingEmoji}
           onChange={(v) => updateConfig('brand.loadingEmoji', v)}
-          placeholder="絵文字を1つ入力"
+          placeholder="絵文字を入力"
         />
         <Field
           label="ローディングテキスト"
