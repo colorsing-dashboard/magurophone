@@ -66,9 +66,9 @@ const PersonPopup = ({ person, benefits, onClose, onSelectBenefit }) => {
                 }`}
               >
                 {benefit?.[BENEFIT_FIELDS.LABEL] && (
-                  <div className="mb-4 pb-3 border-b border-amber/30 bg-amber/10 -mx-4 md:-mx-6 -mt-4 md:-mt-6 px-4 md:px-6 py-3 rounded-t-xl">
+                  <div className="mb-4 pb-3 border-b border-highlight/30 bg-highlight/10 -mx-4 md:-mx-6 -mt-4 md:-mt-6 px-4 md:px-6 py-3 rounded-t-xl">
                     <div className="flex items-center justify-center pt-1">
-                      <span className="text-sm md:text-base text-amber font-body">
+                      <span className="text-sm md:text-base text-highlight font-body">
                         {benefit[BENEFIT_FIELDS.TITLE]} {benefit[BENEFIT_FIELDS.LABEL]}
                       </span>
                     </div>
@@ -87,10 +87,10 @@ const PersonPopup = ({ person, benefits, onClose, onSelectBenefit }) => {
 
           {/* Special権利 */}
           {person[RIGHTS_SPECIAL_INDEX] && (
-            <div className="bg-gradient-to-r from-amber/20 to-light-blue/20 p-6 rounded-xl border border-amber/30 text-center">
+            <div className="bg-gradient-to-r from-highlight/20 to-primary/20 p-6 rounded-xl border border-highlight/30 text-center">
               <div className="flex items-center justify-center gap-3 mb-2">
                 <span className="text-3xl">✨</span>
-                <h3 className="text-xl font-body text-amber">{config.ui.specialRightLabel}</h3>
+                <h3 className="text-xl font-body text-highlight">{config.ui.specialRightLabel}</h3>
               </div>
               <p className="text-gray-300">{person[RIGHTS_SPECIAL_INDEX]}</p>
             </div>

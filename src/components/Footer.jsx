@@ -4,7 +4,7 @@ const Footer = () => {
   const config = useConfig()
 
   return (
-    <footer className="text-center py-8 border-t border-light-blue/30">
+    <footer className="text-center py-8 border-t border-card-border/30">
       <p className="text-xl font-body mb-4">{config.brand.footerText}</p>
       <p className="text-gray-400">{config.brand.footerSubText}</p>
       {config.brand.footerNote && (
