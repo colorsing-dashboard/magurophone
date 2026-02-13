@@ -1,8 +1,10 @@
 import { useConfig } from '../context/ConfigContext'
 import { BENEFIT_FIELDS } from '../components/BenefitPopup'
+import IconRenderer from '../components/IconRenderer'
 
 const MenuView = ({ benefits, onSelectBenefit }) => {
   const config = useConfig()
+  const tiers = config.benefitTiers || []
 
   return (
     <section>
@@ -40,7 +42,14 @@ const MenuView = ({ benefits, onSelectBenefit }) => {
             {/* PC版：フル表示 */}
             <div className="hidden md:block flex-1">
               <div className="flex items-center justify-center mb-2 md:mb-4">
-                <span className="text-3xl md:text-5xl animate-float">{benefit[BENEFIT_FIELDS.ICON]}</span>
+                {(() => {
+                  const tier = tiers.find(t => t.key === benefit[BENEFIT_FIELDS.TITLE])
+                  return tier ? (
+                    <span className="animate-float"><IconRenderer icon={tier.icon} size={48} className="text-highlight" /></span>
+                  ) : (
+                    <span className="text-3xl md:text-5xl animate-float">{benefit[BENEFIT_FIELDS.ICON]}</span>
+                  )
+                })()}
               </div>
               <p className="text-base md:text-lg font-bold mb-1 md:mb-2 whitespace-pre-line">{benefit[BENEFIT_FIELDS.NAME]}</p>
               <p className="text-xs md:text-sm text-gray-400">{benefit[BENEFIT_FIELDS.DESCRIPTION]}</p>

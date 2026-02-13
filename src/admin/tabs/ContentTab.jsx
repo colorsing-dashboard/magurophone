@@ -44,7 +44,7 @@ const ContentTab = ({ config, updateConfig }) => {
           label="ポイント単位ラベル"
           value={config.home?.pointsLabel}
           onChange={(v) => updateConfig('home.pointsLabel', v)}
-          placeholder="歌推しPt"
+          placeholder="ポイントの単位名を入力"
         />
         <Field
           label="目標タイトル"

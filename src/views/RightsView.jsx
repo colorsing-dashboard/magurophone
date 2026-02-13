@@ -82,7 +82,7 @@ const RightsView = ({ rights, onSelectPerson }) => {
             >
               {getRightsIcons(person).map((icon, i) => (
                 <span key={`${icon}-${i}`} className="animate-float" style={{ animationDelay: `${i * 0.2}s` }}>
-                  <IconRenderer icon={icon} size={24} className="text-highlight" />
+                  <IconRenderer icon={icon} size={20} className="text-highlight" />
                 </span>
               ))}
             </div>

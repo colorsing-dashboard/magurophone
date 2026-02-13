@@ -9,6 +9,9 @@ const DEFAULT_CONFIG = {
     pageTitle: '深海BAR MAGUROPHONE - 特典管理',
     loadingEmoji: '🐟',
     loadingText: 'Loading...',
+    showTitle: true,
+    titleGradient: true,
+    titleGradientDirection: 'to-r',
   },
 
   colors: {
