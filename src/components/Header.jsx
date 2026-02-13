@@ -1,5 +1,16 @@
 import { useConfig } from '../context/ConfigContext'
 
+const GRADIENT_DIR = {
+  'to-r': 'to right',
+  'to-l': 'to left',
+  'to-t': 'to top',
+  'to-b': 'to bottom',
+  'to-br': 'to bottom right',
+  'to-bl': 'to bottom left',
+  'to-tr': 'to top right',
+  'to-tl': 'to top left',
+}
+
 const sanitizeCssUrl = (url) => {
   if (!url || typeof url !== 'string') return null
   // CSS url()インジェクション防止: 引用符・括弧・セミコロンを除去
@@ -27,13 +38,26 @@ const Header = ({ lastUpdate, loading, onRefresh }) => {
       ></div>
       <div className="absolute inset-0 bg-black/30"></div>
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEuNSIgZmlsbD0icmdiYSgxMzgsIDE4MCwgMjQ4LCAwLjA1KSIvPjxjaXJjbGUgY3g9IjIwIiBjeT0iMjAiIHI9IjIiIGZpbGw9InJnYmEoMTM4LCAxODAsIDI0OCwgMC4wOCkiLz48Y2lyY2xlIGN4PSIzNSIgY3k9IjEwIiByPSIxIiBmaWxsPSJyZ2JhKDEzOCwgMTgwLCAyNDgsIDAuMDMpIi8+PC9zdmc+')] opacity-20 animate-float"></div>
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="text-center px-4">
-          <h1 className="text-4xl md:text-8xl font-display font-black text-transparent bg-clip-text bg-gradient-to-r from-ocean-teal via-light-blue to-amber text-glow-soft mb-4">
-            {config.brand.name}
-          </h1>
+      {config.brand.showTitle !== false && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center px-4">
+            {config.brand.titleGradient !== false ? (
+              <h1
+                className="text-4xl md:text-8xl font-display font-black text-transparent bg-clip-text text-glow-soft mb-4 leading-relaxed py-2"
+                style={{
+                  backgroundImage: `linear-gradient(${GRADIENT_DIR[config.brand.titleGradientDirection] || 'to right'}, var(--color-ocean-teal), var(--color-light-blue), var(--color-amber))`,
+                }}
+              >
+                {config.brand.name}
+              </h1>
+            ) : (
+              <h1 className="text-4xl md:text-8xl font-display font-black text-primary text-glow-soft mb-4 leading-relaxed py-2">
+                {config.brand.name}
+              </h1>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="absolute top-4 right-4 flex items-center gap-3">
         {lastUpdate && (

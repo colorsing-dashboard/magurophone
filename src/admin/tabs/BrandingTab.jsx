@@ -51,21 +51,69 @@ const BrandingTab = ({ config, updateConfig }) => {
         label="サイト名（ヘッダー表示）"
         value={config.brand.name}
         onChange={(v) => updateConfig('brand.name', v)}
-        placeholder="BAR MAGUROPHONE"
+        placeholder="サイト名やブランド名を入力"
         description="ヘッダー画像上に大きく表示されるタイトル"
       />
+
+      <div className="mb-5 flex items-center gap-4">
+        <label className="flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={config.brand.showTitle !== false}
+            onChange={(e) => updateConfig('brand.showTitle', e.target.checked)}
+            className="accent-amber"
+          />
+          ヘッダーにタイトルを表示
+        </label>
+      </div>
+
+      {config.brand.showTitle !== false && (
+        <div className="mb-5 space-y-3 ml-4 border-l-2 border-light-blue/20 pl-4">
+          <label className="flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={config.brand.titleGradient !== false}
+              onChange={(e) => updateConfig('brand.titleGradient', e.target.checked)}
+              className="accent-amber"
+            />
+            タイトルにグラデーションを適用
+          </label>
+          <p className="text-xs text-gray-500">OFFにすると単色（プライマリカラー）で表示されます</p>
+
+          {config.brand.titleGradient !== false && (
+            <div>
+              <label className="block text-xs text-gray-500 mb-1">グラデーション方向</label>
+              <select
+                value={config.brand.titleGradientDirection || 'to-r'}
+                onChange={(e) => updateConfig('brand.titleGradientDirection', e.target.value)}
+                className="px-3 py-1.5 glass-effect border border-light-blue/30 rounded-lg text-white text-sm focus:outline-none focus:border-amber bg-transparent"
+              >
+                <option value="to-r">右へ →</option>
+                <option value="to-l">左へ ←</option>
+                <option value="to-b">下へ ↓</option>
+                <option value="to-t">上へ ↑</option>
+                <option value="to-br">右下へ ↘</option>
+                <option value="to-bl">左下へ ↙</option>
+                <option value="to-tr">右上へ ↗</option>
+                <option value="to-tl">左上へ ↖</option>
+              </select>
+            </div>
+          )}
+        </div>
+      )}
+
       <Field
         label="サイドバータイトル"
         value={config.brand.sidebarTitle}
         onChange={(v) => updateConfig('brand.sidebarTitle', v)}
-        placeholder="MAGUROPHONE"
+        placeholder="短縮名やブランド名を入力"
         description="デスクトップ版サイドバーに表示されるブランド名"
       />
       <Field
         label="ページタイトル"
         value={config.brand.pageTitle}
         onChange={(v) => updateConfig('brand.pageTitle', v)}
-        placeholder="深海BAR MAGUROPHONE - 特典管理"
+        placeholder="サイト名 - 特典管理"
         description="ブラウザタブに表示されるタイトル"
       />
 
@@ -76,19 +124,19 @@ const BrandingTab = ({ config, updateConfig }) => {
         label="フッターメインテキスト"
         value={config.brand.footerText}
         onChange={(v) => updateConfig('brand.footerText', v)}
-        placeholder="深海BAR MAGUROPHONE 🐟🎧"
+        placeholder="フッターに表示するメインテキスト"
       />
       <Field
         label="フッターサブテキスト"
         value={config.brand.footerSubText}
         onChange={(v) => updateConfig('brand.footerSubText', v)}
-        placeholder="単推し・最推し様・メンシプ様募集中です"
+        placeholder="フッターに表示するサブテキスト"
       />
       <Field
         label="フッター注記"
         value={config.brand.footerNote}
         onChange={(v) => updateConfig('brand.footerNote', v)}
-        placeholder="ファンマ: 🐟🎧"
+        placeholder="フッター下部の補足テキスト"
       />
 
       <hr className="border-light-blue/20 my-8" />
@@ -99,7 +147,7 @@ const BrandingTab = ({ config, updateConfig }) => {
           label="ローディング絵文字"
           value={config.brand.loadingEmoji}
           onChange={(v) => updateConfig('brand.loadingEmoji', v)}
-          placeholder="🐟"
+          placeholder="絵文字を1つ入力"
         />
         <Field
           label="ローディングテキスト"
