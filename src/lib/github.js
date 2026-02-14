@@ -1,111 +1,92 @@
 import { generateConfigJS, importConfigFromText } from './configIO'
 
-export async function deployConfigToGitHub(config, { owner, repo, branch, token }) {
-  const path = 'public/config.js'
-  const headers = {
-    Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
+async function gh(token, method, path, body) {
+  const res = await fetch(`https://api.github.com${path}`, {
+    method,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28',
+      'Content-Type': 'application/json',
+    },
+    body: body ? JSON.stringify(body) : undefined,
+  })
+
+  const text = await res.text()
+  let json
+  try { json = text ? JSON.parse(text) : null } catch { json = { raw: text } }
+
+  if (!res.ok) {
+    const err = new Error(`GitHub API ${res.status} ${method} ${path}`)
+    err.status = res.status
+    err.data = json
+    throw err
   }
-  const fileContent = generateConfigJS(config)
+  return json
+}
 
-  // 1. ブランチの最新コミットSHAを取得
-  const refRes = await fetch(
-    `https://api.github.com/repos/${owner}/${repo}/git/ref/heads/${encodeURIComponent(branch)}`,
-    { headers, cache: 'no-store' }
-  )
-  if (refRes.status === 401) throw new Error('認証エラー: トークンが無効です')
-  if (refRes.status === 404) throw new Error('リポジトリまたはブランチが見つかりません')
-  if (!refRes.ok) throw new Error(`ブランチ取得エラー: ${refRes.status}`)
-  const refData = await refRes.json()
-  const parentSha = refData.object.sha
+async function pushFileCommit(token, owner, repo, branch, filePath, contentUtf8, message) {
+  // 1. head
+  const ref = await gh(token, 'GET', `/repos/${owner}/${repo}/git/ref/heads/${encodeURIComponent(branch)}`)
+  const headSha = ref.object.sha
 
-  // 2. コミットからベースツリーSHAを取得
-  const commitRes = await fetch(
-    `https://api.github.com/repos/${owner}/${repo}/git/commits/${parentSha}`,
-    { headers, cache: 'no-store' }
-  )
-  if (!commitRes.ok) throw new Error(`コミット取得エラー: ${commitRes.status}`)
-  const commitData = await commitRes.json()
+  // 2. base tree
+  const headCommit = await gh(token, 'GET', `/repos/${owner}/${repo}/git/commits/${headSha}`)
+  const baseTreeSha = headCommit.tree.sha
 
-  // 3. ファイル内容から blob を作成
-  const blobRes = await fetch(
-    `https://api.github.com/repos/${owner}/${repo}/git/blobs`,
-    {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({
-        content: btoa(unescape(encodeURIComponent(fileContent))),
-        encoding: 'base64',
-      }),
+  // 3. blob（utf-8）
+  const blob = await gh(token, 'POST', `/repos/${owner}/${repo}/git/blobs`, {
+    content: contentUtf8,
+    encoding: 'utf-8',
+  })
+
+  // 4. tree
+  const tree = await gh(token, 'POST', `/repos/${owner}/${repo}/git/trees`, {
+    base_tree: baseTreeSha,
+    tree: [{ path: filePath, mode: '100644', type: 'blob', sha: blob.sha }],
+  })
+
+  // 5. commit
+  const newCommit = await gh(token, 'POST', `/repos/${owner}/${repo}/git/commits`, {
+    message,
+    tree: tree.sha,
+    parents: [headSha],
+  })
+
+  // 6. fast-forward ref update（force: false）
+  await gh(token, 'PATCH', `/repos/${owner}/${repo}/git/refs/heads/${encodeURIComponent(branch)}`, {
+    sha: newCommit.sha,
+    force: false,
+  })
+}
+
+export async function deployConfigToGitHub(config, { owner, repo, branch, token }) {
+  const content = generateConfigJS(config)
+  const maxRetries = 3
+
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      await pushFileCommit(token, owner, repo, branch, 'public/config.js', content, '管理画面から設定を更新')
+      return
+    } catch (err) {
+      // head が進んだ → リトライ
+      if ((err.status === 409 || err.status === 422) && i < maxRetries - 1) continue
+
+      // それ以外のエラーはそのまま投げる
+      if (err.status === 401) throw new Error('認証エラー: トークンが無効です')
+      if (err.status === 403) throw new Error('権限エラー: トークンに Contents の書き込み権限（Read and write）がありません。トークンを再作成してください')
+      if (err.status === 404) throw new Error('リポジトリまたはブランチが見つかりません')
+      throw new Error(`デプロイエラー: ${err.message}`)
     }
-  )
-  if (blobRes.status === 403) throw new Error('権限エラー: トークンに Contents の書き込み権限（Read and write）がありません。トークンを再作成してください')
-  if (!blobRes.ok) throw new Error(`Blob作成エラー: ${blobRes.status}`)
-  const blobData = await blobRes.json()
+  }
 
-  // 4. blob を含む新しいツリーを作成
-  const treeRes = await fetch(
-    `https://api.github.com/repos/${owner}/${repo}/git/trees`,
-    {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({
-        base_tree: commitData.tree.sha,
-        tree: [{
-          path,
-          mode: '100644',
-          type: 'blob',
-          sha: blobData.sha,
-        }],
-      }),
-    }
-  )
-  if (!treeRes.ok) throw new Error(`ツリー作成エラー: ${treeRes.status}`)
-  const treeData = await treeRes.json()
-
-  // 5. 新しいコミットを作成
-  const newCommitRes = await fetch(
-    `https://api.github.com/repos/${owner}/${repo}/git/commits`,
-    {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({
-        message: '管理画面から設定を更新',
-        tree: treeData.sha,
-        parents: [parentSha],
-      }),
-    }
-  )
-  if (!newCommitRes.ok) throw new Error(`コミット作成エラー: ${newCommitRes.status}`)
-  const newCommitData = await newCommitRes.json()
-
-  // 6. ブランチを新コミットに更新（force で競合回避）
-  const updateRefRes = await fetch(
-    `https://api.github.com/repos/${owner}/${repo}/git/refs/heads/${encodeURIComponent(branch)}`,
-    {
-      method: 'PATCH',
-      headers,
-      body: JSON.stringify({ sha: newCommitData.sha, force: true }),
-    }
-  )
-  if (!updateRefRes.ok) throw new Error(`ブランチ更新エラー: ${updateRefRes.status}`)
-
-  return await updateRefRes.json()
+  throw new Error('デプロイ失敗: ブランチが高速で更新されています。しばらく待ってから再試行してください')
 }
 
 // GitHubから最新のconfig.jsを取得
 export async function fetchConfigFromGitHub({ owner, repo, branch, token }) {
-  const path = 'public/config.js'
-  const res = await fetch(
-    `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${encodeURIComponent(branch)}&t=${Date.now()}`,
-    { headers: { Authorization: `Bearer ${token}` }, cache: 'no-store' }
-  )
-
-  if (res.status === 401) throw new Error('認証エラー: トークンが無効です')
-  if (res.status === 404) throw new Error('リポジトリまたはファイルが見つかりません')
-  if (!res.ok) throw new Error(`取得エラー: ${res.status}`)
-
-  const data = await res.json()
+  const data = await gh(token, 'GET',
+    `/repos/${owner}/${repo}/contents/public/config.js?ref=${encodeURIComponent(branch)}`)
   const content = decodeURIComponent(escape(atob(data.content)))
   return importConfigFromText(content)
 }
