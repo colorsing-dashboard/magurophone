@@ -1,8 +1,14 @@
 import { generateConfigJS, importConfigFromText } from './configIO'
 
-// Git Refs + Trees API でファイルの blob SHA を取得（Contents API のキャッシュを回避）
-async function getFileSHAViaRefs(owner, repo, branch, path, headers) {
-  // 1. ブランチの最新コミットSHA
+export async function deployConfigToGitHub(config, { owner, repo, branch, token }) {
+  const path = 'public/config.js'
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    'Content-Type': 'application/json',
+  }
+  const fileContent = generateConfigJS(config)
+
+  // 1. ブランチの最新コミットSHAを取得
   const refRes = await fetch(
     `https://api.github.com/repos/${owner}/${repo}/git/ref/heads/${encodeURIComponent(branch)}`,
     { headers, cache: 'no-store' }
@@ -11,60 +17,80 @@ async function getFileSHAViaRefs(owner, repo, branch, path, headers) {
   if (refRes.status === 404) throw new Error('リポジトリまたはブランチが見つかりません')
   if (!refRes.ok) throw new Error(`ブランチ取得エラー: ${refRes.status}`)
   const refData = await refRes.json()
+  const parentSha = refData.object.sha
 
-  // 2. コミットからツリーSHA
+  // 2. コミットからベースツリーSHAを取得
   const commitRes = await fetch(
-    `https://api.github.com/repos/${owner}/${repo}/git/commits/${refData.object.sha}`,
+    `https://api.github.com/repos/${owner}/${repo}/git/commits/${parentSha}`,
     { headers, cache: 'no-store' }
   )
   if (!commitRes.ok) throw new Error(`コミット取得エラー: ${commitRes.status}`)
   const commitData = await commitRes.json()
 
-  // 3. ツリーからファイルの blob SHA を検索
-  const treeRes = await fetch(
-    `https://api.github.com/repos/${owner}/${repo}/git/trees/${commitData.tree.sha}?recursive=1`,
-    { headers, cache: 'no-store' }
-  )
-  if (!treeRes.ok) throw new Error(`ツリー取得エラー: ${treeRes.status}`)
-  const treeData = await treeRes.json()
-
-  const entry = treeData.tree.find(e => e.path === path)
-  if (!entry) throw new Error('ファイルが見つかりません: ' + path)
-  return entry.sha
-}
-
-export async function deployConfigToGitHub(config, { owner, repo, branch, token }) {
-  const path = 'public/config.js'
-  const headers = {
-    Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
-  }
-
-  // Git Refs/Trees API 経由で正確な SHA を取得（キャッシュ影響なし）
-  const sha = await getFileSHAViaRefs(owner, repo, branch, path, headers)
-
-  const content = btoa(unescape(encodeURIComponent(generateConfigJS(config))))
-
-  const putRes = await fetch(
-    `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+  // 3. ファイル内容から blob を作成
+  const blobRes = await fetch(
+    `https://api.github.com/repos/${owner}/${repo}/git/blobs`,
     {
-      method: 'PUT',
+      method: 'POST',
       headers,
       body: JSON.stringify({
-        message: '管理画面から設定を更新',
-        content,
-        sha,
-        branch,
+        content: btoa(unescape(encodeURIComponent(fileContent))),
+        encoding: 'base64',
       }),
     }
   )
+  if (blobRes.status === 403) throw new Error('権限エラー: トークンに Contents の書き込み権限（Read and write）がありません。トークンを再作成してください')
+  if (!blobRes.ok) throw new Error(`Blob作成エラー: ${blobRes.status}`)
+  const blobData = await blobRes.json()
 
-  if (putRes.status === 403) throw new Error('権限エラー: トークンに Contents の書き込み権限（Read and write）がありません。トークンを再作成してください')
-  if (putRes.status === 409) throw new Error('コンフリクト: 他の変更と競合しています。再試行してください')
-  if (putRes.status === 422) throw new Error('バリデーションエラー: ブランチ名またはファイルパスを確認してください')
-  if (!putRes.ok) throw new Error(`デプロイエラー: ${putRes.status}`)
+  // 4. blob を含む新しいツリーを作成
+  const treeRes = await fetch(
+    `https://api.github.com/repos/${owner}/${repo}/git/trees`,
+    {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        base_tree: commitData.tree.sha,
+        tree: [{
+          path,
+          mode: '100644',
+          type: 'blob',
+          sha: blobData.sha,
+        }],
+      }),
+    }
+  )
+  if (!treeRes.ok) throw new Error(`ツリー作成エラー: ${treeRes.status}`)
+  const treeData = await treeRes.json()
 
-  return await putRes.json()
+  // 5. 新しいコミットを作成
+  const newCommitRes = await fetch(
+    `https://api.github.com/repos/${owner}/${repo}/git/commits`,
+    {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        message: '管理画面から設定を更新',
+        tree: treeData.sha,
+        parents: [parentSha],
+      }),
+    }
+  )
+  if (!newCommitRes.ok) throw new Error(`コミット作成エラー: ${newCommitRes.status}`)
+  const newCommitData = await newCommitRes.json()
+
+  // 6. ブランチを新コミットに更新（force で競合回避）
+  const updateRefRes = await fetch(
+    `https://api.github.com/repos/${owner}/${repo}/git/refs/heads/${encodeURIComponent(branch)}`,
+    {
+      method: 'PATCH',
+      headers,
+      body: JSON.stringify({ sha: newCommitData.sha, force: true }),
+    }
+  )
+  if (!updateRefRes.ok) throw new Error(`ブランチ更新エラー: ${updateRefRes.status}`)
+
+  return await updateRefRes.json()
 }
 
 // GitHubから最新のconfig.jsを取得
