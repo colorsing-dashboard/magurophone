@@ -97,7 +97,7 @@ export function clearConfig() {
 export function generateConfigJS(config) {
   // デフォルト値と同じプロパティは省略しない（分かりやすさ優先）
   const cleanConfig = { ...config }
-  delete cleanConfig.admin // パスワードはconfig.jsに含めない方が安全
+  // admin セクションは保持（password, developerKey がデプロイ後も消えないように）
 
   const json = JSON.stringify(cleanConfig, null, 2)
   return `// ダッシュボード設定ファイル

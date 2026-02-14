@@ -129,6 +129,7 @@ const DEFAULT_CONFIG = {
 
   admin: {
     password: '',
+    developerKey: '',
   },
 }
 
