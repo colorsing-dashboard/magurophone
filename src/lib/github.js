@@ -52,6 +52,7 @@ export async function deployConfigToGitHub(config, { owner, repo, branch, token 
     }
   )
 
+  if (putRes.status === 403) throw new Error('権限エラー: トークンに Contents の書き込み権限（Read and write）がありません。トークンを再作成してください')
   if (putRes.status === 409) throw new Error('コンフリクト: 他の変更と競合しています。再試行してください')
   if (putRes.status === 422) throw new Error('バリデーションエラー: ブランチ名またはファイルパスを確認してください')
   if (!putRes.ok) throw new Error(`デプロイエラー: ${putRes.status}`)
