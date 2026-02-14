@@ -53,7 +53,7 @@ async function pushFileCommit(token, owner, repo, branch, filePath, contentUtf8,
     parents: [headSha],
   })
 
-  // 6. fast-forward ref update（force: false）
+  // 6. fast-forward ref update
   await gh(token, 'PATCH', `/repos/${owner}/${repo}/git/refs/heads/${encodeURIComponent(branch)}`, {
     sha: newCommit.sha,
     force: false,
@@ -69,10 +69,7 @@ export async function deployConfigToGitHub(config, { owner, repo, branch, token 
       await pushFileCommit(token, owner, repo, branch, 'public/config.js', content, '管理画面から設定を更新')
       return
     } catch (err) {
-      // head が進んだ → リトライ
       if ((err.status === 409 || err.status === 422) && i < maxRetries - 1) continue
-
-      // それ以外のエラーはそのまま投げる
       if (err.status === 401) throw new Error('認証エラー: トークンが無効です')
       if (err.status === 403) throw new Error('権限エラー: トークンに Contents の書き込み権限（Read and write）がありません。トークンを再作成してください')
       if (err.status === 404) throw new Error('リポジトリまたはブランチが見つかりません')
