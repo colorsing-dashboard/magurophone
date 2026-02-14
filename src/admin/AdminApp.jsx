@@ -114,7 +114,20 @@ function AdminApp() {
   }
 
   const handleSyncFromGitHub = (remoteConfig) => {
-    setConfig(deepMerge(DEFAULT_CONFIG, remoteConfig))
+    setConfig(prev => {
+      const synced = deepMerge(DEFAULT_CONFIG, remoteConfig)
+      // エンコード済みトークンをデコード
+      if (synced.deploy?.token?.startsWith('enc:')) {
+        try {
+          synced.deploy.token = decodeURIComponent(escape(atob(synced.deploy.token.slice(4))))
+        } catch { /* デコード失敗時はそのまま */ }
+      }
+      // ローカルに token があればそちらを優先
+      if (prev.deploy?.token && !prev.deploy.token.startsWith('enc:')) {
+        synced.deploy = { ...synced.deploy, token: prev.deploy.token }
+      }
+      return synced
+    })
   }
 
   const handleReset = () => {

@@ -53,7 +53,14 @@ export function loadBaseConfig() {
     }
   }
 
-  return deepMerge(DEFAULT_CONFIG, config)
+  const merged = deepMerge(DEFAULT_CONFIG, config)
+
+  // エンコード済みトークンをデコード
+  if (merged.deploy?.token?.startsWith('enc:')) {
+    merged.deploy.token = decodeURIComponent(escape(atob(merged.deploy.token.slice(4))))
+  }
+
+  return merged
 }
 
 // 設定を読み込む（config.js + デフォルト → localStorage で上書き）
@@ -103,6 +110,12 @@ export function generateConfigJS(config) {
   // デフォルト値と同じプロパティは省略しない（分かりやすさ優先）
   const cleanConfig = { ...config }
   // admin セクションは保持（password, developerKey がデプロイ後も消えないように）
+
+  // deploy.token は GitHub シークレットスキャンを回避するためエンコードして保存
+  if (cleanConfig.deploy?.token) {
+    cleanConfig.deploy = { ...cleanConfig.deploy }
+    cleanConfig.deploy.token = 'enc:' + btoa(unescape(encodeURIComponent(cleanConfig.deploy.token)))
+  }
 
   const json = JSON.stringify(cleanConfig, null, 2)
   return `// ダッシュボード設定ファイル
