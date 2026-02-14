@@ -127,6 +127,13 @@ const DEFAULT_CONFIG = {
     particleOpacity: 1,
   },
 
+  deploy: {
+    owner: '',
+    repo: '',
+    branch: '',
+    token: '',
+  },
+
   admin: {
     password: '',
     developerKey: '',

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { loadDeploySettings, saveDeploySettings, deployConfigToGitHub, fetchConfigFromGitHub } from '../../lib/github'
+import { deployConfigToGitHub, fetchConfigFromGitHub } from '../../lib/github'
 import { saveConfigMeta, loadConfigMeta } from '../../lib/configIO'
 
 const formatTime = (ts) => {
@@ -10,12 +10,10 @@ const formatTime = (ts) => {
   })
 }
 
-const DeployTab = ({ config, onSyncFromGitHub }) => {
-  const [settings, setSettings] = useState(() => loadDeploySettings())
+const DeployTab = ({ config, updateConfig, onSyncFromGitHub }) => {
   const [deploying, setDeploying] = useState(false)
   const [syncing, setSyncing] = useState(false)
   const [result, setResult] = useState(null)
-  const [saved, setSaved] = useState(false)
   const [meta, setMeta] = useState(() => loadConfigMeta())
 
   // 開発者ロック（config.js の admin.developerKey で判定）
@@ -26,18 +24,8 @@ const DeployTab = ({ config, onSyncFromGitHub }) => {
   const developerKey = config?.admin?.developerKey || ''
   const hasKey = !!developerKey
 
-  const updateField = (field, value) => {
-    setSettings(prev => ({ ...prev, [field]: value }))
-    setSaved(false)
-  }
-
-  const handleSaveSettings = () => {
-    saveDeploySettings(settings)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2000)
-  }
-
-  const canDeploy = settings.owner && settings.repo && settings.branch && settings.token
+  const deploy = config?.deploy || {}
+  const canDeploy = deploy.owner && deploy.repo && deploy.branch && deploy.token
 
   const handleDeploy = async () => {
     if (!canDeploy) return
@@ -45,7 +33,7 @@ const DeployTab = ({ config, onSyncFromGitHub }) => {
     setResult(null)
 
     try {
-      await deployConfigToGitHub(config, settings)
+      await deployConfigToGitHub(config, deploy)
       saveConfigMeta({ lastDeployed: Date.now() })
       setMeta(loadConfigMeta())
       setResult({ success: true, message: 'デプロイ成功！GitHub Actionsでビルドが開始されます。' })
@@ -63,7 +51,7 @@ const DeployTab = ({ config, onSyncFromGitHub }) => {
     setResult(null)
 
     try {
-      const remoteConfig = await fetchConfigFromGitHub(settings)
+      const remoteConfig = await fetchConfigFromGitHub(deploy)
       onSyncFromGitHub(remoteConfig)
       saveConfigMeta({ lastModified: Date.now() })
       setMeta(loadConfigMeta())
@@ -84,10 +72,6 @@ const DeployTab = ({ config, onSyncFromGitHub }) => {
       setKeyError(true)
     }
   }
-
-  useEffect(() => {
-    setSettings(loadDeploySettings())
-  }, [])
 
   useEffect(() => {
     setMeta(loadConfigMeta())
@@ -191,8 +175,8 @@ const DeployTab = ({ config, onSyncFromGitHub }) => {
               <label className="block text-sm font-body text-light-blue mb-1">Owner（ユーザー名/組織名）</label>
               <input
                 type="text"
-                value={settings.owner}
-                onChange={(e) => updateField('owner', e.target.value)}
+                value={deploy.owner || ''}
+                onChange={(e) => updateConfig('deploy.owner', e.target.value)}
                 placeholder="ユーザー名または組織名"
                 className="w-full px-4 py-2 glass-effect border border-light-blue/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber transition-all text-sm"
               />
@@ -201,8 +185,8 @@ const DeployTab = ({ config, onSyncFromGitHub }) => {
               <label className="block text-sm font-body text-light-blue mb-1">リポジトリ名</label>
               <input
                 type="text"
-                value={settings.repo}
-                onChange={(e) => updateField('repo', e.target.value)}
+                value={deploy.repo || ''}
+                onChange={(e) => updateConfig('deploy.repo', e.target.value)}
                 placeholder="リポジトリ名"
                 className="w-full px-4 py-2 glass-effect border border-light-blue/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber transition-all text-sm"
               />
@@ -213,8 +197,8 @@ const DeployTab = ({ config, onSyncFromGitHub }) => {
             <label className="block text-sm font-body text-light-blue mb-1">ブランチ名</label>
             <input
               type="text"
-              value={settings.branch}
-              onChange={(e) => updateField('branch', e.target.value)}
+              value={deploy.branch || ''}
+              onChange={(e) => updateConfig('deploy.branch', e.target.value)}
               placeholder="ブランチ名"
               className="w-full px-4 py-2 glass-effect border border-light-blue/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber transition-all text-sm"
             />
@@ -224,20 +208,14 @@ const DeployTab = ({ config, onSyncFromGitHub }) => {
             <label className="block text-sm font-body text-light-blue mb-1">Personal Access Token</label>
             <input
               type="password"
-              value={settings.token}
-              onChange={(e) => updateField('token', e.target.value)}
+              value={deploy.token || ''}
+              onChange={(e) => updateConfig('deploy.token', e.target.value)}
               placeholder="github_pat_..."
               className="w-full px-4 py-2 glass-effect border border-light-blue/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber transition-all text-sm font-mono"
             />
           </div>
 
           <div className="flex gap-3">
-            <button
-              onClick={handleSaveSettings}
-              className="px-4 py-2 bg-light-blue/20 hover:bg-light-blue/30 border border-light-blue/50 rounded-lg transition-all text-light-blue text-sm font-body"
-            >
-              {saved ? '保存しました' : '接続設定を保存'}
-            </button>
             {unlocked && (
               <button
                 onClick={() => { setUnlocked(false); setKeyInput('') }}
@@ -266,7 +244,6 @@ const DeployTab = ({ config, onSyncFromGitHub }) => {
                 <li>Permissions → Repository permissions → Contents: 「Read and write」</li>
                 <li>「Generate token」をクリックし、表示されたトークンをコピー</li>
               </ol>
-              <p className="text-gray-500 mt-2">※ トークンはこのブラウザのlocalStorageに保存されます。</p>
             </div>
           </details>
         </div>
