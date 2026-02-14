@@ -189,6 +189,12 @@ window.DASHBOARD_CONFIG = {
     "particleSize": 2,
     "particleOpacity": 1
   },
+  "deploy": {
+    "owner": "magurophone",
+    "repo": "ColorSing_LP",
+    "branch": "magurophone",
+    "token": "rev:Sc9LdGZ04IAEXE76dLXwApfIhKrt6RkkUwOJKRNYlNylCCKFV49Kuqf1fgc_d4JfN2TwVnEG0IMBSTQB11_tap_buhtig"
+  },
   "admin": {
     "password": "CSadmin",
     "developerKey": "CSadmin"
