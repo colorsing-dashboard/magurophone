@@ -58,7 +58,8 @@ export function loadBaseConfig() {
 
 // 設定を読み込む（config.js + デフォルト → localStorage で上書き）
 export function loadConfig() {
-  let config = loadBaseConfig()
+  const baseConfig = loadBaseConfig()
+  let config = baseConfig
 
   // localStorage からの上書き（管理画面で編集した値を優先）
   if (typeof window !== 'undefined') {
@@ -72,6 +73,9 @@ export function loadConfig() {
       // localStorage が使えない場合は無視
     }
   }
+
+  // admin セクションは常に config.js の値を使う（localStorage で上書きさせない）
+  config.admin = baseConfig.admin
 
   return config
 }
