@@ -1,84 +1,81 @@
 import { generateConfigJS, importConfigFromText } from './configIO'
 
-// 前回デプロイ成功時の SHA をメモリに保持（API キャッシュ対策）
-let lastKnownSHA = null
-
-async function fetchSHA(owner, repo, branch, path, headers) {
-  const res = await fetch(
-    `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${encodeURIComponent(branch)}&t=${Date.now()}`,
-    { headers, cache: 'no-store' }
-  )
-
-  if (res.status === 401) throw new Error('認証エラー: トークンが無効です')
-  if (res.status === 404) throw new Error('リポジトリまたはファイルが見つかりません')
-  if (!res.ok) throw new Error(`SHA取得エラー: ${res.status}`)
-
-  const data = await res.json()
-  return data.sha
-}
-
 export async function deployConfigToGitHub(config, { owner, repo, branch, token }) {
   const path = 'public/config.js'
   const headers = {
     Authorization: `Bearer ${token}`,
     'Content-Type': 'application/json',
   }
+  const fileContent = generateConfigJS(config)
 
-  const content = btoa(unescape(encodeURIComponent(generateConfigJS(config))))
+  // 1. ブランチの最新コミットSHAを取得（Git Refs API — キャッシュ影響なし）
+  const refRes = await fetch(
+    `https://api.github.com/repos/${owner}/${repo}/git/ref/heads/${encodeURIComponent(branch)}`,
+    { headers, cache: 'no-store' }
+  )
+  if (refRes.status === 401) throw new Error('認証エラー: トークンが無効です')
+  if (refRes.status === 404) throw new Error('リポジトリまたはブランチが見つかりません')
+  if (!refRes.ok) throw new Error(`ブランチ取得エラー: ${refRes.status}`)
+  const refData = await refRes.json()
+  const latestCommitSha = refData.object.sha
 
-  // 前回の SHA があればそれを優先、なければ API から取得
-  let sha = lastKnownSHA || await fetchSHA(owner, repo, branch, path, headers)
+  // 2. コミットからベースツリーSHAを取得
+  const commitRes = await fetch(
+    `https://api.github.com/repos/${owner}/${repo}/git/commits/${latestCommitSha}`,
+    { headers, cache: 'no-store' }
+  )
+  if (!commitRes.ok) throw new Error(`コミット取得エラー: ${commitRes.status}`)
+  const commitData = await commitRes.json()
 
-  const putRes = await fetch(
-    `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+  // 3. ファイルを含む新しいツリーを作成
+  const treeRes = await fetch(
+    `https://api.github.com/repos/${owner}/${repo}/git/trees`,
     {
-      method: 'PUT',
+      method: 'POST',
       headers,
       body: JSON.stringify({
-        message: '管理画面から設定を更新',
-        content,
-        sha,
-        branch,
+        base_tree: commitData.tree.sha,
+        tree: [{
+          path,
+          mode: '100644',
+          type: 'blob',
+          content: fileContent,
+        }],
       }),
     }
   )
+  if (treeRes.status === 403) throw new Error('権限エラー: トークンに Contents の書き込み権限（Read and write）がありません。トークンを再作成してください')
+  if (!treeRes.ok) throw new Error(`ツリー作成エラー: ${treeRes.status}`)
+  const treeData = await treeRes.json()
 
-  // 409: 保持していた SHA が古い → API から再取得してリトライ
-  if (putRes.status === 409) {
-    sha = await fetchSHA(owner, repo, branch, path, headers)
+  // 4. 新しいコミットを作成
+  const newCommitRes = await fetch(
+    `https://api.github.com/repos/${owner}/${repo}/git/commits`,
+    {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        message: '管理画面から設定を更新',
+        tree: treeData.sha,
+        parents: [latestCommitSha],
+      }),
+    }
+  )
+  if (!newCommitRes.ok) throw new Error(`コミット作成エラー: ${newCommitRes.status}`)
+  const newCommitData = await newCommitRes.json()
 
-    const retryRes = await fetch(
-      `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
-      {
-        method: 'PUT',
-        headers,
-        body: JSON.stringify({
-          message: '管理画面から設定を更新',
-          content,
-          sha,
-          branch,
-        }),
-      }
-    )
+  // 5. ブランチの参照を新コミットに更新
+  const updateRefRes = await fetch(
+    `https://api.github.com/repos/${owner}/${repo}/git/refs/heads/${encodeURIComponent(branch)}`,
+    {
+      method: 'PATCH',
+      headers,
+      body: JSON.stringify({ sha: newCommitData.sha }),
+    }
+  )
+  if (!updateRefRes.ok) throw new Error(`ブランチ更新エラー: ${updateRefRes.status}`)
 
-    if (retryRes.status === 403) throw new Error('権限エラー: トークンに Contents の書き込み権限（Read and write）がありません。トークンを再作成してください')
-    if (retryRes.status === 409) throw new Error('コンフリクト: SHAを再取得しましたが競合が解消しません。しばらく待ってから再試行してください')
-    if (retryRes.status === 422) throw new Error('バリデーションエラー: ブランチ名またはファイルパスを確認してください')
-    if (!retryRes.ok) throw new Error(`デプロイエラー: ${retryRes.status}`)
-
-    const result = await retryRes.json()
-    lastKnownSHA = result.content.sha
-    return result
-  }
-
-  if (putRes.status === 403) throw new Error('権限エラー: トークンに Contents の書き込み権限（Read and write）がありません。トークンを再作成してください')
-  if (putRes.status === 422) throw new Error('バリデーションエラー: ブランチ名またはファイルパスを確認してください')
-  if (!putRes.ok) throw new Error(`デプロイエラー: ${putRes.status}`)
-
-  const result = await putRes.json()
-  // 成功時の SHA を保持 → 次回デプロイでキャッシュ問題を回避
-  lastKnownSHA = result.content.sha
-  return result
+  return await updateRefRes.json()
 }
 
 // GitHubから最新のconfig.jsを取得
@@ -94,8 +91,6 @@ export async function fetchConfigFromGitHub({ owner, repo, branch, token }) {
   if (!res.ok) throw new Error(`取得エラー: ${res.status}`)
 
   const data = await res.json()
-  // 取得時の SHA も保持（次回デプロイ用）
-  lastKnownSHA = data.sha
   const content = decodeURIComponent(escape(atob(data.content)))
   return importConfigFromText(content)
 }
