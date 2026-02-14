@@ -104,6 +104,9 @@ export function generateConfigJS(config) {
   const cleanConfig = { ...config }
   // admin セクションは保持（password, developerKey がデプロイ後も消えないように）
 
+  // deploy セクションはローカル専用（トークンを config.js に含めない）
+  delete cleanConfig.deploy
+
   const json = JSON.stringify(cleanConfig, null, 2)
   return `// ダッシュボード設定ファイル
 // 管理画面（admin.html）からエクスポートされた設定です
