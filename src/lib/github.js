@@ -7,10 +7,10 @@ export async function deployConfigToGitHub(config, { owner, repo, branch, token 
     'Content-Type': 'application/json',
   }
 
-  // 既存ファイルのSHAを取得
+  // 既存ファイルのSHAを取得（キャッシュ無効化で常に最新を取得）
   const getRes = await fetch(
     `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${encodeURIComponent(branch)}`,
-    { headers }
+    { headers, cache: 'no-store' }
   )
 
   if (getRes.status === 401) throw new Error('認証エラー: トークンが無効です')
@@ -50,7 +50,7 @@ export async function fetchConfigFromGitHub({ owner, repo, branch, token }) {
   const path = 'public/config.js'
   const res = await fetch(
     `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${encodeURIComponent(branch)}`,
-    { headers: { Authorization: `Bearer ${token}` } }
+    { headers: { Authorization: `Bearer ${token}` }, cache: 'no-store' }
   )
 
   if (res.status === 401) throw new Error('認証エラー: トークンが無効です')
