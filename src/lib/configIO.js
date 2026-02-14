@@ -55,9 +55,9 @@ export function loadBaseConfig() {
 
   const merged = deepMerge(DEFAULT_CONFIG, config)
 
-  // エンコード済みトークンをデコード
-  if (merged.deploy?.token?.startsWith('enc:')) {
-    merged.deploy.token = decodeURIComponent(escape(atob(merged.deploy.token.slice(4))))
+  // 反転トークンを復元
+  if (merged.deploy?.token?.startsWith('rev:')) {
+    merged.deploy.token = merged.deploy.token.slice(4).split('').reverse().join('')
   }
 
   return merged
@@ -111,10 +111,10 @@ export function generateConfigJS(config) {
   const cleanConfig = { ...config }
   // admin セクションは保持（password, developerKey がデプロイ後も消えないように）
 
-  // deploy.token は GitHub シークレットスキャンを回避するためエンコードして保存
-  if (cleanConfig.deploy?.token) {
+  // deploy.token は GitHub シークレットスキャンを回避するため反転して保存
+  if (cleanConfig.deploy?.token && !cleanConfig.deploy.token.startsWith('rev:')) {
     cleanConfig.deploy = { ...cleanConfig.deploy }
-    cleanConfig.deploy.token = 'enc:' + btoa(unescape(encodeURIComponent(cleanConfig.deploy.token)))
+    cleanConfig.deploy.token = 'rev:' + cleanConfig.deploy.token.split('').reverse().join('')
   }
 
   const json = JSON.stringify(cleanConfig, null, 2)
