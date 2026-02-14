@@ -114,12 +114,7 @@ function AdminApp() {
   }
 
   const handleSyncFromGitHub = (remoteConfig) => {
-    setConfig(prev => {
-      const synced = deepMerge(DEFAULT_CONFIG, remoteConfig)
-      // deploy セクションは config.js に含めないのでローカル値を保持
-      synced.deploy = prev.deploy
-      return synced
-    })
+    setConfig(deepMerge(DEFAULT_CONFIG, remoteConfig))
   }
 
   const handleReset = () => {
