@@ -1,4 +1,4 @@
-import { generateConfigJS } from './configIO'
+import { generateConfigJS, importConfigFromText } from './configIO'
 
 const DEPLOY_STORAGE_KEY = 'deploy_settings'
 
@@ -58,4 +58,21 @@ export async function deployConfigToGitHub(config, { owner, repo, branch, token 
   if (!putRes.ok) throw new Error(`デプロイエラー: ${putRes.status}`)
 
   return await putRes.json()
+}
+
+// GitHubから最新のconfig.jsを取得
+export async function fetchConfigFromGitHub({ owner, repo, branch, token }) {
+  const path = 'public/config.js'
+  const res = await fetch(
+    `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${encodeURIComponent(branch)}`,
+    { headers: { Authorization: `Bearer ${token}` } }
+  )
+
+  if (res.status === 401) throw new Error('認証エラー: トークンが無効です')
+  if (res.status === 404) throw new Error('リポジトリまたはファイルが見つかりません')
+  if (!res.ok) throw new Error(`取得エラー: ${res.status}`)
+
+  const data = await res.json()
+  const content = decodeURIComponent(escape(atob(data.content)))
+  return importConfigFromText(content)
 }
