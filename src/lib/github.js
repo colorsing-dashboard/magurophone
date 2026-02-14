@@ -70,10 +70,11 @@ export async function deployConfigToGitHub(config, { owner, repo, branch, token 
       return
     } catch (err) {
       if ((err.status === 409 || err.status === 422) && i < maxRetries - 1) continue
+      const detail = err.data ? JSON.stringify(err.data, null, 2) : 'なし'
       if (err.status === 401) throw new Error('認証エラー: トークンが無効です')
       if (err.status === 403) throw new Error('権限エラー: トークンに Contents の書き込み権限（Read and write）がありません。トークンを再作成してください')
       if (err.status === 404) throw new Error('リポジトリまたはブランチが見つかりません')
-      throw new Error(`デプロイエラー: ${err.message}`)
+      throw new Error(`デプロイエラー: ${err.message}\n\n詳細:\n${detail}`)
     }
   }
 
