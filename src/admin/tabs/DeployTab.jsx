@@ -7,12 +7,13 @@ const DeployTab = ({ config }) => {
   const [result, setResult] = useState(null)
   const [saved, setSaved] = useState(false)
 
-  // 開発者ロック
+  // 開発者ロック（config.js の admin.developerKey で判定）
   const [keyInput, setKeyInput] = useState('')
   const [unlocked, setUnlocked] = useState(false)
   const [keyError, setKeyError] = useState(false)
 
-  const hasKey = !!settings.deployKey
+  const developerKey = config?.admin?.developerKey || ''
+  const hasKey = !!developerKey
 
   const updateField = (field, value) => {
     setSettings(prev => ({ ...prev, [field]: value }))
@@ -44,7 +45,7 @@ const DeployTab = ({ config }) => {
 
   const handleUnlock = (e) => {
     e.preventDefault()
-    if (keyInput === settings.deployKey) {
+    if (keyInput === developerKey) {
       setUnlocked(true)
       setKeyError(false)
     } else {
@@ -121,12 +122,6 @@ const DeployTab = ({ config }) => {
         </div>
       ) : (
         <div className="space-y-4">
-          {!hasKey && (
-            <div className="glass-effect px-4 py-3 rounded-lg border border-amber/30 text-sm text-amber mb-4">
-              初回セットアップ: 接続情報を入力後、開発者キーを設定して保存してください。
-            </div>
-          )}
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-body text-light-blue mb-1">Owner（ユーザー名/組織名）</label>
@@ -170,20 +165,6 @@ const DeployTab = ({ config }) => {
               placeholder="github_pat_..."
               className="w-full px-4 py-2 glass-effect border border-light-blue/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber transition-all text-sm font-mono"
             />
-          </div>
-
-          <hr className="border-light-blue/20 my-4" />
-
-          <div>
-            <label className="block text-sm font-body text-light-blue mb-1">開発者キー</label>
-            <input
-              type="password"
-              value={settings.deployKey || ''}
-              onChange={(e) => updateField('deployKey', e.target.value)}
-              placeholder={hasKey ? '変更する場合のみ入力' : '設定するキーを入力'}
-              className="w-full px-4 py-2 glass-effect border border-amber/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber transition-all text-sm"
-            />
-            <p className="text-xs text-gray-500 mt-1">このキーを設定すると、接続設定の変更にキーの入力が必要になります</p>
           </div>
 
           <div className="flex gap-3">
