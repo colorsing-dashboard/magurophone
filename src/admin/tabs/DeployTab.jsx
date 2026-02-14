@@ -14,6 +14,7 @@ const DeployTab = ({ config, updateConfig, onSyncFromGitHub }) => {
   const [deploying, setDeploying] = useState(false)
   const [syncing, setSyncing] = useState(false)
   const [result, setResult] = useState(null)
+  const [saved, setSaved] = useState(false)
   const [meta, setMeta] = useState(() => loadConfigMeta())
 
   // 開発者ロック（config.js の admin.developerKey で判定）
@@ -216,6 +217,12 @@ const DeployTab = ({ config, updateConfig, onSyncFromGitHub }) => {
           </div>
 
           <div className="flex gap-3">
+            <button
+              onClick={() => { setSaved(true); setTimeout(() => setSaved(false), 2000) }}
+              className="px-4 py-2 bg-light-blue/20 hover:bg-light-blue/30 border border-light-blue/50 rounded-lg transition-all text-light-blue text-sm font-body"
+            >
+              {saved ? '保存しました' : '接続設定を保存'}
+            </button>
             {unlocked && (
               <button
                 onClick={() => { setUnlocked(false); setKeyInput('') }}
