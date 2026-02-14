@@ -116,14 +116,12 @@ function AdminApp() {
   const handleSyncFromGitHub = (remoteConfig) => {
     setConfig(prev => {
       const synced = deepMerge(DEFAULT_CONFIG, remoteConfig)
-      // エンコード済みトークンをデコード
-      if (synced.deploy?.token?.startsWith('enc:')) {
-        try {
-          synced.deploy.token = decodeURIComponent(escape(atob(synced.deploy.token.slice(4))))
-        } catch { /* デコード失敗時はそのまま */ }
+      // 反転トークンを復元
+      if (synced.deploy?.token?.startsWith('rev:')) {
+        synced.deploy.token = synced.deploy.token.slice(4).split('').reverse().join('')
       }
-      // ローカルに token があればそちらを優先
-      if (prev.deploy?.token && !prev.deploy.token.startsWith('enc:')) {
+      // ローカルに平文 token があればそちらを優先
+      if (prev.deploy?.token && !prev.deploy.token.startsWith('rev:')) {
         synced.deploy = { ...synced.deploy, token: prev.deploy.token }
       }
       return synced
