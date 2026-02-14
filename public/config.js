@@ -5,7 +5,7 @@ window.DASHBOARD_CONFIG = {
   "brand": {
     "name": "BAR MAGUROPHONE",
     "sidebarTitle": "　color singer LP",
-    "footerText": "深海BAR MAGUROPHONE 🐟🎧",
+    "footerText": "深海BAR MAGUROPHONE ",
     "footerSubText": "単推し・最推し様・メンシプ様募集中です",
     "footerNote": "ファンマ: 🐟🎧",
     "pageTitle": "深海BAR MAGUROPHONE - 特典管理",
