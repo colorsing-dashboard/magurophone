@@ -1,20 +1,5 @@
 import { generateConfigJS, importConfigFromText } from './configIO'
 
-const DEPLOY_STORAGE_KEY = 'deploy_settings'
-
-export function loadDeploySettings() {
-  try {
-    const stored = localStorage.getItem(DEPLOY_STORAGE_KEY)
-    return stored ? JSON.parse(stored) : { owner: '', repo: '', branch: '', token: '' }
-  } catch {
-    return { owner: '', repo: '', branch: '', token: '' }
-  }
-}
-
-export function saveDeploySettings(settings) {
-  localStorage.setItem(DEPLOY_STORAGE_KEY, JSON.stringify(settings))
-}
-
 export async function deployConfigToGitHub(config, { owner, repo, branch, token }) {
   const path = 'public/config.js'
   const headers = {
