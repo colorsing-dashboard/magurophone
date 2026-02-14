@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
-import { loadConfig, loadBaseConfig, saveConfig, clearConfig, downloadConfigJS, importConfigFromText, deepMerge } from '../lib/configIO'
+import { loadConfig, loadBaseConfig, saveConfig, clearConfig, downloadConfigJS, importConfigFromText, deepMerge, saveConfigMeta } from '../lib/configIO'
+import DEFAULT_CONFIG from '../lib/defaults'
 import IconRenderer from '../components/IconRenderer'
 import BrandingTab from './tabs/BrandingTab'
 import ColorsTab from './tabs/ColorsTab'
@@ -76,6 +77,7 @@ function AdminApp() {
       return
     }
     saveConfig(config)
+    saveConfigMeta({ lastModified: Date.now() })
     setSaveMessage('保存しました')
     const timer = setTimeout(() => setSaveMessage(null), 2000)
     return () => clearTimeout(timer)
@@ -109,6 +111,10 @@ function AdminApp() {
     }
 
     e.target.value = ''
+  }
+
+  const handleSyncFromGitHub = (remoteConfig) => {
+    setConfig(deepMerge(DEFAULT_CONFIG, remoteConfig))
   }
 
   const handleReset = () => {
@@ -232,7 +238,7 @@ function AdminApp() {
         )}
 
         <div className="max-w-3xl">
-          <ActiveTab config={config} updateConfig={updateConfig} />
+          <ActiveTab config={config} updateConfig={updateConfig} onSyncFromGitHub={handleSyncFromGitHub} />
         </div>
 
         {/* モバイル用アクションボタン */}

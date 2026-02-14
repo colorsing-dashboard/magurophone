@@ -1,11 +1,22 @@
 import { useState, useEffect } from 'react'
-import { loadDeploySettings, saveDeploySettings, deployConfigToGitHub } from '../../lib/github'
+import { loadDeploySettings, saveDeploySettings, deployConfigToGitHub, fetchConfigFromGitHub } from '../../lib/github'
+import { saveConfigMeta, loadConfigMeta } from '../../lib/configIO'
 
-const DeployTab = ({ config }) => {
+const formatTime = (ts) => {
+  if (!ts) return '---'
+  return new Date(ts).toLocaleString('ja-JP', {
+    month: 'numeric', day: 'numeric',
+    hour: '2-digit', minute: '2-digit',
+  })
+}
+
+const DeployTab = ({ config, onSyncFromGitHub }) => {
   const [settings, setSettings] = useState(() => loadDeploySettings())
   const [deploying, setDeploying] = useState(false)
+  const [syncing, setSyncing] = useState(false)
   const [result, setResult] = useState(null)
   const [saved, setSaved] = useState(false)
+  const [meta, setMeta] = useState(() => loadConfigMeta())
 
   // 開発者ロック（config.js の admin.developerKey で判定）
   const [keyInput, setKeyInput] = useState('')
@@ -35,11 +46,32 @@ const DeployTab = ({ config }) => {
 
     try {
       await deployConfigToGitHub(config, settings)
+      saveConfigMeta({ lastDeployed: Date.now() })
+      setMeta(loadConfigMeta())
       setResult({ success: true, message: 'デプロイ成功！GitHub Actionsでビルドが開始されます。' })
     } catch (err) {
       setResult({ success: false, message: err.message })
     } finally {
       setDeploying(false)
+    }
+  }
+
+  const handleSyncFromGitHub = async () => {
+    if (!canDeploy) return
+    if (!confirm('GitHubの最新設定でローカルを上書きしますか？')) return
+    setSyncing(true)
+    setResult(null)
+
+    try {
+      const remoteConfig = await fetchConfigFromGitHub(settings)
+      onSyncFromGitHub(remoteConfig)
+      saveConfigMeta({ lastModified: Date.now() })
+      setMeta(loadConfigMeta())
+      setResult({ success: true, message: 'GitHubから設定を同期しました' })
+    } catch (err) {
+      setResult({ success: false, message: err.message })
+    } finally {
+      setSyncing(false)
     }
   }
 
@@ -57,12 +89,44 @@ const DeployTab = ({ config }) => {
     setSettings(loadDeploySettings())
   }, [])
 
+  useEffect(() => {
+    setMeta(loadConfigMeta())
+  }, [config])
+
   return (
     <div>
       <h2 className="text-2xl font-body text-light-blue mb-6">GitHub デプロイ</h2>
       <p className="text-sm text-gray-400 mb-6">
         管理画面の設定をGitHubリポジトリに直接プッシュし、自動デプロイを実行します。
       </p>
+
+      {/* 同期ステータス */}
+      <div className="mb-6 glass-effect rounded-lg border border-light-blue/20 p-4">
+        <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+          <div>
+            <span className="text-gray-400">ローカル編集: </span>
+            <span className="text-light-blue font-body">{formatTime(meta.lastModified)}</span>
+          </div>
+          <div>
+            <span className="text-gray-400">最終デプロイ: </span>
+            <span className="text-amber font-body">{formatTime(meta.lastDeployed)}</span>
+          </div>
+        </div>
+        {meta.lastModified && meta.lastDeployed && meta.lastModified > meta.lastDeployed && (
+          <p className="text-xs text-amber/70 mt-2">
+            * デプロイ後にローカルで編集があります
+          </p>
+        )}
+        {canDeploy && (
+          <button
+            onClick={handleSyncFromGitHub}
+            disabled={syncing}
+            className="mt-3 px-4 py-2 bg-ocean-teal/20 hover:bg-ocean-teal/30 border border-ocean-teal/50 rounded-lg transition-all text-light-blue text-sm font-body disabled:opacity-50"
+          >
+            {syncing ? '同期中...' : 'GitHubから最新設定を取得'}
+          </button>
+        )}
+      </div>
 
       {/* デプロイボタン（常時表示） */}
       <div className="mb-6">

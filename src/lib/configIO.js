@@ -1,6 +1,7 @@
 import DEFAULT_CONFIG from './defaults'
 
 const STORAGE_KEY = 'dashboard_config'
+const META_STORAGE_KEY = 'config_meta'
 
 // オブジェクトの深いマージ（配列はそのまま上書き）
 export function deepMerge(target, source) {
@@ -117,6 +118,26 @@ export function downloadConfigJS(config) {
   a.download = 'config.js'
   a.click()
   URL.revokeObjectURL(url)
+}
+
+// メタデータを読み込む（タイムスタンプ等、config本体とは別管理）
+export function loadConfigMeta() {
+  try {
+    const stored = localStorage.getItem(META_STORAGE_KEY)
+    return stored ? JSON.parse(stored) : {}
+  } catch {
+    return {}
+  }
+}
+
+// メタデータを保存
+export function saveConfigMeta(meta) {
+  try {
+    const current = loadConfigMeta()
+    localStorage.setItem(META_STORAGE_KEY, JSON.stringify({ ...current, ...meta }))
+  } catch {
+    // 無視
+  }
 }
 
 // config.js ファイルをインポート（テキスト内容からパース）
