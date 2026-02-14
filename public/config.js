@@ -191,6 +191,6 @@ window.DASHBOARD_CONFIG = {
   },
   "admin": {
     "password": "CSadmin",
-    "developerKey": ""
+    "developerKey": "CSadmin"
   }
 }
