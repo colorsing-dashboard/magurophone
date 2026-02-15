@@ -48,7 +48,7 @@ const MenuView = ({ benefits, onSelectBenefit }) => {
                   return tier ? (
                     <span className={floatClass}><IconRenderer icon={tier.icon} size={48} className="text-highlight" /></span>
                   ) : (
-                    <span className={`text-3xl md:text-5xl ${floatClass}`}>{benefit[BENEFIT_FIELDS.ICON]}</span>
+                    <span className={`text-3xl md:text-5xl ${floatClass}`}>📦</span>
                   )
                 })()}
               </div>
