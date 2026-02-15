@@ -94,14 +94,14 @@ const TiersTab = ({ config, updateConfig }) => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
               <div>
-                <label className="block text-xs text-gray-500 mb-1">列インデックス（権利者データの何列目か、1始まり）</label>
+                <label className="block text-xs text-gray-500 mb-1">列インデックス（権利者データの何列目か、1始まり。0=メニューのみ表示）</label>
                 <input
                   type="number"
-                  min="1"
-                  value={tier.columnIndex || 1}
+                  min="0"
+                  value={tier.columnIndex ?? 0}
                   onChange={(e) => {
                     const v = parseInt(e.target.value, 10)
-                    if (!isNaN(v) && v > 0) updateTier(index, 'columnIndex', v)
+                    if (!isNaN(v) && v >= 0) updateTier(index, 'columnIndex', v)
                   }}
                   className="w-full px-3 py-1.5 glass-effect border border-light-blue/30 rounded-lg text-white text-sm focus:outline-none focus:border-amber"
                 />
