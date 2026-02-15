@@ -55,6 +55,14 @@ export function loadBaseConfig() {
 
   const merged = deepMerge(DEFAULT_CONFIG, config)
 
+  // 旧config互換: dataSheetName → rankingSheetName / benefitsSheetName
+  if (config.sheets?.dataSheetName && !config.sheets?.rankingSheetName) {
+    merged.sheets.rankingSheetName = config.sheets.dataSheetName
+  }
+  if (config.sheets?.dataSheetName && !config.sheets?.benefitsSheetName) {
+    merged.sheets.benefitsSheetName = config.sheets.dataSheetName
+  }
+
   // 反転トークンを復元
   if (merged.deploy?.token?.startsWith('rev:')) {
     merged.deploy.token = merged.deploy.token.slice(4).split('').reverse().join('')
