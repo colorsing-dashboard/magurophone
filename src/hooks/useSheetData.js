@@ -50,8 +50,8 @@ export function useSheetData(sheetsConfig) {
       const [rankingData, goalsData, benefitsData, rightsData, historyData] = await Promise.all(fetches)
 
       setRanking(rankingData)
-      setGoals(goalsData)
-      setBenefits(benefitsData)
+      setGoals(goalsData.slice(1))
+      setBenefits(benefitsData.slice(1))
       setRights(rightsData)
       setHistory(historyData || [])
       setLastUpdate(new Date())

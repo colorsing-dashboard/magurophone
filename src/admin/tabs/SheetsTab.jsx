@@ -122,7 +122,7 @@ A2:B10 ... 目標（ラベル, 値）`}</pre>
           </div>
           <div>
             <p className="text-light-blue font-bold mb-1">特典管理シート</p>
-            <pre className="bg-black/30 rounded p-2 overflow-x-auto">{`K2:P20  ... 特典説明（タイトル, 名前, 説明, アイコン, ラベル, 履歴トラッキング☑）
+            <pre className="bg-black/30 rounded p-2 overflow-x-auto">{`K2:O20  ... 特典説明（特典ティア, 特典タイトル, 簡易説明, 詳細説明, レコード機能☑）
 A2:I1000 ... 権利者リスト（名前, 各ティアの値...）`}</pre>
           </div>
           <div>
@@ -161,7 +161,7 @@ C列: Google Drive画像URL
           label="特典説明データ"
           value={config.sheets.ranges.benefits}
           onChange={(v) => updateConfig('sheets.ranges.benefits', v)}
-          placeholder="K2:P20"
+          placeholder="K2:O20"
         />
         <Field
           label="権利者データ"

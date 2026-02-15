@@ -1,14 +1,20 @@
+import { useConfig } from '../context/ConfigContext'
+import IconRenderer from './IconRenderer'
+
 const BENEFIT_FIELDS = {
   TITLE: 0,
-  NAME: 1,
-  DESCRIPTION: 2,
-  ICON: 3,
-  LABEL: 4,
-  TRACK_HISTORY: 5,
+  LABEL: 1,
+  NAME: 2,
+  DESCRIPTION: 3,
+  TRACK_HISTORY: 4,
 }
 
 const BenefitPopup = ({ benefit, onClose }) => {
+  const config = useConfig()
+
   if (!benefit) return null
+
+  const tier = config.benefitTiers?.find(t => t.key === benefit[BENEFIT_FIELDS.TITLE])
 
   return (
     <div
@@ -28,7 +34,11 @@ const BenefitPopup = ({ benefit, onClose }) => {
 
         <div className="text-center">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <span className="text-5xl">{benefit[BENEFIT_FIELDS.ICON]}</span>
+            {tier ? (
+              <IconRenderer icon={tier.icon} size={48} className="text-highlight" />
+            ) : (
+              <span className="text-5xl">📦</span>
+            )}
           </div>
           <p className="text-lg font-bold mb-4 whitespace-pre-line">{benefit[BENEFIT_FIELDS.NAME]}</p>
           <p className="text-sm text-gray-400">{benefit[BENEFIT_FIELDS.DESCRIPTION]}</p>
