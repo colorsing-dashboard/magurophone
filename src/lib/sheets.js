@@ -62,6 +62,17 @@ export const isMonthlyFormat = (keys) => {
   return keys.every(key => /^\d{6}$/.test(key))
 }
 
+// 特典履歴データを読み込む（A列:ユーザー名, B列:年月, C列:特典ID, D列:内容）
+export const fetchHistoryData = async (spreadsheetId, historySheetName, range = null) => {
+  const data = await fetchSheetData(spreadsheetId, historySheetName, range)
+  return data.map(row => ({
+    userName: String(row[0] || ''),
+    month: String(row[1] || ''),
+    tierKey: String(row[2] || ''),
+    content: String(row[3] || ''),
+  }))
+}
+
 // 枠内アイコンデータを読み込む（A列:yyyymmまたはカテゴリ名, B列:ユーザー名, C列:画像URL）
 export const fetchIconData = async (spreadsheetId, iconSheetName) => {
   const iconData = {}

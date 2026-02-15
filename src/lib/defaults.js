@@ -55,13 +55,16 @@ const DEFAULT_CONFIG = {
 
   sheets: {
     spreadsheetId: '',
-    dataSheetName: 'data',
+    rankingSheetName: '目標管理・ランキング',
+    benefitsSheetName: '特典管理',
+    historySheetName: '特典履歴',
     iconSheetName: '枠内アイコン',
     ranges: {
-      ranking: 'A2:D5',
-      goals: 'A8:B12',
-      benefits: 'G2:K12',
-      rights: 'A15:I1000',
+      ranking: 'D2:G5',
+      goals: 'A2:B10',
+      benefits: 'K2:O20',
+      rights: 'A2:I1000',
+      history: 'A2:D1000',
     },
     refreshIntervalMs: 300000,
   },

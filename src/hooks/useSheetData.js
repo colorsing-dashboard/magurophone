@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { fetchSheetData, fetchIconData } from '../lib/sheets'
+import { fetchSheetData, fetchIconData, fetchHistoryData } from '../lib/sheets'
 
 export function useSheetData(sheetsConfig) {
   const [ranking, setRanking] = useState([])
   const [goals, setGoals] = useState([])
   const [rights, setRights] = useState([])
   const [benefits, setBenefits] = useState([])
+  const [history, setHistory] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [lastUpdate, setLastUpdate] = useState(null)
@@ -17,12 +18,13 @@ export function useSheetData(sheetsConfig) {
   const [iconError, setIconError] = useState(null)
   const iconsLoadedRef = useRef(false)
 
-  const { spreadsheetId, dataSheetName, iconSheetName, ranges, refreshIntervalMs } = sheetsConfig
+  const { spreadsheetId, rankingSheetName, benefitsSheetName, historySheetName, iconSheetName, ranges, refreshIntervalMs } = sheetsConfig
   // rangesオブジェクトを個別の文字列に分解して安定した依存関係にする
   const rankingRange = ranges.ranking
   const goalsRange = ranges.goals
   const benefitsRange = ranges.benefits
   const rightsRange = ranges.rights
+  const historyRange = ranges.history
 
   const loadData = useCallback(async () => {
     if (!spreadsheetId) {
@@ -35,17 +37,23 @@ export function useSheetData(sheetsConfig) {
     setError(null)
 
     try {
-      const [rankingData, goalsData, benefitsData, rightsData] = await Promise.all([
-        fetchSheetData(spreadsheetId, dataSheetName, rankingRange),
-        fetchSheetData(spreadsheetId, dataSheetName, goalsRange),
-        fetchSheetData(spreadsheetId, dataSheetName, benefitsRange),
-        fetchSheetData(spreadsheetId, dataSheetName, rightsRange),
-      ])
+      const fetches = [
+        fetchSheetData(spreadsheetId, rankingSheetName, rankingRange),
+        fetchSheetData(spreadsheetId, rankingSheetName, goalsRange),
+        fetchSheetData(spreadsheetId, benefitsSheetName, benefitsRange),
+        fetchSheetData(spreadsheetId, benefitsSheetName, rightsRange),
+      ]
+      if (historySheetName) {
+        fetches.push(fetchHistoryData(spreadsheetId, historySheetName, historyRange).catch(() => []))
+      }
+
+      const [rankingData, goalsData, benefitsData, rightsData, historyData] = await Promise.all(fetches)
 
       setRanking(rankingData)
       setGoals(goalsData.slice(1))
       setBenefits(benefitsData.slice(1))
       setRights(rightsData)
+      setHistory(historyData || [])
       setLastUpdate(new Date())
       setError(null)
     } catch (err) {
@@ -54,7 +62,7 @@ export function useSheetData(sheetsConfig) {
     } finally {
       setLoading(false)
     }
-  }, [spreadsheetId, dataSheetName, rankingRange, goalsRange, benefitsRange, rightsRange])
+  }, [spreadsheetId, rankingSheetName, benefitsSheetName, historySheetName, rankingRange, goalsRange, benefitsRange, rightsRange, historyRange])
 
   // 初回読み込み + 自動更新
   useEffect(() => {
@@ -96,6 +104,7 @@ export function useSheetData(sheetsConfig) {
     goals,
     rights,
     benefits,
+    history,
     icons,
     loading,
     loadingIcons,
