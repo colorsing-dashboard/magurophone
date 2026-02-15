@@ -19,7 +19,7 @@ function App() {
   const [currentView, setCurrentView] = useState(enabledViews[0]?.id || 'home')
 
   const {
-    ranking, goals, rights, benefits, icons,
+    ranking, goals, rights, benefits, history, icons,
     loading, loadingIcons, iconError, error, lastUpdate,
     loadData, loadIcons,
   } = useSheetData(config.sheets)
@@ -143,6 +143,7 @@ function App() {
         <PersonPopup
           person={selectedPerson}
           benefits={benefits}
+          history={history}
           onClose={() => setSelectedPerson(null)}
           onSelectBenefit={setSelectedBenefit}
         />

@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useConfig } from '../context/ConfigContext'
 import { BENEFIT_FIELDS } from './BenefitPopup'
 import IconRenderer from './IconRenderer'
@@ -16,8 +17,31 @@ const hasRight = (value) => {
   return value > 0
 }
 
-const PersonPopup = ({ person, benefits, onClose, onSelectBenefit }) => {
+const isTrackHistory = (value) => {
+  if (typeof value === 'boolean') return value
+  if (typeof value === 'string') return value.trim().toUpperCase() === 'TRUE'
+  return false
+}
+
+const PersonPopup = ({ person, benefits, history, onClose, onSelectBenefit }) => {
   const config = useConfig()
+
+  const personName = person?.[RIGHTS_NAME_INDEX] || ''
+
+  // ユーザーの履歴をティアキーごとにグループ化（月の降順）
+  const historyByTier = useMemo(() => {
+    if (!history || !personName) return {}
+    const grouped = {}
+    for (const entry of history) {
+      if (entry.userName !== personName) continue
+      if (!grouped[entry.tierKey]) grouped[entry.tierKey] = []
+      grouped[entry.tierKey].push(entry)
+    }
+    for (const key of Object.keys(grouped)) {
+      grouped[key].sort((a, b) => String(b.month).localeCompare(String(a.month)))
+    }
+    return grouped
+  }, [history, personName])
 
   if (!person) return null
 
@@ -81,6 +105,19 @@ const PersonPopup = ({ person, benefits, onClose, onSelectBenefit }) => {
                   </div>
                   <p className="text-gray-300">{displayText}</p>
                 </div>
+
+                {isTrackHistory(benefit?.[BENEFIT_FIELDS.TRACK_HISTORY]) && historyByTier[tier.key]?.length > 0 && (
+                  <div className="mt-3 pt-3 border-t border-card-border/20 text-left">
+                    <p className="text-xs text-gray-500 mb-1">履歴:</p>
+                    <ul className="space-y-0.5">
+                      {historyByTier[tier.key].map((entry, i) => (
+                        <li key={i} className="text-xs text-gray-400">
+                          <span className="text-gray-500">{entry.month}</span> {entry.content}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             )
           })}

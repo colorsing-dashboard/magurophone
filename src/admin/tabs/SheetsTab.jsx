@@ -26,7 +26,7 @@ const SheetsTab = ({ config, updateConfig }) => {
     try {
       const data = await fetchSheetData(
         config.sheets.spreadsheetId,
-        config.sheets.dataSheetName,
+        config.sheets.rankingSheetName,
         config.sheets.ranges.ranking
       )
       setTestResult({
@@ -79,11 +79,25 @@ const SheetsTab = ({ config, updateConfig }) => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Field
-          label="データシート名"
-          value={config.sheets.dataSheetName}
-          onChange={(v) => updateConfig('sheets.dataSheetName', v)}
-          placeholder="data"
-          description="ランキング・目標・特典・権利者データのシート名"
+          label="ランキング・目標シート名"
+          value={config.sheets.rankingSheetName}
+          onChange={(v) => updateConfig('sheets.rankingSheetName', v)}
+          placeholder="目標管理・ランキング"
+          description="ランキング・目標データのシート名"
+        />
+        <Field
+          label="特典・権利者シート名"
+          value={config.sheets.benefitsSheetName}
+          onChange={(v) => updateConfig('sheets.benefitsSheetName', v)}
+          placeholder="特典管理"
+          description="特典説明・権利者データのシート名"
+        />
+        <Field
+          label="特典履歴シート名"
+          value={config.sheets.historySheetName}
+          onChange={(v) => updateConfig('sheets.historySheetName', v)}
+          placeholder="特典履歴"
+          description="特典実行履歴のシート名（ユーザー名, 年月, 特典ID, 内容）"
         />
         <Field
           label="アイコンシート名"
@@ -102,11 +116,19 @@ const SheetsTab = ({ config, updateConfig }) => {
         </summary>
         <div className="px-4 pb-4 text-xs text-gray-400 space-y-3">
           <div>
-            <p className="text-light-blue font-bold mb-1">dataシート</p>
-            <pre className="bg-black/30 rounded p-2 overflow-x-auto">{`A2:D5  ... ランキング（順位, 名前, ポイント, メダル画像URL）
-A8:B12 ... 目標（ラベル, 値）
-G2:K12 ... 特典説明（タイトル, 名前, 説明, アイコン, ラベル）
-A15:I  ... 権利者リスト（名前, 各ティアの値...）`}</pre>
+            <p className="text-light-blue font-bold mb-1">目標管理・ランキングシート</p>
+            <pre className="bg-black/30 rounded p-2 overflow-x-auto">{`D2:G5  ... ランキング（順位, 名前, ポイント, メダル画像URL）
+A2:B10 ... 目標（ラベル, 値）`}</pre>
+          </div>
+          <div>
+            <p className="text-light-blue font-bold mb-1">特典管理シート</p>
+            <pre className="bg-black/30 rounded p-2 overflow-x-auto">{`K2:O20  ... 特典説明（タイトル, 名前, 説明, アイコン, ラベル, 履歴トラッキング☑）
+A2:I1000 ... 権利者リスト（名前, 各ティアの値...）`}</pre>
+          </div>
+          <div>
+            <p className="text-light-blue font-bold mb-1">特典履歴シート</p>
+            <pre className="bg-black/30 rounded p-2 overflow-x-auto">{`A2:D1000
+A列: ユーザー名, B列: 年月（例: 202602）, C列: 特典ID, D列: 内容`}</pre>
           </div>
           <div>
             <p className="text-light-blue font-bold mb-1">枠内アイコンシート</p>
@@ -127,25 +149,31 @@ C列: Google Drive画像URL
           label="ランキングデータ"
           value={config.sheets.ranges.ranking}
           onChange={(v) => updateConfig('sheets.ranges.ranking', v)}
-          placeholder="A2:D5"
+          placeholder="D2:G5"
         />
         <Field
           label="目標データ"
           value={config.sheets.ranges.goals}
           onChange={(v) => updateConfig('sheets.ranges.goals', v)}
-          placeholder="A8:B12"
+          placeholder="A2:B10"
         />
         <Field
           label="特典説明データ"
           value={config.sheets.ranges.benefits}
           onChange={(v) => updateConfig('sheets.ranges.benefits', v)}
-          placeholder="G2:K12"
+          placeholder="K2:O20"
         />
         <Field
           label="権利者データ"
           value={config.sheets.ranges.rights}
           onChange={(v) => updateConfig('sheets.ranges.rights', v)}
-          placeholder="A15:I1000"
+          placeholder="A2:I1000"
+        />
+        <Field
+          label="特典履歴データ"
+          value={config.sheets.ranges.history}
+          onChange={(v) => updateConfig('sheets.ranges.history', v)}
+          placeholder="A2:D1000"
         />
       </div>
 

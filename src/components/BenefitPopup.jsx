@@ -4,6 +4,7 @@ const BENEFIT_FIELDS = {
   DESCRIPTION: 2,
   ICON: 3,
   LABEL: 4,
+  TRACK_HISTORY: 5,
 }
 
 const BenefitPopup = ({ benefit, onClose }) => {
