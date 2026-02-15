@@ -71,6 +71,7 @@ const PersonPopup = ({ person, benefits, history, onClose, onSelectBenefit }) =>
 
         <div className="space-y-6 overflow-y-auto pr-2 flex-1">
           {config.benefitTiers.map((tier) => {
+            if (!tier.columnIndex || tier.columnIndex < 1) return null
             const value = person[tier.columnIndex]
             if (!hasRight(value)) return null
 
