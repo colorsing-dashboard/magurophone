@@ -46,7 +46,7 @@ const PersonPopup = ({ person, benefits, history, onClose, onSelectBenefit }) =>
   if (!person) return null
 
   const getBenefitByTitle = (title) => {
-    return benefits.find(b => b[BENEFIT_FIELDS.TITLE] === title)
+    return benefits.find(b => String(b[BENEFIT_FIELDS.TITLE] || '').trim() === title)
   }
 
   return (

@@ -14,7 +14,8 @@ const BenefitPopup = ({ benefit, onClose }) => {
 
   if (!benefit) return null
 
-  const tier = config.benefitTiers?.find(t => t.key === benefit[BENEFIT_FIELDS.TITLE])
+  const title = String(benefit[BENEFIT_FIELDS.TITLE] || '').trim()
+  const tier = config.benefitTiers?.find(t => t.key === title)
 
   return (
     <div
@@ -33,13 +34,11 @@ const BenefitPopup = ({ benefit, onClose }) => {
         </button>
 
         <div className="text-center">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            {tier ? (
+          {tier && (
+            <div className="flex items-center justify-center gap-3 mb-4">
               <IconRenderer icon={tier.icon} size={48} className="text-highlight" />
-            ) : (
-              <span className="text-5xl">📦</span>
-            )}
-          </div>
+            </div>
+          )}
           <p className="text-lg font-bold mb-4 whitespace-pre-line">{benefit[BENEFIT_FIELDS.NAME]}</p>
           <p className="text-sm text-gray-400">{benefit[BENEFIT_FIELDS.DESCRIPTION]}</p>
         </div>

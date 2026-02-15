@@ -10,7 +10,7 @@ const MenuView = ({ benefits, onSelectBenefit }) => {
     <section>
       <h2 className="text-2xl md:text-4xl font-body mb-6 md:mb-12 text-center text-glow-soft text-primary">{config.menu.title}</h2>
       <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 gap-6">
-        {benefits.map((benefit, index) => (
+        {benefits.filter(b => b[BENEFIT_FIELDS.TITLE]).map((benefit, index) => (
           <div
             key={index}
             onClick={(e) => {
@@ -43,13 +43,11 @@ const MenuView = ({ benefits, onSelectBenefit }) => {
             <div className="hidden md:block flex-1">
               <div className="flex items-center justify-center mb-2 md:mb-4">
                 {(() => {
-                  const tier = tiers.find(t => t.key === benefit[BENEFIT_FIELDS.TITLE])
+                  const title = String(benefit[BENEFIT_FIELDS.TITLE] || '').trim()
+                  const tier = tiers.find(t => t.key === title)
+                  if (!tier) return null
                   const floatClass = config.effects?.iconFloat !== false ? 'animate-float' : ''
-                  return tier ? (
-                    <span className={floatClass}><IconRenderer icon={tier.icon} size={48} className="text-highlight" /></span>
-                  ) : (
-                    <span className={`text-3xl md:text-5xl ${floatClass}`}>📦</span>
-                  )
+                  return <span className={floatClass}><IconRenderer icon={tier.icon} size={48} className="text-highlight" /></span>
                 })()}
               </div>
               <p className="text-base md:text-lg font-bold mb-1 md:mb-2 whitespace-pre-line">{benefit[BENEFIT_FIELDS.NAME]}</p>
