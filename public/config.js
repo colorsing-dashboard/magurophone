@@ -60,7 +60,7 @@ window.DASHBOARD_CONFIG = {
     "ranges": {
       "ranking": "D2:G5",
       "goals": "A2:B10",
-      "benefits": "K2:P10",
+      "benefits": "K2:O10",
       "rights": "A2:I1000",
       "history": "A2:D1000"
     },
