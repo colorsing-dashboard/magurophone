@@ -55,12 +55,13 @@ window.DASHBOARD_CONFIG = {
     "spreadsheetId": "1lU49dwSPRysdFA2Fg6iofJnk7vaXLU1jJ6sUkCoN5zk",
     "rankingSheetName": "目標管理・ランキング",
     "benefitsSheetName": "特典管理",
+    "benefitsContentSheetName": "特典内容",
     "historySheetName": "特典履歴",
     "iconSheetName": "枠内アイコン",
     "ranges": {
       "ranking": "D2:G5",
       "goals": "A2:B10",
-      "benefits": "K2:O20",
+      "benefits": "A2:E20",
       "rights": "A2:I1000",
       "history": "A2:D1000"
     },
