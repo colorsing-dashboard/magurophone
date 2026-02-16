@@ -137,8 +137,8 @@ A2:B10 ... 目標（ラベル, 値）`}</pre>
           </div>
           <div>
             <p className="text-light-blue font-bold mb-1">特典履歴シート</p>
-            <pre className="bg-black/30 rounded p-2 overflow-x-auto">{`A2:D1000
-A列: ユーザー名, B列: 年月（例: 202602）, C列: 特典ID, D列: 内容`}</pre>
+            <pre className="bg-black/30 rounded p-2 overflow-x-auto">{`A3:D1000
+A列: 年月（例: 202602）, B列: ユーザー名, C列: 特典ID, D列: 内容`}</pre>
           </div>
           <div>
             <p className="text-light-blue font-bold mb-1">枠内アイコンシート</p>

@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>カラーシングライバー専用 メンバーシップ特典LP | あなた専用のランキング＆特典管理ページ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #ff6b9d;
+            --secondary: #c449ff;
+            --accent: #ffd700;
+            --dark: #1a1a2e;
+            --light: #ffffff;
+            --gray: #8892b0;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', 'Arial', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 107, 157, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(196, 73, 255, 0.2) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.2rem; }
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--light);
+            padding: 18px 50px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.4);
+            border: 2px solid transparent;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 107, 157, 0.6);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Section Styles */
+        section {
+            padding: 100px 0;
+            position: relative;
+        }
+
+        section:nth-child(even) {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 60px;
+            font-weight: 800;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: -40px;
+            margin-bottom: 60px;
+        }
+
+        /* Problem Section */
+        .problem-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .problem-box h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+        }
+
+        .problem-list {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+
+        .problem-list li {
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: start;
+            gap: 15px;
+        }
+
+        .problem-list li:last-child {
+            border-bottom: none;
+        }
+
+        .problem-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .solution-highlight {
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.3), rgba(196, 73, 255, 0.3));
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--accent);
+        }
+
+        .feature-card p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+        }
+
+        /* Steps Section */
+        .steps {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .step {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 40px;
+            align-items: start;
+        }
+
+        .step-number {
+            flex-shrink: 0;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .step-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .step-content p {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Pricing Section */
+        .pricing-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 50px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .price {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin: 20px 0;
+            background: linear-gradient(135deg, var(--accent) 0%, #ffed4e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .price-note {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 30px;
+        }
+
+        .included-list {
+            text-align: left;
+            margin: 30px 0;
+            list-style: none;
+        }
+
+        .included-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .included-list li::before {
+            content: '✓';
+            color: var(--accent);
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            padding: 120px 0;
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.2), rgba(196, 73, 255, 0.2));
+        }
+
+        .cta-section h2 {
+            margin-bottom: 30px;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 40px 0;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeInUp 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content container animate-fade-in">
+            <div class="badge">🎵 カラーシングライバー専用特典</div>
+            <h1>あなた専用の<br>ランキング＆特典管理ページ</h1>
+            <p class="hero-subtitle">
+                メンバーシップ特典として専用LPを無料提供。スプレッドシートで管理するだけで、リスナー向けの特典ページが自動で更新されます。
+            </p>
+            <a href="https://web.colorsing.com/memberships/livers/9f416ebb-bc97-4d24-8c38-9550c5040aa5?type=join" class="cta-button">今すぐメンバーシップに加入</a>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section>
+        <div class="container">
+            <h2>ライバーの皆さまへ</h2>
+            <div class="problem-box">
+                <h3>こんなお悩みはありませんか？</h3>
+                <ul class="problem-list">
+                    <li>
+                        <span class="problem-icon">📋</span>
+                        <span>特典を誰に何を渡したか把握しきれない</span>
+                    </li>
+                    <li>
+                        <span class="problem-icon">❓</span>
+                        <span>リスナーが自分の特典状況を確認できない</span>
+                    </li>
+                    <li>
+                        <span class="problem-icon">🖼️</span>
+                        <span>ランキングや特典情報を共有するのに毎回手動で画像作成している</span>
+                    </li>
+                    <li>
+                        <span class="problem-icon">⏰</span>
+                        <span>枠内アイコンの管理が煩雑で手が回らない</span>
+                    </li>
+                </ul>
+                <div class="solution-highlight">
+                    💡 スプレッドシートを更新するだけで、すべて自動反映されます
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section>
+        <div class="container">
+            <h2>主な機能</h2>
+            <p class="section-subtitle">スプレッドシート連携で、管理の手間を大幅削減</p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">🏆</span>
+                    <h3>前月ランキング表示</h3>
+                    <p>Google Sheetsと連携し、リスナーの歌推しポイントランキングを自動表示。メダル画像や目標設定にも対応。</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🎁</span>
+                    <h3>特典管理の自動化</h3>
+                    <p>1k〜50k＋メンバーシップまで、各達成段階の特典状況を一覧表示。リクエスト曲などの履歴記録にも対応。</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🖼️</span>
+                    <h3>枠内アイコンギャラリー</h3>
+                    <p>月別・カテゴリ別にリスナーのアイコンをギャラリー表示。Google Driveの画像URLを貼るだけ。</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🎨</span>
+                    <h3>完全カスタマイズ</h3>
+                    <p>ロゴ・カラー・フォント・エフェクトを管理画面から自由に変更。あなたの世界観をそのまま反映できます。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it Works -->
+    <section>
+        <div class="container">
+            <h2>導入までの流れ</h2>
+            <p class="section-subtitle">3ステップで、あなた専用のLPが完成</p>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>メンバーシップに加入</h3>
+                        <p>カラーシングのメンバーシップ（月額800円）に加入するだけ。その他費用は一切不要です。加入期間中のみ利用可能で、一時休止にも対応しています。</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>必要情報をご提供</h3>
+                        <p>専用のGoogleフォームに必要情報を記入してください。ヘッダー画像2種（PC用 1920x600、モバイル用 750x400）をご用意いただく必要があります。</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>専用URLをお届け</h3>
+                        <p>セットアップ完了後、あなた専用のURLをお渡しします。すぐに配信で活用できます。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section>
+        <div class="container">
+            <h2>料金プラン</h2>
+            <div class="pricing-card">
+                <h3>メンバーシップ特典として提供</h3>
+                <div class="price">¥800<span style="font-size: 1.5rem;">/月</span></div>
+                <p class="price-note">カラーシングメンバーシップ料金に含まれます</p>
+                <ul class="included-list">
+                    <li>初期費用 完全無料</li>
+                    <li>専用LP作成・カスタマイズ</li>
+                    <li>リスナーランキング機能</li>
+                    <li>特典管理システム</li>
+                    <li>枠内アイコン表示</li>
+                    <li>不具合対応</li>
+                </ul>
+                <a href="https://web.colorsing.com/memberships/livers/9f416ebb-bc97-4d24-8c38-9550c5040aa5?type=join" class="cta-button" style="margin-top: 20px;">メンバーシップに加入する</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>今すぐ始めて、配信活動を次のレベルへ</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 40px; color: rgba(255, 255, 255, 0.9);">
+                メンバーシップ加入で、あなた専用のLPが手に入ります
+            </p>
+            <a href="https://web.colorsing.com/memberships/livers/9f416ebb-bc97-4d24-8c38-9550c5040aa5?type=join" class="cta-button" style="font-size: 1.2rem; padding: 20px 60px;">メンバーシップに加入する</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 ColorSing LP Service. All rights reserved.</p>
+            <p style="margin-top: 10px; font-size: 0.9rem;">本サービスはカラーシング公式のメンバーシップ特典です</p>
+        </div>
+    </footer>
+</body>
+</html>
