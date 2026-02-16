@@ -125,7 +125,7 @@ const PersonPopup = ({ person, benefits, history, onClose, onSelectBenefit }) =>
                 </div>
 
                 {isTrackHistory(benefit?.[BENEFIT_FIELDS.TRACK_HISTORY]) && historyByTier[tier.key]?.length > 0 && (
-                  <div className="mt-3 pt-3 border-t border-card-border/20 text-left">
+                  <div className="mt-3 pt-3 border-t border-card-border/20 text-left" onClick={(e) => e.stopPropagation()}>
                     {historyByTier[tier.key].map((yearGroup) => (
                       <div key={yearGroup.year} className="mb-2 last:mb-0">
                         <p className="text-xs text-gray-500 font-bold mb-0.5">{yearGroup.year}年</p>
@@ -133,9 +133,10 @@ const PersonPopup = ({ person, benefits, history, onClose, onSelectBenefit }) =>
                           const monthNum = String(entry.month).slice(4)
                           const monthLabel = monthNum ? `${parseInt(monthNum, 10)}月` : ''
                           return (
-                            <p key={i} className="text-xs text-gray-400 whitespace-nowrap overflow-x-auto">
-                              <span className="text-gray-500">{monthLabel}</span>　{entry.content}
-                            </p>
+                            <div key={i} className="flex text-xs text-gray-400">
+                              <span className="text-gray-500 flex-shrink-0">{monthLabel}</span>
+                              <span className="ml-2 overflow-x-auto whitespace-nowrap">{entry.content}</span>
+                            </div>
                           )
                         })}
                       </div>
