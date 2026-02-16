@@ -51,7 +51,7 @@ export function useSheetData(sheetsConfig) {
 
       setRanking(rankingData)
       setGoals(goalsData.slice(1))
-      setBenefits(benefitsData.slice(1))
+      setBenefits(benefitsData)
       setRights(rightsData)
       setHistory(historyData || [])
       setLastUpdate(new Date())
