@@ -28,7 +28,7 @@ const PersonPopup = ({ person, benefits, history, onClose, onSelectBenefit }) =>
 
   const personName = person?.[RIGHTS_NAME_INDEX] || ''
 
-  // ユーザーの履歴をティアキーごとにグループ化（月の降順）
+  // ユーザーの履歴をティアキーごと→年ごとにグループ化（昇順：古い→新しい）
   const historyByTier = useMemo(() => {
     if (!history || !personName) return {}
     const grouped = {}
@@ -37,10 +37,27 @@ const PersonPopup = ({ person, benefits, history, onClose, onSelectBenefit }) =>
       if (!grouped[entry.tierKey]) grouped[entry.tierKey] = []
       grouped[entry.tierKey].push(entry)
     }
+    // 各ティアの履歴を年ごとにグループ化（昇順）
+    const result = {}
     for (const key of Object.keys(grouped)) {
-      grouped[key].sort((a, b) => String(b.month).localeCompare(String(a.month)))
+      grouped[key].sort((a, b) => String(a.month).localeCompare(String(b.month)))
+      const yearGroups = []
+      let currentYear = null
+      let currentEntries = []
+      for (const entry of grouped[key]) {
+        const m = String(entry.month)
+        const year = m.length >= 4 ? m.slice(0, 4) : m
+        if (year !== currentYear) {
+          if (currentYear !== null) yearGroups.push({ year: currentYear, entries: currentEntries })
+          currentYear = year
+          currentEntries = []
+        }
+        currentEntries.push(entry)
+      }
+      if (currentYear !== null) yearGroups.push({ year: currentYear, entries: currentEntries })
+      result[key] = yearGroups
     }
-    return grouped
+    return result
   }, [history, personName])
 
   if (!person) return null
@@ -109,14 +126,20 @@ const PersonPopup = ({ person, benefits, history, onClose, onSelectBenefit }) =>
 
                 {isTrackHistory(benefit?.[BENEFIT_FIELDS.TRACK_HISTORY]) && historyByTier[tier.key]?.length > 0 && (
                   <div className="mt-3 pt-3 border-t border-card-border/20 text-left">
-                    <p className="text-xs text-gray-500 mb-1">履歴:</p>
-                    <ul className="space-y-0.5">
-                      {historyByTier[tier.key].map((entry, i) => (
-                        <li key={i} className="text-xs text-gray-400">
-                          <span className="text-gray-500">{entry.month}</span> {entry.content}
-                        </li>
-                      ))}
-                    </ul>
+                    {historyByTier[tier.key].map((yearGroup) => (
+                      <div key={yearGroup.year} className="mb-2 last:mb-0">
+                        <p className="text-xs text-gray-500 font-bold mb-0.5">{yearGroup.year}年</p>
+                        {yearGroup.entries.map((entry, i) => {
+                          const monthNum = String(entry.month).slice(4)
+                          const monthLabel = monthNum ? `${parseInt(monthNum, 10)}月` : ''
+                          return (
+                            <p key={i} className="text-xs text-gray-400 truncate" title={`${monthLabel}　${entry.content}`}>
+                              <span className="text-gray-500">{monthLabel}</span>　{entry.content}
+                            </p>
+                          )
+                        })}
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
