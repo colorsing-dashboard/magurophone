@@ -64,7 +64,7 @@ const DEFAULT_CONFIG = {
       goals: 'A2:B10',
       benefits: 'K3:O20',
       rights: 'A2:I1000',
-      history: 'A2:D1000',
+      history: 'A3:D1000',
     },
     refreshIntervalMs: 300000,
   },
