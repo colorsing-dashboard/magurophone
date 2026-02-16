@@ -46,7 +46,7 @@ function AdminApp() {
     }
   }, [config.admin?.password])
 
-  // 設定変更時に自動保存
+  // 設定変更時に即座にlocalStorageに保存
   const updateConfig = (path, value) => {
     setConfig(prev => {
       const next = { ...prev }
@@ -65,11 +65,18 @@ function AdminApp() {
       }
 
       current[keys[keys.length - 1]] = value
+
+      // useEffect経由ではなく直接保存（確実にlocalStorageに反映）
+      saveConfig(next)
+      saveConfigMeta({ lastModified: Date.now() })
+
       return next
     })
+    setSaveMessage('保存しました')
+    setTimeout(() => setSaveMessage(null), 2000)
   }
 
-  // 設定変更後に保存（副作用をupdater外で実行）
+  // handleSyncFromGitHub / handleReset 等で直接setConfigした場合の保存
   const isInitialMount = useRef(true)
   useEffect(() => {
     if (isInitialMount.current) {
@@ -78,9 +85,6 @@ function AdminApp() {
     }
     saveConfig(config)
     saveConfigMeta({ lastModified: Date.now() })
-    setSaveMessage('保存しました')
-    const timer = setTimeout(() => setSaveMessage(null), 2000)
-    return () => clearTimeout(timer)
   }, [config])
 
   const handlePasswordSubmit = (e) => {
