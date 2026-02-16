@@ -133,14 +133,9 @@ const PersonPopup = ({ person, benefits, history, onClose, onSelectBenefit }) =>
                           const monthNum = String(entry.month).slice(4)
                           const monthLabel = monthNum ? `${parseInt(monthNum, 10)}月` : ''
                           return (
-                            <div key={i} className="group/tip relative">
-                              <p className="text-xs text-gray-400 truncate">
-                                <span className="text-gray-500">{monthLabel}</span>　{entry.content}
-                              </p>
-                              <div className="hidden group-hover/tip:block absolute left-0 bottom-full mb-1 z-50 bg-gray-800 text-gray-200 text-xs rounded px-2 py-1 shadow-lg whitespace-nowrap max-w-[90vw]">
-                                {monthLabel}　{entry.content}
-                              </div>
-                            </div>
+                            <p key={i} className="text-xs text-gray-400 whitespace-nowrap overflow-x-auto">
+                              <span className="text-gray-500">{monthLabel}</span>　{entry.content}
+                            </p>
                           )
                         })}
                       </div>
