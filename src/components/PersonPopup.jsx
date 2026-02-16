@@ -34,6 +34,7 @@ const PersonPopup = ({ person, benefits, history, onClose, onSelectBenefit }) =>
     const grouped = {}
     for (const entry of history) {
       if (entry.userName !== personName) continue
+      if (!entry.content || !String(entry.content).trim()) continue
       if (!grouped[entry.tierKey]) grouped[entry.tierKey] = []
       grouped[entry.tierKey].push(entry)
     }
