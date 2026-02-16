@@ -60,7 +60,7 @@ window.DASHBOARD_CONFIG = {
     "ranges": {
       "ranking": "D2:G5",
       "goals": "A2:B10",
-      "benefits": "K2:O10",
+      "benefits": "K2:O20",
       "rights": "A2:I1000",
       "history": "A2:D1000"
     },
@@ -141,10 +141,17 @@ window.DASHBOARD_CONFIG = {
       "displayTemplate": "ミックス音源獲得: {value}曲"
     },
     {
-      "key": "メンバーシップ",
+      "key": "メンバーシップA",
       "icon": "👑",
       "columnIndex": 7,
       "displayTemplate": "月内リクエスト対応中",
+      "isMembership": true
+    },
+    {
+      "key": "メンバーシップB",
+      "icon": "🌟",
+      "columnIndex": 0,
+      "displayTemplate": "特典: {value}",
       "isMembership": true
     }
   ],
