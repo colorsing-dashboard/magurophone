@@ -18,7 +18,7 @@ export function useSheetData(sheetsConfig) {
   const [iconError, setIconError] = useState(null)
   const iconsLoadedRef = useRef(false)
 
-  const { spreadsheetId, rankingSheetName, benefitsSheetName, historySheetName, iconSheetName, ranges, refreshIntervalMs } = sheetsConfig
+  const { spreadsheetId, rankingSheetName, benefitsSheetName, benefitsContentSheetName, historySheetName, iconSheetName, ranges, refreshIntervalMs } = sheetsConfig
   // rangesオブジェクトを個別の文字列に分解して安定した依存関係にする
   const rankingRange = ranges.ranking
   const goalsRange = ranges.goals
@@ -40,7 +40,7 @@ export function useSheetData(sheetsConfig) {
       const fetches = [
         fetchSheetData(spreadsheetId, rankingSheetName, rankingRange),
         fetchSheetData(spreadsheetId, rankingSheetName, goalsRange),
-        fetchSheetData(spreadsheetId, benefitsSheetName, benefitsRange),
+        fetchSheetData(spreadsheetId, benefitsContentSheetName, benefitsRange),
         fetchSheetData(spreadsheetId, benefitsSheetName, rightsRange),
       ]
       if (historySheetName) {
@@ -62,7 +62,7 @@ export function useSheetData(sheetsConfig) {
     } finally {
       setLoading(false)
     }
-  }, [spreadsheetId, rankingSheetName, benefitsSheetName, historySheetName, rankingRange, goalsRange, benefitsRange, rightsRange, historyRange])
+  }, [spreadsheetId, rankingSheetName, benefitsSheetName, benefitsContentSheetName, historySheetName, rankingRange, goalsRange, benefitsRange, rightsRange, historyRange])
 
   // 初回読み込み + 自動更新
   useEffect(() => {

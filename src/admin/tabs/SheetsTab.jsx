@@ -86,11 +86,18 @@ const SheetsTab = ({ config, updateConfig }) => {
           description="ランキング・目標データのシート名"
         />
         <Field
-          label="特典・権利者シート名"
+          label="権利者シート名"
           value={config.sheets.benefitsSheetName}
           onChange={(v) => updateConfig('sheets.benefitsSheetName', v)}
           placeholder="特典管理"
-          description="特典説明・権利者データのシート名"
+          description="権利者データのシート名"
+        />
+        <Field
+          label="特典内容シート名"
+          value={config.sheets.benefitsContentSheetName}
+          onChange={(v) => updateConfig('sheets.benefitsContentSheetName', v)}
+          placeholder="特典内容"
+          description="特典説明データのシート名（特典ティア, タイトル, 簡易説明, 詳細説明, レコード機能）"
         />
         <Field
           label="特典履歴シート名"
@@ -122,8 +129,11 @@ A2:B10 ... 目標（ラベル, 値）`}</pre>
           </div>
           <div>
             <p className="text-light-blue font-bold mb-1">特典管理シート</p>
-            <pre className="bg-black/30 rounded p-2 overflow-x-auto">{`K2:O20  ... 特典説明（特典ティア, 特典タイトル, 簡易説明, 詳細説明, レコード機能☑）
-A2:I1000 ... 権利者リスト（名前, 各ティアの値...）`}</pre>
+            <pre className="bg-black/30 rounded p-2 overflow-x-auto">{`A2:I1000 ... 権利者リスト（名前, 各ティアの値...）`}</pre>
+          </div>
+          <div>
+            <p className="text-light-blue font-bold mb-1">特典内容シート</p>
+            <pre className="bg-black/30 rounded p-2 overflow-x-auto">{`A3:E20 ... 特典説明（特典ティア, 特典タイトル, 簡易説明, 詳細説明, レコード機能☑）`}</pre>
           </div>
           <div>
             <p className="text-light-blue font-bold mb-1">特典履歴シート</p>
@@ -161,7 +171,7 @@ C列: Google Drive画像URL
           label="特典説明データ"
           value={config.sheets.ranges.benefits}
           onChange={(v) => updateConfig('sheets.ranges.benefits', v)}
-          placeholder="K2:O20"
+          placeholder="A3:E20"
         />
         <Field
           label="権利者データ"
