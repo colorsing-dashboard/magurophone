@@ -336,6 +336,79 @@
             color: rgba(255, 255, 255, 0.6);
         }
 
+        /* Value Comparison */
+        .value-comparison {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .value-stat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .value-stat-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .value-stat {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 30px 15px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .value-number {
+            display: block;
+            font-size: 2.2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent) 0%, #ffed4e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .value-label {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .value-estimate {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .value-estimate-label {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 10px;
+        }
+
+        .value-estimate-price {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--light);
+        }
+
+        .value-estimate-price span {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 5px;
+        }
+
         /* Animations */
         @keyframes fadeInUp {
             from {
@@ -458,6 +531,38 @@
         </div>
     </section>
 
+    <!-- Value Section -->
+    <section>
+        <div class="container">
+            <h2>このシステムの価値</h2>
+            <p class="section-subtitle">個別に開発を依頼した場合の相場と比較してください</p>
+            <div class="value-comparison">
+                <div class="value-stat-grid">
+                    <div class="value-stat">
+                        <span class="value-number">4,600+</span>
+                        <span class="value-label">行のソースコード</span>
+                    </div>
+                    <div class="value-stat">
+                        <span class="value-number">39</span>
+                        <span class="value-label">ファイル構成</span>
+                    </div>
+                    <div class="value-stat">
+                        <span class="value-number">40+</span>
+                        <span class="value-label">カスタマイズ項目</span>
+                    </div>
+                    <div class="value-stat">
+                        <span class="value-number">8</span>
+                        <span class="value-label">管理画面タブ</span>
+                    </div>
+                </div>
+                <div class="value-estimate">
+                    <p class="value-estimate-label">同等のページを技術者に個別開発依頼した場合</p>
+                    <p class="value-estimate-price">120〜250万円<span>（制作会社経由なら300万円以上）</span></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Pricing Section -->
     <section>
         <div class="container">
@@ -472,6 +577,7 @@
                     <li>リスナーランキング機能</li>
                     <li>特典管理システム</li>
                     <li>枠内アイコン表示</li>
+                    <li>管理画面から自由にカスタマイズ</li>
                     <li>不具合対応</li>
                 </ul>
                 <a href="https://web.colorsing.com/memberships/livers/9f416ebb-bc97-4d24-8c38-9550c5040aa5?type=join" class="cta-button" style="margin-top: 20px;">メンバーシップに加入する</a>
