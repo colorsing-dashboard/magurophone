@@ -1,13 +1,13 @@
 // デフォルト設定値（config.js が未設定・不完全でもアプリが動作するように）
 const DEFAULT_CONFIG = {
   brand: {
-    name: 'BAR MAGUROPHONE',
-    sidebarTitle: 'MAGUROPHONE',
-    footerText: '深海BAR MAGUROPHONE 🐟🎧',
-    footerSubText: '単推し・最推し様・メンシプ様募集中です',
-    footerNote: 'ファンマ: 🐟🎧',
-    pageTitle: '深海BAR MAGUROPHONE - 特典管理',
-    loadingEmoji: '🐟',
+    name: '',
+    sidebarTitle: 'color singer LP',
+    footerText: '',
+    footerSubText: '',
+    footerNote: '',
+    pageTitle: 'ColorSing LP - 特典管理',
+    loadingEmoji: '🎵',
     loadingText: 'Loading...',
     showTitle: true,
     titleGradient: true,
