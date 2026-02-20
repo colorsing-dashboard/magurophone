@@ -160,6 +160,7 @@ window.DASHBOARD_CONFIG = {
       "今月の目標"
     ],
     "faq": {
+      "enabled": true,
       "title": "📝 FAQ・注意事項",
       "items": [
         {
