@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect } from 'react'
+import { convertDriveUrl } from '../lib/sheets'
 
 const ConfigContext = createContext(null)
 
@@ -48,13 +49,15 @@ export function ConfigProvider({ config, children }) {
   useEffect(() => {
     if (!config?.images) return
     const root = document.documentElement
-    const safeMobile = sanitizeCssUrl(config.images.headerMobile)
+    const resolvedMobile = convertDriveUrl(config.images.headerMobile, 800)
+    const safeMobile = sanitizeCssUrl(resolvedMobile)
     if (safeMobile) {
       root.style.setProperty('--header-image-mobile', `url('${safeMobile}')`)
     } else {
       root.style.removeProperty('--header-image-mobile')
     }
-    const safeDesktop = sanitizeCssUrl(config.images.headerDesktop)
+    const resolvedDesktop = convertDriveUrl(config.images.headerDesktop, 1600)
+    const safeDesktop = sanitizeCssUrl(resolvedDesktop)
     if (safeDesktop) {
       root.style.setProperty('--header-image-desktop', `url('${safeDesktop}')`)
     } else {
@@ -63,7 +66,7 @@ export function ConfigProvider({ config, children }) {
 
     // ヘッダー画像をプリロード
     const isMobile = window.matchMedia('(max-width: 767.98px)').matches
-    const preloadUrl = isMobile ? config.images.headerMobile : config.images.headerDesktop
+    const preloadUrl = isMobile ? resolvedMobile : resolvedDesktop
     if (preloadUrl) {
       const id = 'preload-header'
       let link = document.getElementById(id)
