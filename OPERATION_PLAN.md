@@ -84,10 +84,55 @@ LPをライバー専用のメンバーシップ特典として提供すること
 
 ## インフラ構成
 
+### リポジトリ全体像
+
+```
+[テンプレートリポジトリ（開発用）]
+  magurophone/ColorSing_LP
+    ├─ magurophone ブランチ  ← 開発はここで行う
+    │     deploy.yml: branches: [magurophone]
+    │     config.js: 汎用デフォルト値（個人設定なし）
+    │
+    └─ main ブランチ  ← magurophone ブランチの内容をマージして同期
+          役割: sync-all.sh がこのブランチを参照してコピー元に使う
+
+[顧客リポジトリ（本番用）]
+  colorsing-dashboard/{username}
+    └─ main ブランチ  ← GitHub Pages はここから自動デプロイ
+          deploy.yml: branches: [main]
+          config.js: 顧客固有の設定（sync-all.sh が保持する）
+          URL: https://colorsing-dashboard.github.io/{username}/
+```
+
+### deploy.yml のブランチ設定の違い
+
+| リポジトリ | トリガーブランチ | 理由 |
+|-----------|----------------|------|
+| `magurophone/ColorSing_LP` | `magurophone` | 開発ブランチで作業するため |
+| `colorsing-dashboard/{username}` | `main` | 本番リポジトリは main が本番ブランチ |
+
+**重要**: 新規顧客リポジトリ作成時、deploy.yml の `branches:` を `[main]` に変更すること。
+テンプレートのまま `[magurophone]` にしていると GitHub Actions が一切動かない。
+
+### GitHub Pages 設定手順（各顧客リポジトリ）
+
+```
+GitHub リポジトリ → Settings → Pages
+  → Source: 「GitHub Actions」を選択
+  → （Branch指定ではなくGitHub Actionsを選ぶ点に注意）
+```
+
+初回は設定変更後に push か空コミットが必要:
+```bash
+git commit --allow-empty -m "trigger pages" && git push
+```
+
+### 組織リポジトリ全体図
+
 ```
 GitHub Organization (Free)
-  └─ colorsing-dashboard（例）
-       ├─ customer-a-lp（リポジトリ）→ GitHub Pages で公開
+  └─ colorsing-dashboard
+       ├─ magurophone（リポジトリ）→ GitHub Pages で公開済
        ├─ customer-b-lp（リポジトリ）→ GitHub Pages で公開
        └─ ...
 ```
