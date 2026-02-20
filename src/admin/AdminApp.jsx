@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { loadConfig, loadBaseConfig, saveConfig, clearConfig, downloadConfigJS, importConfigFromText, deepMerge, saveConfigMeta } from '../lib/configIO'
+import { loadConfig, saveConfig, downloadConfigJS, importConfigFromText, deepMerge, saveConfigMeta } from '../lib/configIO'
 import DEFAULT_CONFIG from '../lib/defaults'
 import IconRenderer from '../components/IconRenderer'
 import BrandingTab from './tabs/BrandingTab'
@@ -76,7 +76,7 @@ function AdminApp() {
     setTimeout(() => setSaveMessage(null), 2000)
   }
 
-  // handleSyncFromGitHub / handleReset 等で直接setConfigした場合の保存
+  // handleSyncFromGitHub 等で直接setConfigした場合の保存
   const isInitialMount = useRef(true)
   useEffect(() => {
     if (isInitialMount.current) {
@@ -130,13 +130,6 @@ function AdminApp() {
       }
       return synced
     })
-  }
-
-  const handleReset = () => {
-    if (confirm('設定をconfig.jsの値に戻しますか？管理画面での変更はクリアされます。')) {
-      clearConfig()
-      setConfig(loadBaseConfig())
-    }
   }
 
   // パスワード認証画面
@@ -228,12 +221,6 @@ function AdminApp() {
           >
             顧客マニュアル
           </a>
-          <button
-            onClick={handleReset}
-            className="w-full px-4 py-2 bg-tuna-red/10 hover:bg-tuna-red/20 border border-tuna-red/30 rounded-lg transition-all text-tuna-red text-sm font-body"
-          >
-            デフォルトに戻す
-          </button>
         </div>
       </aside>
 
