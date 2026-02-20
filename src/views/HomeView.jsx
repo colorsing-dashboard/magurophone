@@ -67,7 +67,7 @@ const HomeView = ({ ranking, goals }) => {
       </section>
 
       {/* FAQ */}
-      {config.home.faq.items.length > 0 && (
+      {config.home.faq.enabled !== false && config.home.faq.items.length > 0 && (
         <section className="max-w-4xl mx-auto">
           <h2 className="text-2xl md:text-4xl font-body mb-8 text-center text-glow-soft text-primary">{config.home.faq.title}</h2>
           <div className="glass-effect rounded-2xl p-8 border border-card-border/30 space-y-6">

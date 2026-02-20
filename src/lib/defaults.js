@@ -93,6 +93,7 @@ const DEFAULT_CONFIG = {
     targetsTitle: 'Targets',
     targetLabels: ['今旬の目標', '今月の目標'],
     faq: {
+      enabled: true,
       title: '📝 FAQ・注意事項',
       items: [
         { question: '特典の使用方法は？', answer: '枠内でリクエストするか、XのDMでお知らせください。' },
