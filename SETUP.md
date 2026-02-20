@@ -20,7 +20,7 @@ magurophone/ColorSing_LP
 
 - GitHub Org `colorsing-dashboard` への管理者アクセス
 - Fine-grained PAT（Contents: Read and write）を発行済み
-- 顧客から受領: スプレッドシートID、ブランド名、画像、カラー希望
+- 顧客から受領: スプレッドシートID、ブランド名、ヘッダー画像（PC用・モバイル用）、カラー希望
 
 ---
 
