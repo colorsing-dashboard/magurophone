@@ -43,9 +43,9 @@ const DEFAULT_CONFIG = {
   },
 
   images: {
-    headerDesktop: './header.png',
-    headerMobile: './header-mobile.png',
-    favicon: './vite.svg',
+    headerDesktop: './customer/header.png',
+    headerMobile: './customer/header-mobile.png',
+    favicon: './customer/vite.svg',
   },
 
   sheets: {

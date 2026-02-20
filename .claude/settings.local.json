@@ -16,7 +16,14 @@
       "Bash(del \"c:\\\\Users\\\\iimy\\\\Desktop\\\\ColorSing_LP\\\\src\\\\admin\\\\tabs\\\\ImagesTab.jsx\")",
       "Bash(gh repo view --json homepageUrl,url)",
       "Bash(gh api repos/magurophone/ColorSing_LP/pages)",
-      "WebFetch(domain:chatgpt.com)"
+      "WebFetch(domain:chatgpt.com)",
+      "Bash(git pull:*)",
+      "Bash(git stash:*)",
+      "Bash(git stash pop:*)",
+      "Bash(git merge:*)",
+      "Bash(git fetch:*)",
+      "Bash(bash scripts/sync-all.sh)",
+      "Bash(git rm:*)"
     ]
   }
 }

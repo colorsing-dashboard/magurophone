@@ -42,9 +42,9 @@ window.DASHBOARD_CONFIG = {
     "googleFontsUrl": "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&display=swap"
   },
   "images": {
-    "headerDesktop": "./header.png",
-    "headerMobile": "./header-mobile.png",
-    "favicon": "./vite.svg"
+    "headerDesktop": "./customer/header.png",
+    "headerMobile": "./customer/header-mobile.png",
+    "favicon": "./customer/vite.svg"
   },
   "sheets": {
     "spreadsheetId": "",

@@ -10,8 +10,9 @@
 #
 # 動作:
 #   - 各顧客リポをクローン → テンプレートの最新コードをマージ → プッシュ
-#   - public/ ディレクトリ全体（画像・config.js 等）は顧客側を常に保持
+#   - public/customer/ は顧客側を常に保持（画像・config.js 等の顧客固有ファイル）
 #   - .github/workflows/deploy.yml は顧客側を常に保持（branches: [main] を維持）
+#   - public/ 直下の新規ファイルはテンプレートから伝播する（正常な更新）
 #   - プッシュにより各顧客リポの GitHub Actions が自動トリガー → ビルド＆デプロイ
 # =============================================================================
 
@@ -85,9 +86,9 @@ for repo in $REPOS; do
   # 3. 顧客固有ファイルをバックアップ
   mkdir -p "$BACKUP_DIR"
 
-  # public/ ディレクトリ全体（画像・config.js 等すべて）
-  if [ -d "public" ]; then
-    cp -r public/ "$BACKUP_DIR/public/"
+  # public/customer/（顧客の画像・config.js 等をサンドボックス化）
+  if [ -d "public/customer" ]; then
+    cp -r public/customer/ "$BACKUP_DIR/customer/"
   fi
 
   # .github/workflows/deploy.yml（branches: [main] を維持するため）
@@ -104,7 +105,7 @@ for repo in $REPOS; do
     if [ -n "$CONFLICTED" ]; then
       while IFS= read -r f; do
         case "$f" in
-          public/*|.github/*)
+          public/customer/*|.github/*)
             git checkout --ours "$f" 2>/dev/null && git add "$f"
             ;;
         esac
@@ -126,16 +127,16 @@ for repo in $REPOS; do
   fi
 
   # 5. バックアップから顧客固有ファイルを復元
-  # public/ 全ファイル（マージで変更されたものを元に戻す）
-  if [ -d "$BACKUP_DIR/public" ]; then
+  # public/customer/（顧客の画像・config.js を元に戻す）
+  if [ -d "$BACKUP_DIR/customer" ]; then
     while IFS= read -r -d '' backup_file; do
-      rel_path="${backup_file#$BACKUP_DIR/}"
+      rel_path="public/customer/${backup_file#$BACKUP_DIR/customer/}"
       if ! cmp -s "$backup_file" "$rel_path" 2>/dev/null; then
         mkdir -p "$(dirname "$rel_path")"
         cp "$backup_file" "$rel_path"
         git add "$rel_path"
       fi
-    done < <(find "$BACKUP_DIR/public" -type f -print0)
+    done < <(find "$BACKUP_DIR/customer" -type f -print0)
   fi
 
   # deploy.yml を復元
@@ -148,7 +149,7 @@ for repo in $REPOS; do
 
   # 復元した差分をコミット
   if ! git diff --cached --quiet; then
-    git commit -m "顧客固有ファイルを復元 (public/, deploy.yml)" 2>/dev/null
+    git commit -m "顧客固有ファイルを復元 (public/customer/, deploy.yml)" 2>/dev/null
   fi
 
   # 6. 変更があればプッシュ
