@@ -3,11 +3,19 @@
 ## ブランチ構成の前提
 
 ```
-magurophone/ColorSing_LP
+magurophone/ColorSing_LP（テンプレートリポジトリ）
   ├─ main ブランチ  ← おおもと。sync-all.sh はここを参照して全顧客に配布する
-  └─ magurophone ブランチ  ← magurophone自身のサイト用。開発・テストもここで行う
+  └─ magurophone ブランチ  ← 開発・テスト用 兼 magurophoneサイトのバックアップ
                               コード変更後は必ず main にも反映すること
+
+colorsing-dashboard/magurophone（顧客リポジトリ）
+  └─ main ブランチ  ← magurophoneの本番サイト（他の顧客と同じ構造）
+                      https://colorsing-dashboard.github.io/magurophone/
 ```
+
+> **注意**: magurophoneも一般顧客と同じく `colorsing-dashboard` org 側が本番。
+> テンプレートリポジトリの `magurophone` ブランチはあくまで開発環境・バックアップであり、
+> 実際のサービスは `colorsing-dashboard/magurophone` から配信される。
 
 **新機能・バグ修正の流れ:**
 1. `magurophone` ブランチで開発・動作確認
