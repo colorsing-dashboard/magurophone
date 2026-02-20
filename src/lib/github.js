@@ -66,7 +66,7 @@ export async function deployConfigToGitHub(config, { owner, repo, branch, token 
 
   for (let i = 0; i < maxRetries; i++) {
     try {
-      await pushFileCommit(token, owner, repo, branch, 'public/config.js', content, '管理画面から設定を更新')
+      await pushFileCommit(token, owner, repo, branch, 'public/customer/config.js', content, '管理画面から設定を更新')
       return
     } catch (err) {
       if ((err.status === 409 || err.status === 422) && i < maxRetries - 1) continue
@@ -84,7 +84,7 @@ export async function deployConfigToGitHub(config, { owner, repo, branch, token 
 // GitHubから最新のconfig.jsを取得
 export async function fetchConfigFromGitHub({ owner, repo, branch, token }) {
   const data = await gh(token, 'GET',
-    `/repos/${owner}/${repo}/contents/public/config.js?ref=${encodeURIComponent(branch)}`)
+    `/repos/${owner}/${repo}/contents/public/customer/config.js?ref=${encodeURIComponent(branch)}`)
   const content = decodeURIComponent(escape(atob(data.content)))
   return importConfigFromText(content)
 }
