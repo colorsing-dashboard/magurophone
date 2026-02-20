@@ -3,13 +3,13 @@
 
 window.DASHBOARD_CONFIG = {
   "brand": {
-    "name": "",
+    "name": "BAR MAGUROPHONE",
     "sidebarTitle": "　color singer LP",
-    "footerText": "",
-    "footerSubText": "",
-    "footerNote": "",
-    "pageTitle": "ColorSing LP - 特典管理",
-    "loadingEmoji": "🎵",
+    "footerText": "深海BAR MAGUROPHONE ",
+    "footerSubText": "単推し・最推し様・メンシプ様募集中です",
+    "footerNote": "ファンマ: 🐟🎧",
+    "pageTitle": "深海BAR MAGUROPHONE - 特典管理",
+    "loadingEmoji": "🐟",
     "loadingText": "Loading...",
     "showTitle": true,
     "titleGradient": true,
@@ -30,13 +30,13 @@ window.DASHBOARD_CONFIG = {
     "cardBorderHover": "",
     "primaryText": "",
     "accentText": "",
-    "rank1Card": "",
+    "rank1Card": "#ff4d00",
     "backgroundMain": "",
     "backgroundMid": ""
   },
   "fonts": {
-    "display": "'Playfair Display', serif",
-    "displayUrl": "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&display=swap",
+    "display": "'Sacramento', cursive",
+    "displayUrl": "https://fonts.googleapis.com/css2?family=Sacramento:wght@400&display=swap",
     "body": "'M PLUS 2', sans-serif",
     "bodyUrl": "https://fonts.googleapis.com/css2?family=M+PLUS+2:wght@400;500;700&display=swap",
     "googleFontsUrl": "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&display=swap"
@@ -52,7 +52,7 @@ window.DASHBOARD_CONFIG = {
     "favicon": "./vite.svg"
   },
   "sheets": {
-    "spreadsheetId": "",
+    "spreadsheetId": "1lU49dwSPRysdFA2Fg6iofJnk7vaXLU1jJ6sUkCoN5zk",
     "rankingSheetName": "目標管理・ランキング",
     "benefitsSheetName": "特典管理",
     "benefitsContentSheetName": "特典内容",
@@ -165,7 +165,6 @@ window.DASHBOARD_CONFIG = {
       "今月の目標"
     ],
     "faq": {
-      "enabled": true,
       "title": "📝 FAQ・注意事項",
       "items": [
         {
@@ -210,10 +209,10 @@ window.DASHBOARD_CONFIG = {
     "particleOpacity": 1
   },
   "deploy": {
-    "owner": "",
-    "repo": "",
-    "branch": "main",
-    "token": ""
+    "owner": "magurophone",
+    "repo": "ColorSing_LP",
+    "branch": "magurophone",
+    "token": "rev:Sc9LdGZ04IAEXE76dLXwApfIhKrt6RkkUwOJKRNYlNylCCKFV49Kuqf1fgc_d4JfN2TwVnEG0IMBSTQB11_tap_buhtig"
   },
   "admin": {
     "password": "CSadmin",
