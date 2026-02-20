@@ -4,11 +4,11 @@
 window.DASHBOARD_CONFIG = {
   "brand": {
     "name": "",
-    "sidebarTitle": "　color singer LP",
+    "sidebarTitle": "　color sing",
     "footerText": "",
     "footerSubText": "",
     "footerNote": "",
-    "pageTitle": "ColorSing LP - 特典管理",
+    "pageTitle": "サイト名を設定 - 特典管理",
     "loadingEmoji": "🎵",
     "loadingText": "Loading...",
     "showTitle": true,
@@ -42,8 +42,8 @@ window.DASHBOARD_CONFIG = {
     "googleFontsUrl": "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&display=swap"
   },
   "images": {
-    "headerDesktop": "./customer/header.png",
-    "headerMobile": "./customer/header-mobile.png",
+    "headerDesktop": "",
+    "headerMobile": "",
     "favicon": "./customer/vite.svg"
   },
   "sheets": {
@@ -162,20 +162,7 @@ window.DASHBOARD_CONFIG = {
     "faq": {
       "enabled": true,
       "title": "📝 FAQ・注意事項",
-      "items": [
-        {
-          "question": "特典の使用方法は？",
-          "answer": "枠内でリクエストするか、XのDMでお知らせください。"
-        },
-        {
-          "question": "10k以上の特典について",
-          "answer": "永続権利です。月が替わっても消えることがありません。"
-        },
-        {
-          "question": "メンバーシップ特典について",
-          "answer": "メンバーシップ特典で得られた10ｋ及び20ｋ特典は、それぞれの箇所に合算して記載しています。"
-        }
-      ]
+      "items": []
     }
   },
   "menu": {
