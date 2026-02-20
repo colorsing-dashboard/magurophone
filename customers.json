@@ -1,4 +1,6 @@
 {
-  "org": "colorsing-dashboard",
-  "repos": []
+  "org": "colorsing-dashbord",
+  "repos": [
+    "magurophone"
+  ]
 }
