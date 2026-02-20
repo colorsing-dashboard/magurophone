@@ -10,7 +10,9 @@
 #
 # 動作:
 #   - 各顧客リポをクローン → テンプレートの最新コードをマージ → プッシュ
-#   - public/config.js は顧客側を常に保持（上書きしない）
+#   - public/customer/ は顧客側を常に保持（画像・config.js 等の顧客固有ファイル）
+#   - .github/workflows/deploy.yml は顧客側を常に保持（branches: [main] を維持）
+#   - public/ 直下の新規ファイルはテンプレートから伝播する（正常な更新）
 #   - プッシュにより各顧客リポの GitHub Actions が自動トリガー → ビルド＆デプロイ
 # =============================================================================
 
@@ -66,6 +68,7 @@ SKIPPED=0
 for repo in $REPOS; do
   echo "--- $repo ---"
   REPO_DIR="$WORK_DIR/$repo"
+  BACKUP_DIR="$WORK_DIR/${repo}_backup"
 
   # 1. 顧客リポをクローン
   if ! git clone "https://github.com/$ORG/$repo.git" "$REPO_DIR" 2>/dev/null; then
@@ -80,25 +83,40 @@ for repo in $REPOS; do
   git remote add template "$TEMPLATE_DIR"
   git fetch template "$TEMPLATE_BRANCH" 2>/dev/null
 
-  # 3. config.js を保護（マージ前にバックアップ）
-  CONFIG_BACKUP=""
-  if [ -f "public/config.js" ]; then
-    CONFIG_BACKUP=$(cat public/config.js)
+  # 3. 顧客固有ファイルをバックアップ
+  mkdir -p "$BACKUP_DIR"
+
+  # public/customer/（顧客の画像・config.js 等をサンドボックス化）
+  if [ -d "public/customer" ]; then
+    cp -r public/customer/ "$BACKUP_DIR/customer/"
+  fi
+
+  # .github/workflows/deploy.yml（branches: [main] を維持するため）
+  if [ -f ".github/workflows/deploy.yml" ]; then
+    mkdir -p "$BACKUP_DIR/.github/workflows"
+    cp .github/workflows/deploy.yml "$BACKUP_DIR/.github/workflows/deploy.yml"
   fi
 
   # 4. テンプレートのコードをマージ
   if ! git merge "template/$TEMPLATE_BRANCH" --no-edit -m "テンプレート同期: $(git -C "$TEMPLATE_DIR" log -1 --pretty=%s)" 2>/dev/null; then
-    # コンフリクト発生時
-    # config.js のコンフリクトなら顧客側を採用
-    if git diff --name-only --diff-filter=U | grep -q "public/config.js"; then
-      git checkout --ours public/config.js
-      git add public/config.js
+    # コンフリクト発生時: public/ と .github/ は顧客側で解消
+    CONFLICTED=$(git diff --name-only --diff-filter=U 2>/dev/null || true)
+
+    if [ -n "$CONFLICTED" ]; then
+      while IFS= read -r f; do
+        case "$f" in
+          public/customer/*|.github/*)
+            git checkout --ours "$f" 2>/dev/null && git add "$f"
+            ;;
+        esac
+      done <<< "$CONFLICTED"
     fi
 
-    # 他のコンフリクトがあれば中断
-    if [ -n "$(git diff --name-only --diff-filter=U)" ]; then
+    # 残存するコンフリクトがあれば中断
+    REMAINING=$(git diff --name-only --diff-filter=U 2>/dev/null || true)
+    if [ -n "$REMAINING" ]; then
       error "$repo: コンフリクトが解消できません。手動対応が必要です:"
-      git diff --name-only --diff-filter=U
+      echo "$REMAINING"
       git merge --abort
       FAILED=$((FAILED + 1))
       cd "$TEMPLATE_DIR"
@@ -108,14 +126,30 @@ for repo in $REPOS; do
     git commit --no-edit 2>/dev/null
   fi
 
-  # 5. config.js を復元（マージで変更された場合）
-  if [ -n "$CONFIG_BACKUP" ]; then
-    CURRENT_CONFIG=$(cat public/config.js 2>/dev/null || echo "")
-    if [ "$CURRENT_CONFIG" != "$CONFIG_BACKUP" ]; then
-      echo "$CONFIG_BACKUP" > public/config.js
-      git add public/config.js
-      git commit -m "config.js を顧客設定に復元" 2>/dev/null
+  # 5. バックアップから顧客固有ファイルを復元
+  # public/customer/（顧客の画像・config.js を元に戻す）
+  if [ -d "$BACKUP_DIR/customer" ]; then
+    while IFS= read -r -d '' backup_file; do
+      rel_path="public/customer/${backup_file#$BACKUP_DIR/customer/}"
+      if ! cmp -s "$backup_file" "$rel_path" 2>/dev/null; then
+        mkdir -p "$(dirname "$rel_path")"
+        cp "$backup_file" "$rel_path"
+        git add "$rel_path"
+      fi
+    done < <(find "$BACKUP_DIR/customer" -type f -print0)
+  fi
+
+  # deploy.yml を復元
+  if [ -f "$BACKUP_DIR/.github/workflows/deploy.yml" ]; then
+    if ! cmp -s "$BACKUP_DIR/.github/workflows/deploy.yml" ".github/workflows/deploy.yml" 2>/dev/null; then
+      cp "$BACKUP_DIR/.github/workflows/deploy.yml" ".github/workflows/deploy.yml"
+      git add ".github/workflows/deploy.yml"
     fi
+  fi
+
+  # 復元した差分をコミット
+  if ! git diff --cached --quiet; then
+    git commit -m "顧客固有ファイルを復元 (public/customer/, deploy.yml)" 2>/dev/null
   fi
 
   # 6. 変更があればプッシュ

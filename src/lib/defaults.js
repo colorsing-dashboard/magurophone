@@ -43,14 +43,9 @@ const DEFAULT_CONFIG = {
   },
 
   images: {
-    headerDesktop: './header.png',
-    headerMobile: './header-mobile.png',
-    medals: [
-      './medal-1st.jpg',
-      './medal-2nd.jpg',
-      './medal-3rd.jpg',
-    ],
-    favicon: './vite.svg',
+    headerDesktop: './customer/header.png',
+    headerMobile: './customer/header-mobile.png',
+    favicon: './customer/vite.svg',
   },
 
   sheets: {
