@@ -3,13 +3,13 @@
 
 window.DASHBOARD_CONFIG = {
   "brand": {
-    "name": "BAR MAGUROPHONE",
+    "name": "",
     "sidebarTitle": "　color singer LP",
-    "footerText": "深海BAR MAGUROPHONE ",
-    "footerSubText": "単推し・最推し様・メンシプ様募集中です",
-    "footerNote": "ファンマ: 🐟🎧",
-    "pageTitle": "深海BAR MAGUROPHONE - 特典管理",
-    "loadingEmoji": "🐟",
+    "footerText": "",
+    "footerSubText": "",
+    "footerNote": "",
+    "pageTitle": "ColorSing LP - 特典管理",
+    "loadingEmoji": "🎵",
     "loadingText": "Loading...",
     "showTitle": true,
     "titleGradient": true,
@@ -30,13 +30,13 @@ window.DASHBOARD_CONFIG = {
     "cardBorderHover": "",
     "primaryText": "",
     "accentText": "",
-    "rank1Card": "#ff4d00",
+    "rank1Card": "",
     "backgroundMain": "",
     "backgroundMid": ""
   },
   "fonts": {
-    "display": "'Sacramento', cursive",
-    "displayUrl": "https://fonts.googleapis.com/css2?family=Sacramento:wght@400&display=swap",
+    "display": "'Playfair Display', serif",
+    "displayUrl": "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&display=swap",
     "body": "'M PLUS 2', sans-serif",
     "bodyUrl": "https://fonts.googleapis.com/css2?family=M+PLUS+2:wght@400;500;700&display=swap",
     "googleFontsUrl": "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&display=swap"
@@ -52,7 +52,7 @@ window.DASHBOARD_CONFIG = {
     "favicon": "./vite.svg"
   },
   "sheets": {
-    "spreadsheetId": "1lU49dwSPRysdFA2Fg6iofJnk7vaXLU1jJ6sUkCoN5zk",
+    "spreadsheetId": "",
     "rankingSheetName": "目標管理・ランキング",
     "benefitsSheetName": "特典管理",
     "benefitsContentSheetName": "特典内容",
@@ -165,6 +165,7 @@ window.DASHBOARD_CONFIG = {
       "今月の目標"
     ],
     "faq": {
+      "enabled": true,
       "title": "📝 FAQ・注意事項",
       "items": [
         {
@@ -209,10 +210,10 @@ window.DASHBOARD_CONFIG = {
     "particleOpacity": 1
   },
   "deploy": {
-    "owner": "magurophone",
-    "repo": "ColorSing_LP",
-    "branch": "magurophone",
-    "token": "rev:Sc9LdGZ04IAEXE76dLXwApfIhKrt6RkkUwOJKRNYlNylCCKFV49Kuqf1fgc_d4JfN2TwVnEG0IMBSTQB11_tap_buhtig"
+    "owner": "",
+    "repo": "",
+    "branch": "main",
+    "token": ""
   },
   "admin": {
     "password": "CSadmin",
