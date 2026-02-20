@@ -11,8 +11,15 @@
             box-sizing: border-box;
         }
 
-        h1, h2, h3, p, .badge {
+        h1, h2, h3, .badge {
             text-wrap: balance;
+        }
+
+        p {
+            text-wrap: wrap;
+            word-break: auto-phrase;
+            line-break: strict;
+            overflow-wrap: break-word;
         }
 
         :root {
