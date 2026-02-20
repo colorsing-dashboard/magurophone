@@ -158,6 +158,25 @@ const BrandingTab = ({ config, updateConfig }) => {
       </div>
 
       <hr className="border-light-blue/20 my-8" />
+      <h3 className="text-lg font-body text-amber mb-4">ヘッダー画像</h3>
+      <p className="text-xs text-gray-500 mb-3">Google DriveのURLまたはファイルパスを指定します。未設定の場合は <code className="text-gray-400">public/customer/</code> 内の画像が使われます。</p>
+
+      <Field
+        label="ヘッダー画像（PC用）"
+        value={config.images?.headerDesktop}
+        onChange={(v) => updateConfig('images.headerDesktop', v)}
+        placeholder="https://drive.google.com/file/d/xxx/view  または  ./customer/header.png"
+        description="横幅1200px以上推奨。Google DriveのURLを貼り付けるか、ファイルパスを入力"
+      />
+      <Field
+        label="ヘッダー画像（モバイル用）"
+        value={config.images?.headerMobile}
+        onChange={(v) => updateConfig('images.headerMobile', v)}
+        placeholder="https://drive.google.com/file/d/xxx/view  または  ./customer/header-mobile.png"
+        description="縦長画像（750×600px程度）推奨。省略するとPC用画像が使われます"
+      />
+
+      <hr className="border-light-blue/20 my-8" />
       <h3 className="text-lg font-body text-amber mb-4">タイトルフォント</h3>
       <p className="text-xs text-gray-500 mb-3">ヘッダーやサイドバーのブランド名に使われる装飾フォント</p>
 
