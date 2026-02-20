@@ -120,14 +120,8 @@ function AdminApp() {
   const handleSyncFromGitHub = (remoteConfig) => {
     setConfig(prev => {
       const synced = deepMerge(DEFAULT_CONFIG, remoteConfig)
-      // 反転トークンを復元
-      if (synced.deploy?.token?.startsWith('rev:')) {
-        synced.deploy.token = synced.deploy.token.slice(4).split('').reverse().join('')
-      }
-      // ローカルに平文 token があればそちらを優先
-      if (prev.deploy?.token && !prev.deploy.token.startsWith('rev:')) {
-        synced.deploy = { ...synced.deploy, token: prev.deploy.token }
-      }
+      // デプロイ設定はローカルを常に保持（リモートの値で上書きしない）
+      synced.deploy = prev.deploy
       return synced
     })
   }
