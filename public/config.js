@@ -44,11 +44,6 @@ window.DASHBOARD_CONFIG = {
   "images": {
     "headerDesktop": "./header.png",
     "headerMobile": "./header-mobile.png",
-    "medals": [
-      "./medal-1st.jpg",
-      "./medal-2nd.jpg",
-      "./medal-3rd.jpg"
-    ],
     "favicon": "./vite.svg"
   },
   "sheets": {
