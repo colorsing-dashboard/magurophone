@@ -290,10 +290,12 @@ const STEPS = [
 function SetupApp() {
   const [openStep, setOpenStep] = useState(1)
   const [completed, setCompleted] = useState(new Set())
+  const [maxVisible, setMaxVisible] = useState(1)
 
   const handleComplete = (stepNumber) => {
     setCompleted(prev => new Set([...prev, stepNumber]))
     if (stepNumber < STEPS.length) {
+      setMaxVisible(prev => Math.max(prev, stepNumber + 1))
       setOpenStep(stepNumber + 1)
     } else {
       setOpenStep(null)
@@ -320,7 +322,7 @@ function SetupApp() {
         </header>
 
         <div className="space-y-3">
-          {STEPS.map((step) => {
+          {STEPS.filter(step => step.number <= maxVisible).map((step) => {
             const isOpen = openStep === step.number
             const isDone = completed.has(step.number)
             const { Content } = step
