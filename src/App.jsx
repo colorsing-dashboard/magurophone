@@ -19,7 +19,7 @@ function App() {
   const [currentView, setCurrentView] = useState(enabledViews[0]?.id || 'home')
 
   const {
-    ranking, goals, rights, benefits, history, icons,
+    ranking, goals, rights, specialIndex, benefits, history, icons,
     loading, loadingIcons, iconError, error, lastUpdate,
     loadData, loadIcons,
   } = useSheetData(config.sheets)
@@ -28,9 +28,8 @@ function App() {
   const [selectedPerson, setSelectedPerson] = useState(null)
   const [selectedBenefit, setSelectedBenefit] = useState(null)
 
-  // アイコンギャラリー状態
+  // アイコンギャラリー状態（selectedMonthはデフォルト月選択のためApp管理）
   const [selectedMonth, setSelectedMonth] = useState(null)
-  const [selectedUser, setSelectedUser] = useState(null)
 
   // 現在のビューが無効化されていたらフォールバック
   const effectiveView = enabledViews.some(v => v.id === currentView)
@@ -117,10 +116,10 @@ function App() {
   const viewProps = {
     home: { ranking, goals },
     menu: { benefits, onSelectBenefit: setSelectedBenefit },
-    rights: { rights, onSelectPerson: setSelectedPerson },
+    rights: { rights, onSelectPerson: setSelectedPerson, specialIndex },
     icons: {
       icons, selectedMonth, setSelectedMonth,
-      selectedUser, setSelectedUser, loading: loadingIcons, iconError,
+      loading: loadingIcons, iconError,
     },
   }
 
@@ -144,6 +143,7 @@ function App() {
           person={selectedPerson}
           benefits={benefits}
           history={history}
+          specialIndex={specialIndex}
           onClose={() => setSelectedPerson(null)}
           onSelectBenefit={setSelectedBenefit}
         />

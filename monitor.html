@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>メンバーシップ特典 選択制へのアップデートのお知らせ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        h1, h2, h3, .badge {
+            text-wrap: balance;
+        }
+
+        p {
+            text-wrap: wrap;
+        }
+
+        :root {
+            --primary: #ff6b9d;
+            --secondary: #c449ff;
+            --accent: #ffd700;
+            --dark: #1a1a2e;
+            --light: #ffffff;
+            --gray: #8892b0;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', 'Arial', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            padding: 80px 20px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(255, 107, 157, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(196, 73, 255, 0.2) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            line-height: 1.3;
+            background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.85);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Sections */
+        section {
+            padding: 80px 0;
+        }
+
+        section:nth-child(even) {
+            background: rgba(0, 0, 0, 0.15);
+        }
+
+        h2 {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 50px;
+            font-weight: 800;
+        }
+
+        /* Plan Cards */
+        .plan-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 640px) {
+            .plan-grid { grid-template-columns: 1fr; }
+        }
+
+        .plan-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 40px 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+
+        .plan-card.is-new {
+            border-color: var(--accent);
+            background: rgba(255, 215, 0, 0.08);
+        }
+
+        .plan-tag {
+            display: inline-block;
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 4px 14px;
+            border-radius: 20px;
+            margin-bottom: 16px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .plan-card.is-new .plan-tag {
+            background: var(--accent);
+            color: #1a1a2e;
+        }
+
+        .plan-name {
+            font-size: 1.5rem;
+            font-weight: 900;
+            margin-bottom: 8px;
+        }
+
+        .plan-subtitle {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 24px;
+        }
+
+        .plan-benefit {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 16px;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .plan-card.is-new .plan-benefit {
+            border-left-color: var(--accent);
+        }
+
+        .plan-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .plan-list li {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.85);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .plan-list li::before {
+            content: '✓';
+            color: var(--primary);
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .plan-card.is-new .plan-list li::before {
+            color: var(--accent);
+        }
+
+        .new-label {
+            position: absolute;
+            top: -14px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 4px 16px;
+            border-radius: 20px;
+        }
+
+        /* Monitor Section */
+        .monitor-box {
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.2), rgba(196, 73, 255, 0.2));
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            border-radius: 24px;
+            padding: 50px 40px;
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .monitor-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .monitor-box h3 {
+            font-size: 1.7rem;
+            font-weight: 900;
+            margin-bottom: 12px;
+            color: var(--accent);
+        }
+
+        .monitor-box .lead {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 32px;
+        }
+
+        .monitor-benefit {
+            background: rgba(255, 215, 0, 0.15);
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin-bottom: 28px;
+            font-size: 1.05rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .notes {
+            text-align: left;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 32px;
+        }
+
+        .notes p {
+            font-size: 0.88rem;
+            color: rgba(255, 255, 255, 0.65);
+            line-height: 1.8;
+            word-break: auto-phrase;
+            line-break: strict;
+            overflow-wrap: break-word;
+        }
+
+        .notes p + p {
+            margin-top: 8px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--light);
+            padding: 18px 50px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.4);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 107, 157, 0.6);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 40px 0;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        footer p + p {
+            margin-top: 8px;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeInUp 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-content container animate-fade-in">
+            <div class="badge">📢 メンバーシップ特典 アップデートのお知らせ</div>
+            <h1>特典が2種類から<br>選べるようになります！</h1>
+            <p class="hero-subtitle">
+                メンバーシップの特典を、あなたのスタイルに合わせて選択できる2プラン制に変更します。
+            </p>
+        </div>
+    </section>
+
+    <!-- Plan Comparison -->
+    <section>
+        <div class="container">
+            <h2>2つのプランからお選びください</h2>
+            <div class="plan-grid">
+
+                <!-- Plan A -->
+                <div class="plan-card">
+                    <span class="plan-tag">既存の特典</span>
+                    <div class="plan-name">メンバーシップA</div>
+                    <div class="plan-subtitle">リスナーの方向け</div>
+                    <div class="plan-benefit">🎤 ちゃんと覚えて歌います</div>
+                    <ul class="plan-list">
+                        <li>10k・20k達成時の特別特典付き</li>
+                        <li>獲得済みの特典は永続</li>
+                        <li>これまでと変わらずご利用いただけます</li>
+                    </ul>
+                </div>
+
+                <!-- Plan B -->
+                <div class="plan-card is-new">
+                    <span class="new-label">NEW</span>
+                    <span class="plan-tag">ライバー様向け ✨</span>
+                    <div class="plan-name">メンバーシップB</div>
+                    <div class="plan-subtitle">ライバー活動をされている方向け</div>
+                    <div class="plan-benefit">🌐 歌推し特典管理用オリジナルサイト</div>
+                    <ul class="plan-list">
+                        <li>あなた専用のサイトURLをご提供</li>
+                        <li>カラー・フォント・デザインをカスタマイズ可能</li>
+                        <li>スプレッドシート連携で特典管理を自動化</li>
+                        <li>ランキング表示・アイコンギャラリーにも対応</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Monitor Recruitment -->
+    <section>
+        <div class="container">
+            <h2>🔍 モニター募集中</h2>
+            <div class="monitor-box">
+                <span class="monitor-icon">🙋</span>
+                <h3>現メンバーの方へ</h3>
+                <p class="lead">
+                    新特典の開始にあたり、現在メンバーシップに加入中のライバーさんからモニターを募集します！希望される方はお気軽にご連絡ください。
+                </p>
+
+                <div class="monitor-benefit">
+                    🎁 モニター特典：次月分までメンバーシップAの特典を付与
+                </div>
+
+                <div class="notes">
+                    <p>※ 通常、メンバーシップ特典をBに切り替えた場合、次月よりメンバーシップAの権利は得られません。（獲得済みの権利は永続します）</p>
+                    <p>※ A・B両方の特典継続を希望される場合は、2口のご加入をお願いいたします。</p>
+                    <p>※ ご不明な点はお気軽にご質問ください。</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 magurophone</p>
+            <p>本サービスはカラーシングのメンバーシップ特典として提供しています</p>
+        </div>
+    </footer>
+
+</body>
+</html>

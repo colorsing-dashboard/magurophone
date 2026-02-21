@@ -91,9 +91,12 @@ const ContentTab = ({ config, updateConfig }) => {
             />
             <div
               onClick={() => updateConfig('home.faq.enabled', config.home?.faq?.enabled === false)}
-              className={`w-10 h-5 rounded-full cursor-pointer transition-colors ${config.home?.faq?.enabled !== false ? 'bg-amber/70' : 'bg-gray-600'}`}
+              className={`relative w-10 h-5 rounded-full cursor-pointer transition-colors ${config.home?.faq?.enabled !== false ? 'bg-amber/70' : 'bg-gray-600'}`}
             >
-              <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${config.home?.faq?.enabled !== false ? 'translate-x-5' : 'translate-x-0.5'}`} />
+              <div
+                className="absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all duration-200"
+                style={{ left: config.home?.faq?.enabled !== false ? '1.25rem' : '0.125rem' }}
+              />
             </div>
           </div>
         </label>

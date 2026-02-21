@@ -26,8 +26,23 @@ const ColorField = ({ label, value, onChange, description }) => (
 
 import { COLOR_PRESETS } from '../../lib/presets'
 
+// baseKey: 未設定時のフォールバックとなるベースカラーのキー名
+const AREA_COLOR_FIELDS = [
+  { key: 'headerGradientStart', label: 'ヘッダーグラデーション（中央）', baseKey: 'oceanTeal', description: '未設定 → 背景中間色と同じ' },
+  { key: 'headerGradientEnd',   label: 'ヘッダーグラデーション（両端）', baseKey: 'deepBlue',  description: '未設定 → 背景メインと同じ' },
+  { key: 'primaryText',         label: 'メインテキスト色',               baseKey: 'lightBlue', description: '未設定 → UIメインカラーと同じ' },
+  { key: 'accentText',          label: 'アクセントテキスト色',           baseKey: 'amber',     description: '未設定 → UIアクセントカラーと同じ' },
+  { key: 'rank1Card',           label: '1位カード強調色',                baseKey: 'accent',    description: '未設定 → 強調色と同じ' },
+  { key: 'titleColor',          label: 'タイトルテキスト色',             baseKey: 'lightBlue', description: '未設定 → UIメインカラーと同じ（グラデーションOFF時のみ有効）' },
+]
+
 const ColorsTab = ({ config, updateConfig }) => {
   const applyPreset = (preset) => {
+    // まず全オーバーライドをクリア（残存防止）
+    AREA_COLOR_FIELDS.forEach(({ key }) => {
+      updateConfig(`colorOverrides.${key}`, '')
+    })
+    // ベースカラーを適用
     Object.entries(preset.colors).forEach(([key, value]) => {
       updateConfig(`colors.${key}`, value)
     })
@@ -56,37 +71,37 @@ const ColorsTab = ({ config, updateConfig }) => {
       </div>
 
       <ColorField
-        label="背景メイン（Deep Blue）"
+        label="背景メイン"
         value={config.colors.deepBlue}
         onChange={(v) => updateConfig('colors.deepBlue', v)}
-        description="サイト背景のメインカラー"
+        description="サイト背景のメインカラー（最暗部）"
       />
       <ColorField
-        label="背景アクセント（Ocean Teal）"
+        label="背景グラデーション（中間色）"
         value={config.colors.oceanTeal}
         onChange={(v) => updateConfig('colors.oceanTeal', v)}
         description="背景グラデーションの中間色"
       />
       <ColorField
-        label="UI メインカラー（Light Blue）"
+        label="UIメインカラー"
         value={config.colors.lightBlue}
         onChange={(v) => updateConfig('colors.lightBlue', v)}
         description="テキスト、ボーダー、ボタンなどに使われるメインカラー"
       />
       <ColorField
-        label="ハイライト（Amber）"
+        label="UIアクセントカラー"
         value={config.colors.amber}
         onChange={(v) => updateConfig('colors.amber', v)}
         description="目標、名前のホバー、ボトルラベルなどのアクセントカラー"
       />
       <ColorField
-        label="強調色（Accent）"
+        label="強調色（1位カード・エラー）"
         value={config.colors.accent}
         onChange={(v) => updateConfig('colors.accent', v)}
         description="1位のランキングカード、エラー表示などの強調色"
       />
       <ColorField
-        label="プレミアム（Gold）"
+        label="プレミアムカラー"
         value={config.colors.gold}
         onChange={(v) => updateConfig('colors.gold', v)}
         description="メンバーシップなどプレミアム要素のカラー"
@@ -98,8 +113,10 @@ const ColorsTab = ({ config, updateConfig }) => {
         未設定の場合、上のベースカラーが適用されます。特定のUI要素だけ色を変えたい場合に設定してください。
       </p>
 
-      {AREA_COLOR_FIELDS.map(({ key, label, description }) => {
+      {AREA_COLOR_FIELDS.map(({ key, label, description, baseKey }) => {
         const value = config.colorOverrides?.[key] || ''
+        // 未設定時はベースカラーをピッカーに表示（ブラック表示を防ぐ）
+        const pickerValue = value || config.colors?.[baseKey] || '#000000'
         return (
           <div key={key} className="mb-5">
             <label className="block text-sm font-body text-light-blue mb-1">{label}</label>
@@ -107,7 +124,7 @@ const ColorsTab = ({ config, updateConfig }) => {
             <div className="flex items-center gap-3">
               <input
                 type="color"
-                value={value || '#000000'}
+                value={pickerValue}
                 onChange={(e) => updateConfig(`colorOverrides.${key}`, e.target.value)}
                 className="w-12 h-10 rounded-lg border border-light-blue/30 cursor-pointer bg-transparent"
               />
@@ -127,12 +144,10 @@ const ColorsTab = ({ config, updateConfig }) => {
                   クリア
                 </button>
               )}
-              {value && (
-                <div
-                  className="w-10 h-10 rounded-lg border border-light-blue/30"
-                  style={{ backgroundColor: value }}
-                />
-              )}
+              <div
+                className="w-10 h-10 rounded-lg border border-light-blue/30"
+                style={{ backgroundColor: pickerValue }}
+              />
             </div>
           </div>
         )
@@ -140,17 +155,5 @@ const ColorsTab = ({ config, updateConfig }) => {
     </div>
   )
 }
-
-const AREA_COLOR_FIELDS = [
-  { key: 'backgroundMain', label: 'ページ背景（メイン）', description: '未設定 → Deep Blue' },
-  { key: 'backgroundMid', label: 'ページ背景（中間）', description: '未設定 → Ocean Teal' },
-  { key: 'headerGradientStart', label: 'ヘッダーグラデーション（中央）', description: '未設定 → Ocean Teal' },
-  { key: 'headerGradientEnd', label: 'ヘッダーグラデーション（両端）', description: '未設定 → Deep Blue' },
-  { key: 'primaryText', label: 'メインテキスト色', description: '未設定 → Light Blue' },
-  { key: 'accentText', label: 'アクセントテキスト色', description: '未設定 → Amber' },
-  { key: 'cardBorder', label: 'カードボーダー', description: '未設定 → Light Blue' },
-  { key: 'cardBorderHover', label: 'カードボーダー（ホバー）', description: '未設定 → Amber' },
-  { key: 'rank1Card', label: '1位カード強調色', description: '未設定 → Accent' },
-]
 
 export default ColorsTab

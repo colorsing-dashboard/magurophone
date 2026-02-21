@@ -117,42 +117,8 @@ const SheetsTab = ({ config, updateConfig }) => {
 
       <hr className="border-light-blue/20 my-8" />
 
-      <details className="mb-6 glass-effect rounded-lg border border-light-blue/20">
-        <summary className="px-4 py-3 cursor-pointer text-sm font-body text-amber hover:text-amber/80 transition-all">
-          スプレッドシートの構造について
-        </summary>
-        <div className="px-4 pb-4 text-xs text-gray-400 space-y-3">
-          <div>
-            <p className="text-light-blue font-bold mb-1">目標管理・ランキングシート</p>
-            <pre className="bg-black/30 rounded p-2 overflow-x-auto">{`D2:G5  ... ランキング（順位, 名前, ポイント, メダル画像URL）
-A2:B10 ... 目標（ラベル, 値）`}</pre>
-          </div>
-          <div>
-            <p className="text-light-blue font-bold mb-1">特典管理シート</p>
-            <pre className="bg-black/30 rounded p-2 overflow-x-auto">{`A2:I1000 ... 権利者リスト（名前, 各ティアの値...）`}</pre>
-          </div>
-          <div>
-            <p className="text-light-blue font-bold mb-1">特典内容シート</p>
-            <pre className="bg-black/30 rounded p-2 overflow-x-auto">{`A3:E20 ... 特典説明（特典ティア, 特典タイトル, 簡易説明, 詳細説明, レコード機能☑）`}</pre>
-          </div>
-          <div>
-            <p className="text-light-blue font-bold mb-1">特典履歴シート</p>
-            <pre className="bg-black/30 rounded p-2 overflow-x-auto">{`A3:D1000
-A列: 年月（例: 202602）, B列: ユーザー名, C列: 特典ID, D列: 内容`}</pre>
-          </div>
-          <div>
-            <p className="text-light-blue font-bold mb-1">枠内アイコンシート</p>
-            <pre className="bg-black/30 rounded p-2 overflow-x-auto">{`A列: yyyymm（例: 202602）またはカテゴリ名（例: ゲーム実況, 歌枠）
-B列: ユーザー名
-C列: Google Drive画像URL
-
-※ A列が全て6桁数字の場合は月別表示、それ以外はカテゴリ表示になります`}</pre>
-          </div>
-        </div>
-      </details>
-
       <h3 className="text-lg font-body text-amber mb-4">セル範囲</h3>
-      <p className="text-xs text-gray-500 mb-4">各データが配置されているセル範囲を指定します。</p>
+      <p className="text-xs text-gray-500 mb-4">各データが配置されているセル範囲を指定します。権利者データと特典履歴は自動取得されます。</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Field
@@ -172,18 +138,6 @@ C列: Google Drive画像URL
           value={config.sheets.ranges.benefits}
           onChange={(v) => updateConfig('sheets.ranges.benefits', v)}
           placeholder="A3:E20"
-        />
-        <Field
-          label="権利者データ"
-          value={config.sheets.ranges.rights}
-          onChange={(v) => updateConfig('sheets.ranges.rights', v)}
-          placeholder="A2:I1000"
-        />
-        <Field
-          label="特典履歴データ"
-          value={config.sheets.ranges.history}
-          onChange={(v) => updateConfig('sheets.ranges.history', v)}
-          placeholder="A2:D1000"
         />
       </div>
 

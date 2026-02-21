@@ -23,7 +23,15 @@
       "Bash(git merge:*)",
       "Bash(git fetch:*)",
       "Bash(bash scripts/sync-all.sh)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Bash(git restore:*)",
+      "Bash(git rebase:*)",
+      "Bash(git clone:*)",
+      "Bash(git remote add:*)",
+      "Bash(git -C /tmp/tmp.2Bq9BRWbNV/magurophone show caf1574:public/config.js)",
+      "Bash(git -C /tmp/tmp.2Bq9BRWbNV/magurophone show caf1574:public/customer/config.js)",
+      "Bash(curl:*)",
+      "Bash(python3:*)"
     ]
   }
 }

@@ -59,8 +59,6 @@ const DEFAULT_CONFIG = {
       ranking: 'D2:G5',
       goals: 'A2:B10',
       benefits: 'A3:E20',
-      rights: 'A2:I1000',
-      history: 'A3:D1000',
     },
     refreshIntervalMs: 300000,
   },

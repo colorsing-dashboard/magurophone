@@ -5,6 +5,7 @@ export function useSheetData(sheetsConfig) {
   const [ranking, setRanking] = useState([])
   const [goals, setGoals] = useState([])
   const [rights, setRights] = useState([])
+  const [specialIndex, setSpecialIndex] = useState(8)
   const [benefits, setBenefits] = useState([])
   const [history, setHistory] = useState([])
   const [loading, setLoading] = useState(true)
@@ -23,8 +24,6 @@ export function useSheetData(sheetsConfig) {
   const rankingRange = ranges.ranking
   const goalsRange = ranges.goals
   const benefitsRange = ranges.benefits
-  const rightsRange = ranges.rights
-  const historyRange = ranges.history
 
   const loadData = useCallback(async () => {
     if (!spreadsheetId) {
@@ -41,18 +40,29 @@ export function useSheetData(sheetsConfig) {
         fetchSheetData(spreadsheetId, rankingSheetName, rankingRange),
         fetchSheetData(spreadsheetId, rankingSheetName, goalsRange),
         fetchSheetData(spreadsheetId, benefitsContentSheetName, benefitsRange),
-        fetchSheetData(spreadsheetId, benefitsSheetName, rightsRange),
+        // rights: ヘッダー行込みで全シートを取得（Special列を動的に検出するため range なし・headers=0）
+        fetchSheetData(spreadsheetId, benefitsSheetName, null, 3, { allRows: true }),
       ]
       if (historySheetName) {
-        fetches.push(fetchHistoryData(spreadsheetId, historySheetName, historyRange).catch(() => []))
+        // history: A3:D（行上限なしのオープンレンジ）
+        fetches.push(fetchHistoryData(spreadsheetId, historySheetName, 'A3:D').catch(() => []))
       }
 
-      const [rankingData, goalsData, benefitsData, rightsData, historyData] = await Promise.all(fetches)
+      const [rankingData, goalsData, benefitsData, rawRightsData, historyData] = await Promise.all(fetches)
+
+      // ヘッダー行からSpecial列インデックスを動的検出
+      let detectedSpecialIndex = rawRightsData[0]?.findIndex(col => String(col).toLowerCase() === 'special') ?? -1
+      if (detectedSpecialIndex < 0) {
+        // "Special"列が見つからない場合は最終列をfallback
+        const maxLen = Math.max(0, ...rawRightsData.slice(1).map(r => r.length))
+        detectedSpecialIndex = maxLen > 0 ? maxLen - 1 : 8
+      }
 
       setRanking(rankingData)
       setGoals(goalsData.slice(1))
       setBenefits(benefitsData)
-      setRights(rightsData)
+      setRights(rawRightsData.slice(1)) // ヘッダー行を除いたデータ
+      setSpecialIndex(detectedSpecialIndex)
       setHistory(historyData || [])
       setLastUpdate(new Date())
       setError(null)
@@ -62,7 +72,7 @@ export function useSheetData(sheetsConfig) {
     } finally {
       setLoading(false)
     }
-  }, [spreadsheetId, rankingSheetName, benefitsSheetName, benefitsContentSheetName, historySheetName, rankingRange, goalsRange, benefitsRange, rightsRange, historyRange])
+  }, [spreadsheetId, rankingSheetName, benefitsSheetName, benefitsContentSheetName, historySheetName, rankingRange, goalsRange, benefitsRange])
 
   // 初回読み込み + 自動更新
   useEffect(() => {
@@ -103,6 +113,7 @@ export function useSheetData(sheetsConfig) {
     ranking,
     goals,
     rights,
+    specialIndex,
     benefits,
     history,
     icons,

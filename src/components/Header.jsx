@@ -52,7 +52,10 @@ const Header = ({ lastUpdate, loading, onRefresh }) => {
                 {config.brand.name}
               </h1>
             ) : (
-              <h1 className="text-4xl md:text-8xl font-display font-black text-primary text-glow-soft mb-4 leading-relaxed py-2">
+              <h1
+                className="text-4xl md:text-8xl font-display font-black text-glow-soft mb-4 leading-relaxed py-2"
+                style={{ color: 'var(--color-title, var(--color-primary))' }}
+              >
                 {config.brand.name}
               </h1>
             )}
