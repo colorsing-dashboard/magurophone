@@ -125,7 +125,7 @@ const IconGallery = ({ icons, selectedMonth, setSelectedMonth, loading, iconErro
                 <button
                   key={user}
                   onClick={() => setPopupUser(user)}
-                  className="glass-effect rounded-xl p-4 border border-card-border/20 hover:border-card-hover text-primary text-sm font-body transition-all text-center"
+                  className="glass-effect rounded-xl p-4 border border-card-border/20 hover:border-card-hover text-name-text text-sm font-body transition-all text-center"
                 >
                   {user}
                 </button>
