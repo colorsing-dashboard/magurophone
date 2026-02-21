@@ -228,9 +228,6 @@ const SS_SHEET_DATA = [
           <Cell range="A2:B10" label="月間目標（2列・最大8項目）"
             desc="1行目（A2:B2）はヘッダー行のため読み込み時にスキップされます。A3以降の A列 = 「今旬の目標」欄に表示する各項目テキスト / B列 = 「今月の目標」欄に表示する各項目テキスト。" />
         </div>
-        <Note type="danger">
-          ランキングデータはA列ではなくD列から始まります。列を間違えると表示されません。
-        </Note>
       </>
     ),
   },
@@ -275,7 +272,7 @@ const SS_SHEET_DATA = [
     content: () => (
       <div className="space-y-3">
         <Cell range="A列" label="月またはカテゴリ"
-          desc="すべて6桁の数字（yyyymm）なら月別表示。それ以外の文字列（例: 歌枠、ゲーム実況）ならカテゴリ別表示になります。" />
+          desc="すべて6桁の数字（yyyymm）なら月別表示。それ以外の文字列（例: メンバーシップ限定、月間トップリスナー）ならカテゴリ別表示になります。" />
         <Cell range="B列" desc="ユーザー名" />
         <Cell range="C列" desc="Google Drive の画像URL（共有リンク）" />
       </div>
@@ -395,10 +392,13 @@ const TabImageShare = () => (
     </p>
 
     <H3>① Google Drive へのアップロードと共有設定（共通手順）</H3>
-    <Step number="1">Google Drive を開き、画像ファイルをアップロード</Step>
+    <Step number="1">写真やCanvaなどから、画像をGoogle Driveにアップロード</Step>
     <Step number="2">アップロードした画像を右クリック →「共有」→「リンクをコピー」</Step>
     <Step number="3">「制限付き」と表示されている場合は「リンクを知っている全員」に変更して「完了」</Step>
     <Step number="4">コピーしたURLを以下の手順で使用する</Step>
+    <Note type="info">
+      Canvaで作成した画像はCanvaから直接Google Driveに書き出せます（「共有」→「保存」→「Googleドライブ」）。スマートフォンの写真など、どこから用意しても問題ありません。
+    </Note>
     <Img src="./manual/gdrive-share.png" alt="Google Drive 共有ダイアログ" caption="「リンクを知っている全員」に設定する" />
 
     <Note type="danger">
