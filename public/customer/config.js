@@ -32,7 +32,8 @@ window.DASHBOARD_CONFIG = {
     "accentText": "",
     "rank1Card": "",
     "backgroundMain": "",
-    "backgroundMid": ""
+    "backgroundMid": "",
+    "titleColor": ""
   },
   "fonts": {
     "display": "'Playfair Display', serif",

@@ -35,6 +35,7 @@ export function ConfigProvider({ config, children }) {
       'color-header-gradient-start': o.headerGradientStart, // → Header.jsx
       'color-header-gradient-end': o.headerGradientEnd,     // → Header.jsx
       'color-rank1-card': o.rank1Card,                      // → HomeView.jsx
+      'color-title': o.titleColor,                          // → Header.jsx（グラデーションOFF時）
     }
     Object.entries(overrides).forEach(([key, value]) => {
       if (value) {
