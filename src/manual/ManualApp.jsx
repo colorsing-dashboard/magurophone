@@ -102,7 +102,7 @@ const TabSpreadsheetShare = () => (
     <Step number="2">「Google Sheets」タブを選択</Step>
     <Step number="3">「スプレッドシート ID」欄にコピーした ID を貼り付け</Step>
     <Step number="4">「接続テスト」ボタンで正常に読み込めるか確認</Step>
-    <Step number="5">「設定を保存」→「デプロイ」タブから「GitHubに保存」</Step>
+    <Step number="5">「デプロイ」タブ →「デプロイ実行」ボタンをクリックしてGitHubに保存</Step>
     <Img src="./manual/admin-sheets-tab.png" alt="管理画面 Google Sheetsタブ" caption="Google Sheets タブ" />
 
     <Note type="warn">
@@ -120,10 +120,11 @@ const ADMIN_TABS_DATA = [
     img: './manual/admin-branding-tab.png',
     items: [
       { label: 'サイト名・サイドバータイトル・ページタイトル', desc: 'ヘッダーやブラウザタブに表示される各種名称を設定します。' },
+      { label: 'タイトル表示・グラデーション', desc: 'ヘッダーへのサイト名表示のON/OFFやグラデーション方向を設定します。' },
+      { label: 'フッター設定', desc: 'フッターに表示するメインテキスト・サブテキスト・注記の3行を設定します。' },
+      { label: 'ローディング絵文字・テキスト', desc: 'ページ読み込み中に表示される絵文字とテキストを変更できます。' },
       { label: 'ヘッダー画像（PC用・モバイル用）', desc: 'Google DriveのURLまたはローカルパスを入力します。' },
       { label: 'フォント設定', desc: 'タイトル用フォント・本文フォントをプリセットまたはカスタムで設定します。Google Fontsにも対応。' },
-      { label: 'タイトル表示・グラデーション', desc: 'ヘッダーへのサイト名表示のON/OFFやグラデーション方向を設定します。' },
-      { label: 'ローディング絵文字・テキスト', desc: 'ページ読み込み中に表示される絵文字とテキストを変更できます。' },
     ],
   },
   {
@@ -179,15 +180,19 @@ const ADMIN_TABS_DATA = [
     name: 'エフェクト',
     img: './manual/admin-effects-tab.png',
     items: [
+      { label: 'アイコン揺らぎ', desc: 'Menu・ボトルキープページのアイコンをふわふわ揺らすアニメーションのON/OFFです。' },
       { label: 'パーティクル種類', desc: '泡・星・ハート・なし から選択できます。' },
-      { label: 'サイズ・方向', desc: 'パーティクルの大きさと流れる方向（上から下 / 下から上）を設定します。' },
+      { label: '方向', desc: 'パーティクルが流れる方向（下から上 / 上から下）を設定します。' },
+      { label: 'サイズ', desc: 'パーティクルの大きさを極小〜極大の5段階で設定します。' },
+      { label: '濃さ', desc: 'パーティクルの表示濃度をスライダーで調整します。' },
+      { label: 'パーティクルの色', desc: 'カラーピッカーでカスタムカラーを設定できます。「デフォルトに戻す」でLight Blue色に戻ります。' },
     ],
   },
   {
     name: 'デプロイ',
     img: './manual/admin-deploy-tab.png',
     items: [
-      { label: 'GitHubに保存', desc: '現在の設定をGitHubリポジトリに保存し、サイトに反映します。「設定を保存」だけでは恒久的に保存されないため、必ずこちらで保存してください。' },
+      { label: 'デプロイ実行', desc: '現在の設定をGitHubリポジトリに保存し、サイトに反映します。ブラウザの設定変更（自動保存）をGitHubに確定するには必ずこちらをクリックしてください。' },
       { label: 'GitHubから最新設定を取得', desc: 'GitHubに保存されている最新の設定をローカルに読み込みます。' },
       { label: '接続設定', desc: 'GitHubのリポジトリオーナー・リポジトリ名・ブランチ・アクセストークンを設定します（初回のみ）。' },
     ],
@@ -207,11 +212,11 @@ const TabAdminPanel = () => {
       <H3>設定の基本的な流れ</H3>
       <Step number="1">管理画面を開く</Step>
       <Step number="2">設定したいタブを選択して値を変更</Step>
-      <Step number="3">「設定を保存」ボタンをクリック（ブラウザに一時保存）</Step>
-      <Step number="4">「デプロイ」タブ →「GitHubに保存」で確定</Step>
+      <Step number="3">値を変更すると自動的にブラウザに保存されます（「保存しました」と表示）</Step>
+      <Step number="4">「デプロイ」タブ →「デプロイ実行」ボタンでGitHubに確定</Step>
 
       <Note type="warn">
-        「設定を保存」だけでは、ブラウザのキャッシュをクリアすると設定が消えます。必ず最後に「デプロイ」タブからGitHubに保存してください。
+        「デプロイ実行」しないと、ブラウザのキャッシュをクリアすると設定が消えます。必ず最後に「デプロイ」タブから「デプロイ実行」してください。
       </Note>
 
       <H3>各タブの説明</H3>
@@ -279,8 +284,8 @@ const TabSpreadsheetEntry = () => (
     <div className="space-y-3">
       <Cell range="D2:G5" label="ランキングデータ（4列）"
         desc="D列: 順位 / E列: 名前 / F列: ポイント / G列: メダル画像URL（Google DriveのURL）" />
-      <Cell range="A2:B10" label="月間目標（2列）"
-        desc="A列: ラベル（目標名） / B列: 値（数値）。ホームページの目標進捗に反映されます。" />
+      <Cell range="A2:B10" label="月間目標（2列・最大8項目）"
+        desc="1行目（A2:B2）はヘッダー行のため読み込み時にスキップされます。A3以降の A列 = 「今旬の目標」欄に表示する各項目テキスト / B列 = 「今月の目標」欄に表示する各項目テキスト。" />
     </div>
     <Note type="danger">
       ランキングデータはA列ではなくD列から始まります。列を間違えると表示されません。
@@ -393,8 +398,8 @@ const TabImageShare = () => (
 
     <H3>② ヘッダー画像の設定（PC用・モバイル用）</H3>
     <Step number="1">①の手順でURLをコピー</Step>
-    <Step number="2">管理画面「ブランディング」タブ →「ヘッダー画像（PC用）」または「ヘッダー画像（モバイル用）」にURLを貼り付け</Step>
-    <Step number="3">「設定を保存」→「デプロイ」タブから「GitHubに保存」</Step>
+    <Step number="2">管理画面「ブランディング」タブ →「ヘッダー画像（PC用）」または「ヘッダー画像（モバイル用）」にURLを貼り付け（自動保存）</Step>
+    <Step number="3">「デプロイ」タブ →「デプロイ実行」でGitHubに保存</Step>
 
     <H3>③ 枠内アイコンの設定</H3>
     <Step number="1">①の手順でURLをコピー</Step>
