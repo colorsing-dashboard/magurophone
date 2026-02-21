@@ -33,6 +33,8 @@ const DEFAULT_CONFIG = {
     rank1Card: '',
     backgroundMain: '',
     backgroundMid: '',
+    nameText: '',
+    footerText: '',
   },
 
   fonts: {
