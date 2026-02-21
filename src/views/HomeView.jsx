@@ -18,7 +18,7 @@ const HomeView = ({ ranking, goals }) => {
             <div
               key={`${person[RANKING_FIELDS.NAME] ?? 'rank'}-${index}`}
               className={`glass-effect rounded-2xl p-4 md:p-8 border transition-all hover:scale-105 water-shimmer ${index === 0 ? 'box-glow-soft' : 'border-card-border/30'}`}
-              style={index === 0 ? { borderColor: `var(--color-rank1-card, var(--color-accent))` } : undefined}
+              style={index === 0 ? { borderColor: `var(--color-rank1-card, var(--base-accent))` } : undefined}
             >
               <div className="mb-2 md:mb-4 flex justify-center">
                 {person[RANKING_FIELDS.IMAGE] && (
@@ -32,7 +32,7 @@ const HomeView = ({ ranking, goals }) => {
               <div className="text-xs md:text-2xl font-body mb-1 md:mb-2 whitespace-nowrap overflow-hidden h-4 md:h-8">{person[RANKING_FIELDS.NAME]}</div>
               <div
                 className={`text-2xl md:text-4xl font-black ${index !== 0 ? 'text-highlight' : ''}`}
-                style={index === 0 ? { color: `var(--color-rank1-card, var(--color-accent))` } : undefined}
+                style={index === 0 ? { color: `var(--color-rank1-card, var(--base-accent))` } : undefined}
               >
                 <CountUp end={person[RANKING_FIELDS.POINTS]} />
               </div>
