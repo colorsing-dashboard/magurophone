@@ -324,65 +324,6 @@ const TabSpreadsheetEntry = () => {
 }
 
 /* ─────────────────────────────────────────
-   タブ4: ヘッダー画像の作成方法
-───────────────────────────────────────── */
-const TabHeaderImage = () => (
-  <div>
-    <p className="text-gray-300 text-sm mb-6">
-      ヘッダー画像は PC 用とモバイル用の2種類を用意します。縦横比が異なるため、別々に作成してください。
-    </p>
-
-    <H3>推奨サイズ</H3>
-    <div className="flex flex-wrap gap-8 justify-center py-6">
-      <SizeBox width={1920} height={600} label="PC用" />
-      <SizeBox width={750} height={600} label="モバイル用（目安）" />
-    </div>
-
-    <div className="space-y-3 mt-2">
-      {[
-        { label: 'PC用',       size: '1920 × 600 px（横幅1200px以上推奨）', note: 'デスクトップブラウザで表示されます。' },
-        { label: 'モバイル用', size: '750 × 600 px 程度',                   note: 'スマートフォンで表示されます。縦方向に余裕を持たせた縦長気味の画像を推奨します。' },
-      ].map(r => (
-        <div key={r.label} className="glass-effect rounded-lg border border-light-blue/20 p-3">
-          <p className="text-sm font-bold text-amber">{r.label} — {r.size}</p>
-          <p className="text-xs text-gray-400 mt-1">{r.note}</p>
-        </div>
-      ))}
-    </div>
-
-    <H3>推奨フォーマット</H3>
-    <ul className="space-y-1 text-sm text-gray-300">
-      <li>・ JPG / PNG / WebP いずれも可</li>
-      <li>・ ファイルサイズは 2MB 以下を推奨（読み込み速度に影響）</li>
-    </ul>
-
-    <H3>Canva で作成する場合</H3>
-    <Step number="1">Canva（canva.com）にアクセスしてログイン</Step>
-    <Step number="2">「カスタムサイズ」で幅・高さを入力してデザインを作成</Step>
-    <Step number="3">「共有」→「ダウンロード」→「JPG」または「PNG」を選択</Step>
-
-    <Note type="info">
-      ヘッダーの上にサイト名やサイドバーが重なります。重要なデザイン要素は画像の端を避けて中央寄りに配置することをおすすめします。
-    </Note>
-
-    <H3>Google Drive へのアップロード</H3>
-    <Step number="1">Google Drive を開き、ダウンロードした画像ファイルをアップロード</Step>
-    <Step number="2">アップロードした画像を右クリック →「共有」→「リンクをコピー」</Step>
-    <Step number="3">「制限付き」と表示されている場合は「リンクを知っている全員」に変更して「完了」</Step>
-    <Img src="./manual/gdrive-share.png" alt="Google Drive 共有ダイアログ" caption="「リンクを知っている全員」に設定する" />
-
-    <Note type="danger">
-      共有設定が「制限付き」のままだと画像が表示されません。必ず「リンクを知っている全員（閲覧者）」に変更してください。
-    </Note>
-
-    <H3>管理画面での設定</H3>
-    <Step number="1">管理画面「ブランディング」タブ →「ヘッダー画像（PC用）」または「ヘッダー画像（モバイル用）」にコピーしたURLを貼り付け（自動保存）</Step>
-    <Step number="2">「デプロイ」タブ →「デプロイ実行」でGitHubに保存</Step>
-    <Img src="./manual/admin-branding-tab.png" alt="管理画面 ブランディングタブ" caption="ブランディングタブ — ヘッダー画像欄" />
-  </div>
-)
-
-/* ─────────────────────────────────────────
    タブ: アイコン・メダル画像の設定（SS）
 ───────────────────────────────────────── */
 const TabImageShare = () => (
@@ -435,8 +376,7 @@ const TAB_GROUPS = [
   {
     label: '管理画面',
     tabs: [
-      { id: 'admin',      label: '管理画面の使い方',       short: '管理画面',  component: TabAdminPanel },
-      { id: 'header-img', label: 'ヘッダー画像の作成・設定', short: 'ヘッダー画像', component: TabHeaderImage },
+      { id: 'admin', label: '管理画面の使い方', short: '管理画面', component: TabAdminPanel },
     ],
   },
 ]
@@ -454,7 +394,7 @@ function ManualApp() {
 
         <header className="text-center py-8">
           <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-ocean-teal via-light-blue to-amber mb-3">
-            ご利用マニュアル
+            管理マニュアル
           </h1>
           <p className="text-gray-400 text-sm">ColorSing ランキング＆特典管理ページ</p>
         </header>

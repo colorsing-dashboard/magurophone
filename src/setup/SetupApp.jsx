@@ -94,7 +94,7 @@ const StepContent2 = () => (
       フォームを開く →
     </a>
     <Note type="warn">
-      フォームを送信するまで次のステップには進めません。送信後、設定情報がDMで届くまでお待ちください。
+      フォームを送信するまで次のステップには進めません。送信後、必要情報がDMで届くまでお待ちください。
     </Note>
   </div>
 )
@@ -392,11 +392,16 @@ function SetupApp() {
             <p className="text-3xl mb-2">🎉</p>
             <p className="text-green-400 font-bold text-lg mb-1">初期設定が完了しました！</p>
             <p className="text-gray-400 text-sm mb-5">サイトURLにアクセスして確認してください。</p>
+            <p className="text-gray-300 text-sm mb-5">
+              これらのステップがすべて完了したらサイトの運用準備が完了です。<br />
+              デザイン等のサイトカスタマイズや恒常的なスプレッドシートの管理方法については<br className="hidden md:inline" />
+              管理画面（admin.html）の管理マニュアルをご覧ください。
+            </p>
             <a
               href="./manual.html"
               className="inline-block px-5 py-2 bg-light-blue/20 hover:bg-light-blue/30 border border-light-blue/50 rounded-xl text-light-blue text-sm font-bold transition-all"
             >
-              ご利用マニュアルを確認する →
+              管理マニュアルを確認する →
             </a>
           </div>
         )}

@@ -40,14 +40,21 @@ if [ ! -f "$CUSTOMERS_FILE" ]; then
   exit 1
 fi
 
-# jq の存在チェック
-if ! command -v jq &> /dev/null; then
-  error "jq が必要です。インストールしてください: https://jqlang.github.io/jq/download/"
+# jq / python / node のいずれかで JSON をパース
+if command -v jq &> /dev/null; then
+  ORG=$(jq -r '.org' "$CUSTOMERS_FILE")
+  REPOS=$(jq -r '.repos[]' "$CUSTOMERS_FILE")
+elif command -v python &> /dev/null || command -v python3 &> /dev/null; then
+  PY=$(command -v python3 2>/dev/null || command -v python)
+  ORG=$("$PY" -c "import json,sys;d=json.load(open(sys.argv[1]));print(d['org'])" "$CUSTOMERS_FILE")
+  REPOS=$("$PY" -c "import json,sys;d=json.load(open(sys.argv[1]));print('\n'.join(d['repos']))" "$CUSTOMERS_FILE")
+elif command -v node &> /dev/null; then
+  ORG=$(node -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>console.log(JSON.parse(d).org))" < "$CUSTOMERS_FILE")
+  REPOS=$(node -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>JSON.parse(d).repos.forEach(r=>console.log(r)))" < "$CUSTOMERS_FILE")
+else
+  error "jq / python / node のいずれかが必要です"
   exit 1
 fi
-
-ORG=$(jq -r '.org' "$CUSTOMERS_FILE")
-REPOS=$(jq -r '.repos[]' "$CUSTOMERS_FILE")
 
 if [ -z "$REPOS" ]; then
   warn "customers.json に顧客リポジトリが登録されていません"
