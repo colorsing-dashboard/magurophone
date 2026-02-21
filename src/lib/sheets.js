@@ -1,5 +1,6 @@
 // Googleスプレッドシートから公開データを取得（範囲指定対応、再試行機能付き）
-export const fetchSheetData = async (spreadsheetId, sheetName, range = null, retries = 3) => {
+// options.allRows=true を指定すると headers=0 を付与してヘッダー行もデータとして返す
+export const fetchSheetData = async (spreadsheetId, sheetName, range = null, retries = 3, options = {}) => {
   if (!spreadsheetId) {
     throw new Error('Spreadsheet ID is not configured')
   }
@@ -7,6 +8,10 @@ export const fetchSheetData = async (spreadsheetId, sheetName, range = null, ret
   let url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`
   if (range) {
     url += `&range=${encodeURIComponent(range)}`
+  }
+  // headers=0 を指定するとgvizがrow1をヘッダーとして吸収せず、全行をrowsに返す
+  if (options.allRows) {
+    url += '&headers=0'
   }
 
   for (let attempt = 0; attempt < retries; attempt++) {

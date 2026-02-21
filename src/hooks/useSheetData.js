@@ -40,8 +40,8 @@ export function useSheetData(sheetsConfig) {
         fetchSheetData(spreadsheetId, rankingSheetName, rankingRange),
         fetchSheetData(spreadsheetId, rankingSheetName, goalsRange),
         fetchSheetData(spreadsheetId, benefitsContentSheetName, benefitsRange),
-        // rights: ヘッダー行込みで全シートを取得（Special列を動的に検出するため range なし）
-        fetchSheetData(spreadsheetId, benefitsSheetName, null),
+        // rights: ヘッダー行込みで全シートを取得（Special列を動的に検出するため range なし・headers=0）
+        fetchSheetData(spreadsheetId, benefitsSheetName, null, 3, { allRows: true }),
       ]
       if (historySheetName) {
         // history: A3:D（行上限なしのオープンレンジ）

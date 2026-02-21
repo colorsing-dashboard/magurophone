@@ -5,6 +5,7 @@ import { isMonthlyFormat } from '../lib/sheets'
 const IconGallery = ({ icons, selectedMonth, setSelectedMonth, loading, iconError }) => {
   const config = useConfig()
   const [searchTerm, setSearchTerm] = useState('')
+  const [popupUser, setPopupUser] = useState(null)
 
   const isMonthly = useMemo(() => {
     const keys = Object.keys(icons).filter(k => k !== '_orderedKeys')
@@ -41,6 +42,7 @@ const IconGallery = ({ icons, selectedMonth, setSelectedMonth, loading, iconErro
   const handleMonthChange = (month) => {
     setSelectedMonth(month)
     setSearchTerm('')
+    setPopupUser(null)
   }
 
   const formatKey = (key) => {
@@ -80,6 +82,8 @@ const IconGallery = ({ icons, selectedMonth, setSelectedMonth, loading, iconErro
     )
   }
 
+  const popupIcons = popupUser ? getIconsForUser(popupUser) : []
+
   return (
     <div className="space-y-6">
       {/* 月/カテゴリ タブ */}
@@ -112,44 +116,74 @@ const IconGallery = ({ icons, selectedMonth, setSelectedMonth, loading, iconErro
             className="w-full max-w-md px-4 py-2 glass-effect border border-card-border/30 rounded-xl focus:outline-none focus:border-card-hover transition-all text-white placeholder-gray-500 text-sm"
           />
 
-          {/* オーバービュー: 全ユーザー + アイコン一覧 */}
+          {/* ユーザー名グリッド */}
           {filteredUsers.length === 0 ? (
             <div className="text-center py-8 text-gray-400">{config.ui.iconNoImages}</div>
           ) : (
-            <div className="space-y-4">
-              {filteredUsers.map((user) => {
-                const userIcons = getIconsForUser(user)
-                return (
-                  <div key={user} className="glass-effect rounded-xl p-4 border border-card-border/30">
-                    <h3 className="text-sm font-body text-primary mb-3">{user}</h3>
-                    <div className="flex flex-wrap gap-3">
-                      {userIcons.map((icon, index) => (
-                        <a
-                          key={index}
-                          href={icon.originalUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="w-20 h-20 rounded-lg overflow-hidden border border-card-border/30 hover:border-card-hover transition-all group flex-shrink-0"
-                        >
-                          <img
-                            src={icon.thumbnailUrl}
-                            alt={`${icon.label}のアイコン`}
-                            className="w-full h-full object-contain bg-deep-blue/30 group-hover:scale-105 transition-transform"
-                            loading="lazy"
-                            onError={(e) => {
-                              e.target.onerror = null
-                              e.target.src = `data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="80" height="80"%3E%3Crect width="80" height="80" fill="%23222"%3E%3C/rect%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" fill="%23666" font-size="11"%3E${encodeURIComponent(config.ui.imageError)}%3C/text%3E%3C/svg%3E`
-                            }}
-                          />
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                )
-              })}
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+              {filteredUsers.map((user) => (
+                <button
+                  key={user}
+                  onClick={() => setPopupUser(user)}
+                  className="glass-effect rounded-xl p-4 border border-card-border/20 hover:border-card-hover text-primary text-sm font-body transition-all text-center"
+                >
+                  {user}
+                </button>
+              ))}
             </div>
           )}
         </>
+      )}
+
+      {/* ユーザーアイコンポップアップ */}
+      {popupUser && (
+        <div
+          onClick={() => setPopupUser(null)}
+          className="fixed inset-0 bg-black/70 flex items-start justify-center p-4 z-50 overflow-y-auto"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="glass-effect rounded-2xl p-8 border border-card-border/30 box-glow-soft max-w-2xl w-full relative my-8"
+          >
+            <button
+              onClick={() => setPopupUser(null)}
+              className="absolute top-4 right-4 text-2xl text-gray-400 hover:text-white transition-colors z-10"
+            >
+              ×
+            </button>
+
+            <h2 className="text-2xl font-body mb-6 text-highlight text-center">
+              {config.ui.userIconTitle.replace('{user}', popupUser)}
+            </h2>
+
+            {popupIcons.length === 0 ? (
+              <div className="text-center py-8 text-gray-400">{config.ui.iconNoImages}</div>
+            ) : (
+              <div className="flex flex-wrap gap-4 justify-center">
+                {popupIcons.map((icon, index) => (
+                  <a
+                    key={index}
+                    href={icon.originalUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-32 h-32 rounded-xl overflow-hidden border border-card-border/30 hover:border-card-hover transition-all group flex-shrink-0"
+                  >
+                    <img
+                      src={icon.thumbnailUrl}
+                      alt={`${icon.label}のアイコン`}
+                      className="w-full h-full object-contain bg-deep-blue/30 group-hover:scale-105 transition-transform"
+                      loading="lazy"
+                      onError={(e) => {
+                        e.target.onerror = null
+                        e.target.src = `data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="128" height="128"%3E%3Crect width="128" height="128" fill="%23222"%3E%3C/rect%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" fill="%23666" font-size="11"%3E${encodeURIComponent(config.ui.imageError)}%3C/text%3E%3C/svg%3E`
+                      }}
+                    />
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
       )}
     </div>
   )
