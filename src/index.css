@@ -25,6 +25,9 @@
   --color-highlight: var(--override-accent-text, var(--base-amber));
   --color-card-border: var(--override-card-border, var(--base-light-blue));
   --color-card-hover: var(--override-card-border-hover, var(--base-amber));
+  /* カード名前・フッター個別カラー（未設定時はベースカラーに追従） */
+  --color-name-text: var(--override-name-text, var(--base-light-blue));
+  --color-footer-text: var(--override-footer-text, var(--base-amber));
 
   --font-display: 'Playfair Display', serif;
   --font-body: 'Yu Gothic Medium', 'YuGothic', 'Inter', sans-serif;
