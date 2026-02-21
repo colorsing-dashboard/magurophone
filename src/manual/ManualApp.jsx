@@ -74,44 +74,6 @@ const SizeBox = ({ width, height, label }) => (
 )
 
 /* ─────────────────────────────────────────
-   タブ1: スプレッドシートの共有方法
-───────────────────────────────────────── */
-const TabSpreadsheetShare = () => (
-  <div>
-    <p className="text-gray-300 text-sm mb-6">
-      サイトにデータを表示するには、Googleスプレッドシートのスプレッドシート ID を管理画面に登録する必要があります。
-    </p>
-
-    <H3>① スプレッドシート ID の確認</H3>
-    <p className="text-gray-300 text-sm mb-3">
-      スプレッドシートを開いたときのURLの、<span className="text-amber font-bold">/d/ と /edit の間</span>の文字列がスプレッドシート ID です。
-    </p>
-    <Img src="./manual/ss-url-id.png" alt="スプレッドシートURLでIDの場所を示す図" caption="赤枠部分がスプレッドシート ID" />
-
-    <H3>② スプレッドシートの閲覧権限を設定</H3>
-    <p className="text-gray-300 text-sm mb-3">
-      IDを登録する前に、スプレッドシートを「リンクを知っている全員が閲覧可能」に設定してください。
-    </p>
-    <Step number="1">スプレッドシート右上の「共有」ボタンをクリック</Step>
-    <Step number="2">「リンクを知っている全員」を選択し、権限を「閲覧者」に設定</Step>
-    <Step number="3">「完了」をクリック</Step>
-    <Img src="./manual/gdrive-share.png" alt="Googleスプレッドシートの共有設定ダイアログ" caption="「制限付き」→「リンクを知っている全員」に変更する" />
-
-    <H3>③ 管理画面に ID を登録</H3>
-    <Step number="1">管理画面（専用URLの末尾を <span className="text-amber">/admin</span> に変更）を開く</Step>
-    <Step number="2">「Google Sheets」タブを選択</Step>
-    <Step number="3">「スプレッドシート ID」欄にコピーした ID を貼り付け</Step>
-    <Step number="4">「接続テスト」ボタンで正常に読み込めるか確認</Step>
-    <Step number="5">「デプロイ」タブ →「デプロイ実行」ボタンをクリックしてGitHubに保存</Step>
-    <Img src="./manual/admin-sheets-tab.png" alt="管理画面 Google Sheetsタブ" caption="Google Sheets タブ" />
-
-    <Note type="warn">
-      共有設定が「リンクを知っている全員（閲覧者）」になっていないと、サイトにデータが表示されません。
-    </Note>
-  </div>
-)
-
-/* ─────────────────────────────────────────
    タブ2: 管理画面の操作方法
 ───────────────────────────────────────── */
 const ADMIN_TABS_DATA = [
@@ -466,7 +428,6 @@ const TAB_GROUPS = [
   {
     label: 'スプレッドシート',
     tabs: [
-      { id: 'ss-share',  label: 'スプレッドシートの初期設定', short: 'SS設定',  component: TabSpreadsheetShare },
       { id: 'ss-entry',  label: 'スプレッドシートへの記入',   short: 'SS記入',  component: TabSpreadsheetEntry },
       { id: 'img-share', label: 'アイコン・メダル画像の設定', short: '画像(SS)', component: TabImageShare },
     ],
