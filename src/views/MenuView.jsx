@@ -14,11 +14,16 @@ const MenuView = ({ benefits, onSelectBenefit }) => {
           <div
             key={index}
             onClick={(e) => {
-              if (window.matchMedia('(max-width: 767.98px)').matches) {
+              const hasLabel = !!benefit[BENEFIT_FIELDS.LABEL]
+              if (!hasLabel || window.matchMedia('(max-width: 767.98px)').matches) {
                 onSelectBenefit(benefit)
               }
             }}
-            className="group glass-effect rounded-2xl md:p-6 border border-card-border/30 hover:border-card-hover md:hover:border-card-border/30 transition-all hover:scale-105 md:hover:scale-100 cursor-pointer md:cursor-default text-center overflow-hidden flex flex-col"
+            className={`group glass-effect rounded-2xl md:p-6 border border-card-border/30 transition-all text-center overflow-hidden flex flex-col ${
+              benefit[BENEFIT_FIELDS.LABEL]
+                ? 'hover:border-card-hover md:hover:border-card-border/30 hover:scale-105 md:hover:scale-100 cursor-pointer md:cursor-default'
+                : 'hover:border-card-hover hover:scale-105 cursor-pointer'
+            }`}
           >
             {/* モバイル版：簡略表示 */}
             <div className="md:hidden py-3 px-4 bg-highlight/10 rounded-2xl relative">
