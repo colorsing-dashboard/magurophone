@@ -71,7 +71,7 @@ const RightsView = ({ rights, onSelectPerson, specialIndex = 8 }) => {
             className="glass-effect rounded-xl p-4 md:p-6 border border-card-border/30 hover:border-card-hover transition-all hover:scale-105 cursor-pointer group h-32 md:h-36 text-center flex flex-col"
           >
             <h3
-              className="text-base md:text-xl font-body group-hover:text-highlight transition-colors flex items-center justify-center"
+              className="text-base md:text-xl font-body text-name-text group-hover:text-highlight transition-colors flex items-center justify-center"
               style={{ flexGrow: 1, flexShrink: 1, flexBasis: '0%', minHeight: 0 }}
             >
               {person[RIGHTS_NAME_INDEX]}

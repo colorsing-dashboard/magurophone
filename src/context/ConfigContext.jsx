@@ -36,6 +36,8 @@ export function ConfigProvider({ config, children }) {
       'color-header-gradient-end': o.headerGradientEnd,     // → Header.jsx
       'color-rank1-card': o.rank1Card,                      // → HomeView.jsx
       'color-title': o.titleColor,                          // → Header.jsx（グラデーションOFF時）
+      'override-name-text': o.nameText,                     // → text-name-text（ランキング名・権利者名）
+      'override-footer-text': o.footerText,                 // → text-footer-text（フッターメインテキスト）
     }
     Object.entries(overrides).forEach(([key, value]) => {
       if (value) {
