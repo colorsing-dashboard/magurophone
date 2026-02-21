@@ -4,7 +4,6 @@ import { BENEFIT_FIELDS } from './BenefitPopup'
 import IconRenderer from './IconRenderer'
 
 const RIGHTS_NAME_INDEX = 0
-const RIGHTS_SPECIAL_INDEX = 8
 
 // 権利を持っているかチェック
 const hasRight = (value) => {
@@ -23,7 +22,7 @@ const isTrackHistory = (value) => {
   return false
 }
 
-const PersonPopup = ({ person, benefits, history, onClose, onSelectBenefit }) => {
+const PersonPopup = ({ person, benefits, history, specialIndex = 8, onClose, onSelectBenefit }) => {
   const config = useConfig()
 
   const personName = person?.[RIGHTS_NAME_INDEX] || ''
@@ -149,13 +148,13 @@ const PersonPopup = ({ person, benefits, history, onClose, onSelectBenefit }) =>
           })}
 
           {/* Special権利 */}
-          {person[RIGHTS_SPECIAL_INDEX] && (
+          {person[specialIndex] && (
             <div className="bg-gradient-to-r from-highlight/20 to-primary/20 p-6 rounded-xl border border-highlight/30 text-center">
               <div className="flex items-center justify-center gap-3 mb-2">
                 <span className="text-3xl">✨</span>
                 <h3 className="text-xl font-body text-highlight">{config.ui.specialRightLabel}</h3>
               </div>
-              <p className="text-gray-300">{person[RIGHTS_SPECIAL_INDEX]}</p>
+              <p className="text-gray-300">{person[specialIndex]}</p>
             </div>
           )}
         </div>
@@ -164,5 +163,5 @@ const PersonPopup = ({ person, benefits, history, onClose, onSelectBenefit }) =>
   )
 }
 
-export { hasRight, RIGHTS_NAME_INDEX, RIGHTS_SPECIAL_INDEX }
+export { hasRight, RIGHTS_NAME_INDEX }
 export default PersonPopup

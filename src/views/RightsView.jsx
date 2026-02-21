@@ -1,9 +1,9 @@
 import { useState, useMemo, useCallback } from 'react'
 import { useConfig } from '../context/ConfigContext'
-import { hasRight, RIGHTS_NAME_INDEX, RIGHTS_SPECIAL_INDEX } from '../components/PersonPopup'
+import { hasRight, RIGHTS_NAME_INDEX } from '../components/PersonPopup'
 import IconRenderer from '../components/IconRenderer'
 
-const RightsView = ({ rights, onSelectPerson }) => {
+const RightsView = ({ rights, onSelectPerson, specialIndex = 8 }) => {
   const config = useConfig()
   const [searchTerm, setSearchTerm] = useState('')
 
@@ -15,7 +15,7 @@ const RightsView = ({ rights, onSelectPerson }) => {
         icons.push(tier.icon)
       }
     })
-    const specialValue = String(person[RIGHTS_SPECIAL_INDEX] ?? '').trim()
+    const specialValue = String(person[specialIndex] ?? '').trim()
     if (specialValue && specialValue.toUpperCase() !== 'FALSE' && specialValue !== '0') {
       icons.push('✨')
     }
@@ -37,7 +37,7 @@ const RightsView = ({ rights, onSelectPerson }) => {
       if (!name.toLowerCase().includes(searchTerm.toLowerCase())) return false
 
       const hasAnyRight = config.benefitTiers.some(tier => hasRight(person[tier.columnIndex]))
-      const specialValue = String(person[RIGHTS_SPECIAL_INDEX] ?? '').trim()
+      const specialValue = String(person[specialIndex] ?? '').trim()
       const normalizedSpecial = specialValue.toUpperCase()
       const hasSpecial = normalizedSpecial !== '' && normalizedSpecial !== 'FALSE' && normalizedSpecial !== '0'
 
