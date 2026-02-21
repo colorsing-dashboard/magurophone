@@ -124,47 +124,99 @@ export const FONT_PRESETS = [
 
 export const COLOR_PRESETS = [
   {
+    // 深海の底から光が差すような落ち着いたネイビー
     name: '深海ブルー',
     colors: {
-      deepBlue: '#0a1628',
-      oceanTeal: '#1b4965',
-      lightBlue: '#8ab4f8',
-      amber: '#d4a574',
-      accent: '#c1121f',
+      deepBlue: '#08121e',
+      oceanTeal: '#183a58',
+      lightBlue: '#78a8f0',
+      amber: '#e8b870',
+      accent: '#d84030',
+      gold: '#f8c840',
+    },
+  },
+  {
+    // 夜の桜をイメージした深みのある紫×ピンク
+    name: '夜桜',
+    colors: {
+      deepBlue: '#100818',
+      oceanTeal: '#281440',
+      lightBlue: '#e898bc',
+      amber: '#f0d0e8',
+      accent: '#d84080',
+      gold: '#f8d8b0',
+    },
+  },
+  {
+    // 深紫水晶×黄金コントラスト、神秘的でリッチ
+    name: 'アメジストナイト',
+    colors: {
+      deepBlue: '#0a0818',
+      oceanTeal: '#1c1248',
+      lightBlue: '#9878e8',
+      amber: '#e8c040',
+      accent: '#e040c0',
+      gold: '#f8d840',
+    },
+  },
+  {
+    // 深い森×生命力、緑×金の自然なコントラスト
+    name: 'エメラルドフォレスト',
+    colors: {
+      deepBlue: '#06100a',
+      oceanTeal: '#0e2c18',
+      lightBlue: '#48c870',
+      amber: '#d4b840',
+      accent: '#d04840',
+      gold: '#f0d840',
+    },
+  },
+  {
+    // 漆黒×ゴールドの高級感、プレミアムな特別感
+    name: 'ミッドナイトゴールド',
+    colors: {
+      deepBlue: '#0c0a04',
+      oceanTeal: '#1e1808',
+      lightBlue: '#c89828',
+      amber: '#e8d080',
+      accent: '#c06020',
       gold: '#ffd700',
     },
   },
   {
-    name: 'サクラピンク',
+    // サイバーパンクな近未来感、黒×シアン×オレンジ
+    name: 'ネオンシアン',
     colors: {
-      deepBlue: '#1a0a14',
-      oceanTeal: '#4a1942',
-      lightBlue: '#f8a4c8',
-      amber: '#e8b4d8',
-      accent: '#ff6b9d',
+      deepBlue: '#040810',
+      oceanTeal: '#081220',
+      lightBlue: '#00c8e0',
+      amber: '#f09820',
+      accent: '#e02860',
       gold: '#ffd700',
     },
   },
   {
-    name: 'フォレストグリーン',
+    // 夕焼けの温かみと情熱、コーラル×ゴールデン
+    name: 'サンセットドリーム',
     colors: {
-      deepBlue: '#0a1a10',
-      oceanTeal: '#1a4a2e',
-      lightBlue: '#7cd4a8',
-      amber: '#e8b445',
-      accent: '#d45f5f',
+      deepBlue: '#100808',
+      oceanTeal: '#241010',
+      lightBlue: '#e07040',
+      amber: '#f0c048',
+      accent: '#c83040',
       gold: '#ffd700',
     },
   },
   {
-    name: 'ロイヤルパープル',
+    // 北極の澄み切った氷と空、清潔感のあるクールブルー
+    name: 'アークティックブルー',
     colors: {
-      deepBlue: '#120a1e',
-      oceanTeal: '#2d1b4e',
-      lightBlue: '#b49af8',
-      amber: '#d4a0e0',
-      accent: '#f0c040',
-      gold: '#ffd700',
+      deepBlue: '#06080e',
+      oceanTeal: '#0c1428',
+      lightBlue: '#58c0e0',
+      amber: '#c0b8f0',
+      accent: '#4080d8',
+      gold: '#e8f4ff',
     },
   },
 ]
