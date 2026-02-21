@@ -28,20 +28,21 @@ import { COLOR_PRESETS } from '../../lib/presets'
 
 // baseKey: 未設定時のフォールバックとなるベースカラーのキー名
 const AREA_COLOR_FIELDS = [
-  { key: 'backgroundMain',      label: 'ページ背景（メイン）',           baseKey: 'deepBlue',  description: '未設定 → 背景メインと同じ' },
-  { key: 'backgroundMid',       label: 'ページ背景（中間）',             baseKey: 'oceanTeal', description: '未設定 → 背景中間色と同じ' },
   { key: 'headerGradientStart', label: 'ヘッダーグラデーション（中央）', baseKey: 'oceanTeal', description: '未設定 → 背景中間色と同じ' },
   { key: 'headerGradientEnd',   label: 'ヘッダーグラデーション（両端）', baseKey: 'deepBlue',  description: '未設定 → 背景メインと同じ' },
   { key: 'primaryText',         label: 'メインテキスト色',               baseKey: 'lightBlue', description: '未設定 → UIメインカラーと同じ' },
   { key: 'accentText',          label: 'アクセントテキスト色',           baseKey: 'amber',     description: '未設定 → UIアクセントカラーと同じ' },
-  { key: 'cardBorder',          label: 'カードボーダー',                 baseKey: 'lightBlue', description: '未設定 → UIメインカラーと同じ' },
-  { key: 'cardBorderHover',     label: 'カードボーダー（ホバー）',       baseKey: 'amber',     description: '未設定 → UIアクセントカラーと同じ' },
   { key: 'rank1Card',           label: '1位カード強調色',                baseKey: 'accent',    description: '未設定 → 強調色と同じ' },
   { key: 'titleColor',          label: 'タイトルテキスト色',             baseKey: 'lightBlue', description: '未設定 → UIメインカラーと同じ（グラデーションOFF時のみ有効）' },
 ]
 
 const ColorsTab = ({ config, updateConfig }) => {
   const applyPreset = (preset) => {
+    // まず全オーバーライドをクリア（残存防止）
+    AREA_COLOR_FIELDS.forEach(({ key }) => {
+      updateConfig(`colorOverrides.${key}`, '')
+    })
+    // ベースカラーを適用
     Object.entries(preset.colors).forEach(([key, value]) => {
       updateConfig(`colors.${key}`, value)
     })

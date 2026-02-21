@@ -26,13 +26,9 @@ window.DASHBOARD_CONFIG = {
   "colorOverrides": {
     "headerGradientStart": "",
     "headerGradientEnd": "",
-    "cardBorder": "",
-    "cardBorderHover": "",
     "primaryText": "",
     "accentText": "",
     "rank1Card": "",
-    "backgroundMain": "",
-    "backgroundMid": "",
     "titleColor": ""
   },
   "fonts": {
