@@ -31,7 +31,7 @@ const MenuView = ({ benefits, onSelectBenefit }) => {
                 <span className="text-xs font-bold text-highlight font-body">{benefit[BENEFIT_FIELDS.TITLE]}</span>
               </div>
               <div className="pt-6">
-                <span className="text-sm text-highlight font-body">{benefit[BENEFIT_FIELDS.LABEL]}</span>
+                <span className="text-sm text-highlight font-body">{benefit[BENEFIT_FIELDS.LABEL] || benefit[BENEFIT_FIELDS.NAME]}</span>
               </div>
             </div>
 
