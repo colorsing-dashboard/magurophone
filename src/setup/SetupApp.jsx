@@ -294,6 +294,7 @@ function SetupApp() {
 
   const handleComplete = (stepNumber) => {
     setCompleted(prev => new Set([...prev, stepNumber]))
+    window.scrollTo({ top: 0, behavior: 'smooth' })
     if (stepNumber < STEPS.length) {
       setMaxVisible(prev => Math.max(prev, stepNumber + 1))
       setOpenStep(stepNumber + 1)
