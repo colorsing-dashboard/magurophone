@@ -39,8 +39,8 @@ const BenefitPopup = ({ benefit, onClose }) => {
               <IconRenderer icon={tier.icon} size={48} className="text-highlight" />
             </div>
           )}
-          <p className="text-lg font-bold mb-4 whitespace-pre-line">{benefit[BENEFIT_FIELDS.NAME]}</p>
-          <p className="text-sm text-gray-400">{benefit[BENEFIT_FIELDS.DESCRIPTION]}</p>
+          <p className="text-lg font-bold mb-4 whitespace-pre-line text-content-text">{benefit[BENEFIT_FIELDS.NAME]}</p>
+          <p className="text-sm text-content-text/70">{benefit[BENEFIT_FIELDS.DESCRIPTION]}</p>
         </div>
       </div>
     </div>

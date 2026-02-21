@@ -121,7 +121,7 @@ const PersonPopup = ({ person, benefits, history, specialIndex = 8, onClose, onS
                   <div className="flex items-center justify-center mb-2">
                     <IconRenderer icon={tier.icon} size={32} className="text-highlight" />
                   </div>
-                  <p className="text-gray-300">{displayText}</p>
+                  <p className="text-content-text">{displayText}</p>
                 </div>
 
                 {isTrackHistory(benefit?.[BENEFIT_FIELDS.TRACK_HISTORY]) && historyByTier[tier.key]?.length > 0 && (
@@ -154,7 +154,7 @@ const PersonPopup = ({ person, benefits, history, specialIndex = 8, onClose, onS
                 <span className="text-3xl">✨</span>
                 <h3 className="text-xl font-body text-highlight">{config.ui.specialRightLabel}</h3>
               </div>
-              <p className="text-gray-300">{person[specialIndex]}</p>
+              <p className="text-content-text">{person[specialIndex]}</p>
             </div>
           )}
         </div>

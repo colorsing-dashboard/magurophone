@@ -28,7 +28,7 @@
   /* カード名前・フッター・コンテンツ個別カラー（未設定時はベースカラーに追従） */
   --color-name-text: var(--override-name-text, color-mix(in oklab, var(--base-light-blue) 20%, white));
   --color-footer-text: var(--override-footer-text, var(--base-amber));
-  --color-content-text: var(--override-content-text, #d1d5db);
+  --color-content-text: var(--override-content-text, color-mix(in oklab, var(--base-light-blue) 10%, white));
 
   --font-display: 'Playfair Display', serif;
   --font-body: 'Yu Gothic Medium', 'YuGothic', 'Inter', sans-serif;
