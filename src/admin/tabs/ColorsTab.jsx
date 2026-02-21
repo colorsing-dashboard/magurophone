@@ -36,6 +36,7 @@ const AREA_COLOR_FIELDS = [
   { key: 'titleColor',          label: 'タイトルテキスト色',             baseKey: 'lightBlue', description: '未設定 → UIメインカラーと同じ（グラデーションOFF時のみ有効）' },
   { key: 'nameText',            label: 'カード名前テキスト色',           baseKey: 'lightBlue', description: '未設定 → UIメインカラーと同じ（ランキング名・特典管理名）' },
   { key: 'footerText',          label: 'フッターテキスト色',             baseKey: 'amber',     description: '未設定 → UIアクセントカラーと同じ' },
+  { key: 'contentText',         label: 'コンテンツ本文テキスト色',       baseKey: 'lightBlue', description: '未設定 → グレー（目標の内容・FAQ本文）' },
 ]
 
 const ColorsTab = ({ config, updateConfig }) => {

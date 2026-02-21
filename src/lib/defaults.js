@@ -35,6 +35,7 @@ const DEFAULT_CONFIG = {
     backgroundMid: '',
     nameText: '',
     footerText: '',
+    contentText: '',
   },
 
   fonts: {
