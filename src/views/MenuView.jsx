@@ -31,7 +31,7 @@ const MenuView = ({ benefits, onSelectBenefit }) => {
                 <span className="text-xs font-bold text-highlight font-body">{benefit[BENEFIT_FIELDS.TITLE]}</span>
               </div>
               <div className="pt-6">
-                <span className="text-sm text-highlight font-body">{benefit[BENEFIT_FIELDS.LABEL] || benefit[BENEFIT_FIELDS.NAME]}</span>
+                <p className="text-sm text-highlight font-body whitespace-pre-line">{benefit[BENEFIT_FIELDS.LABEL] || benefit[BENEFIT_FIELDS.NAME]}</p>
               </div>
             </div>
 
@@ -56,7 +56,7 @@ const MenuView = ({ benefits, onSelectBenefit }) => {
                 })()}
               </div>
               <p className="text-base md:text-lg font-bold mb-1 md:mb-2 whitespace-pre-line text-content-text">{benefit[BENEFIT_FIELDS.NAME]}</p>
-              <p className="text-xs md:text-sm text-content-text/70">{benefit[BENEFIT_FIELDS.DESCRIPTION]}</p>
+              <p className="text-xs md:text-sm text-content-text/70 whitespace-pre-line">{benefit[BENEFIT_FIELDS.DESCRIPTION]}</p>
             </div>
           </div>
         ))}
