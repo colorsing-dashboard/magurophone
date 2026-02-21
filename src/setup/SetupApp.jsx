@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 /* ─────────────────────────────────────────
    共通コンポーネント
@@ -291,10 +291,18 @@ function SetupApp() {
   const [openStep, setOpenStep] = useState(1)
   const [completed, setCompleted] = useState(new Set())
   const [maxVisible, setMaxVisible] = useState(1)
+  const shouldScrollRef = useRef(false)
+
+  useEffect(() => {
+    if (shouldScrollRef.current) {
+      shouldScrollRef.current = false
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  })
 
   const handleComplete = (stepNumber) => {
+    shouldScrollRef.current = true
     setCompleted(prev => new Set([...prev, stepNumber]))
-    window.scrollTo({ top: 0, behavior: 'smooth' })
     if (stepNumber < STEPS.length) {
       setMaxVisible(prev => Math.max(prev, stepNumber + 1))
       setOpenStep(stepNumber + 1)
