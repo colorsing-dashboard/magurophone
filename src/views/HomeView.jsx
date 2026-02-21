@@ -44,7 +44,7 @@ const HomeView = ({ ranking, goals }) => {
 
       {/* 目標 */}
       <section className="text-center">
-        <h2 className="text-2xl md:text-4xl font-body mb-4 md:mb-8 text-glow-soft text-highlight">{config.home.targetsTitle}</h2>
+        <h2 className="text-2xl md:text-4xl font-body mb-4 md:mb-8 text-glow-soft text-primary">{config.home.targetsTitle}</h2>
         <div className="grid grid-cols-2 gap-3 md:gap-6 max-w-4xl mx-auto">
           {config.home.targetLabels.map((label, colIndex) => (
             <div
@@ -56,7 +56,7 @@ const HomeView = ({ ranking, goals }) => {
               <h3 className="text-lg md:text-2xl font-body mb-2 md:mb-4 text-primary">{label}</h3>
               {goals.map((goal, index) => (
                 goal[colIndex] && (
-                  <div key={`goal-${colIndex}-${index}`} className="text-sm md:text-lg mb-2 md:mb-4 last:mb-0">
+                  <div key={`goal-${colIndex}-${index}`} className="text-sm md:text-lg mb-2 md:mb-4 last:mb-0 text-content-text">
                     <span className="text-highlight">▸</span> {goal[colIndex]}
                   </div>
                 )
@@ -74,7 +74,7 @@ const HomeView = ({ ranking, goals }) => {
             {config.home.faq.items.map((item, index) => (
               <div key={`faq-${index}-${item.question}`}>
                 <h3 className="text-xl font-body text-highlight mb-2">▸ {item.question}</h3>
-                <p className="text-gray-300 ml-6">{item.answer}</p>
+                <p className="text-content-text ml-6">{item.answer}</p>
               </div>
             ))}
           </div>

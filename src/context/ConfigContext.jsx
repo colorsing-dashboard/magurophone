@@ -38,6 +38,7 @@ export function ConfigProvider({ config, children }) {
       'color-title': o.titleColor,                          // → Header.jsx（グラデーションOFF時）
       'override-name-text': o.nameText,                     // → text-name-text（ランキング名・権利者名）
       'override-footer-text': o.footerText,                 // → text-footer-text（フッターメインテキスト）
+      'override-content-text': o.contentText,               // → text-content-text（目標内容・FAQ本文）
     }
     Object.entries(overrides).forEach(([key, value]) => {
       if (value) {
