@@ -50,8 +50,8 @@ const MenuView = ({ benefits, onSelectBenefit }) => {
                   return <span className={floatClass}><IconRenderer icon={tier.icon} size={48} className="text-highlight" /></span>
                 })()}
               </div>
-              <p className="text-base md:text-lg font-bold mb-1 md:mb-2 whitespace-pre-line">{benefit[BENEFIT_FIELDS.NAME]}</p>
-              <p className="text-xs md:text-sm text-gray-400">{benefit[BENEFIT_FIELDS.DESCRIPTION]}</p>
+              <p className="text-base md:text-lg font-bold mb-1 md:mb-2 whitespace-pre-line text-content-text">{benefit[BENEFIT_FIELDS.NAME]}</p>
+              <p className="text-xs md:text-sm text-content-text/70">{benefit[BENEFIT_FIELDS.DESCRIPTION]}</p>
             </div>
           </div>
         ))}

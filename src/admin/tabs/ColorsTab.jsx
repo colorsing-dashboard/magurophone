@@ -26,8 +26,16 @@ const ColorField = ({ label, value, onChange, description }) => (
 
 import { COLOR_PRESETS } from '../../lib/presets'
 
+// CSS color-mix() の近似計算（ピッカー表示用）
+const blendWithWhite = (hex, ratio) => {
+  if (!hex || !/^#[0-9a-f]{6}$/i.test(hex)) return '#ffffff'
+  const r = Math.round(parseInt(hex.slice(1, 3), 16) * ratio + 255 * (1 - ratio))
+  const g = Math.round(parseInt(hex.slice(3, 5), 16) * ratio + 255 * (1 - ratio))
+  const b = Math.round(parseInt(hex.slice(5, 7), 16) * ratio + 255 * (1 - ratio))
+  return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`
+}
+
 // baseKey: 未設定時のカラーピッカー表示に使うベースカラーのキー名
-// defaultColor: baseKeyと実際のCSS挙動が異なる場合にピッカー表示を上書き
 const AREA_COLOR_FIELDS = [
   { key: 'headerGradientStart', label: 'ヘッダーグラデーション（中央）', baseKey: 'oceanTeal', description: 'ヘッダー背景の中央グラデーション。未設定 → 背景中間色' },
   { key: 'headerGradientEnd',   label: 'ヘッダーグラデーション（両端）', baseKey: 'deepBlue',  description: 'ヘッダー背景の左右端グラデーション。未設定 → 背景メインと同じ' },
@@ -35,9 +43,9 @@ const AREA_COLOR_FIELDS = [
   { key: 'accentText',          label: 'アクセントテキスト色',           baseKey: 'amber',     description: '目標の▸矢印・FAQタイトル・質問文・ホバー強調等。未設定 → UIアクセントカラー' },
   { key: 'rank1Card',           label: '1位カード強調色',                baseKey: 'accent',    description: '1位カードのボーダー・ポイント数テキスト。未設定 → 強調色' },
   { key: 'titleColor',          label: 'タイトルテキスト色',             baseKey: 'lightBlue', description: 'ヘッダーのサイト名テキスト（グラデーションOFF時のみ有効）。未設定 → UIメインカラー' },
-  { key: 'nameText',            label: 'カード名前テキスト色',           baseKey: 'lightBlue', description: 'ランキング名・特典管理名・枠内アイコンのユーザー名。未設定 → UIメインカラーの白混ぜ（薄い同系色）' },
+  { key: 'nameText',            label: 'カード名前テキスト色',           baseKey: 'lightBlue', description: 'ランキング名・特典管理名・枠内アイコンのユーザー名。未設定 → UIメインカラーの白混ぜ20%（薄い同系色）' },
   { key: 'footerText',          label: 'フッターテキスト色',             baseKey: 'amber',     description: 'フッターのメインテキスト。未設定 → UIアクセントカラー' },
-  { key: 'contentText',         label: 'コンテンツ本文テキスト色',       baseKey: 'lightBlue', defaultColor: '#d1d5db', description: '目標の内容テキスト・FAQの回答テキスト。未設定 → グレー (#d1d5db)' },
+  { key: 'contentText',         label: 'コンテンツ本文テキスト色',       baseKey: 'lightBlue', description: '目標の内容・FAQ回答・特典ポップアップのテキスト。未設定 → UIメインカラーの白混ぜ10%（名前より薄い同系色）' },
 ]
 
 const ColorsTab = ({ config, updateConfig }) => {
@@ -117,10 +125,14 @@ const ColorsTab = ({ config, updateConfig }) => {
         未設定の場合、上のベースカラーが適用されます。特定のUI要素だけ色を変えたい場合に設定してください。
       </p>
 
-      {AREA_COLOR_FIELDS.map(({ key, label, description, baseKey, defaultColor }) => {
+      {AREA_COLOR_FIELDS.map(({ key, label, description, baseKey }) => {
         const value = config.colorOverrides?.[key] || ''
-        // 未設定時: defaultColor → ベースカラー の順でピッカーに表示（ブラック表示を防ぐ）
-        const pickerValue = value || defaultColor || config.colors?.[baseKey] || '#000000'
+        // nameText/contentTextはCSS color-mix()と同じ比率でJS側でもブレンドして表示
+        const computedDefault =
+          key === 'nameText'    ? blendWithWhite(config.colors?.lightBlue, 0.2) :
+          key === 'contentText' ? blendWithWhite(config.colors?.lightBlue, 0.1) :
+          config.colors?.[baseKey] || '#000000'
+        const pickerValue = value || computedDefault
         return (
           <div key={key} className="mb-5">
             <label className="block text-sm font-body text-light-blue mb-1">{label}</label>
