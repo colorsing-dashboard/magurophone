@@ -368,45 +368,54 @@ const TabHeaderImage = () => (
     <Step number="1">Canva（canva.com）にアクセスしてログイン</Step>
     <Step number="2">「カスタムサイズ」で幅・高さを入力してデザインを作成</Step>
     <Step number="3">「共有」→「ダウンロード」→「JPG」または「PNG」を選択</Step>
-    <Step number="4">ダウンロードしたファイルをGoogle Driveにアップロード（次のタブ参照）</Step>
 
     <Note type="info">
       ヘッダーの上にサイト名やサイドバーが重なります。重要なデザイン要素は画像の端を避けて中央寄りに配置することをおすすめします。
     </Note>
-  </div>
-)
 
-/* ─────────────────────────────────────────
-   タブ5: 画像の共有方法
-───────────────────────────────────────── */
-const TabImageShare = () => (
-  <div>
-    <p className="text-gray-300 text-sm mb-6">
-      サイトに表示する画像はすべてGoogle Driveにアップロードし、共有リンクを各所に設定します。
-    </p>
-
-    <H3>① Google Drive へのアップロードと共有設定（共通手順）</H3>
-    <Step number="1">Google Drive を開き、画像ファイルをアップロード</Step>
+    <H3>Google Drive へのアップロード</H3>
+    <Step number="1">Google Drive を開き、ダウンロードした画像ファイルをアップロード</Step>
     <Step number="2">アップロードした画像を右クリック →「共有」→「リンクをコピー」</Step>
     <Step number="3">「制限付き」と表示されている場合は「リンクを知っている全員」に変更して「完了」</Step>
-    <Step number="4">コピーしたURLを各手順で使用する</Step>
     <Img src="./manual/gdrive-share.png" alt="Google Drive 共有ダイアログ" caption="「リンクを知っている全員」に設定する" />
 
     <Note type="danger">
       共有設定が「制限付き」のままだと画像が表示されません。必ず「リンクを知っている全員（閲覧者）」に変更してください。
     </Note>
 
-    <H3>② ヘッダー画像の設定（PC用・モバイル用）</H3>
-    <Step number="1">①の手順でURLをコピー</Step>
-    <Step number="2">管理画面「ブランディング」タブ →「ヘッダー画像（PC用）」または「ヘッダー画像（モバイル用）」にURLを貼り付け（自動保存）</Step>
-    <Step number="3">「デプロイ」タブ →「デプロイ実行」でGitHubに保存</Step>
+    <H3>管理画面での設定</H3>
+    <Step number="1">管理画面「ブランディング」タブ →「ヘッダー画像（PC用）」または「ヘッダー画像（モバイル用）」にコピーしたURLを貼り付け（自動保存）</Step>
+    <Step number="2">「デプロイ」タブ →「デプロイ実行」でGitHubに保存</Step>
+    <Img src="./manual/admin-branding-tab.png" alt="管理画面 ブランディングタブ" caption="ブランディングタブ — ヘッダー画像欄" />
+  </div>
+)
 
-    <H3>③ 枠内アイコンの設定</H3>
+/* ─────────────────────────────────────────
+   タブ: アイコン・メダル画像の設定（SS）
+───────────────────────────────────────── */
+const TabImageShare = () => (
+  <div>
+    <p className="text-gray-300 text-sm mb-6">
+      枠内アイコンとランキングのメダル画像は<span className="text-amber font-bold">スプレッドシートで管理</span>します。Google DriveにアップロードしたURLをシートに貼り付けるだけで反映されます。
+    </p>
+
+    <H3>① Google Drive へのアップロードと共有設定（共通手順）</H3>
+    <Step number="1">Google Drive を開き、画像ファイルをアップロード</Step>
+    <Step number="2">アップロードした画像を右クリック →「共有」→「リンクをコピー」</Step>
+    <Step number="3">「制限付き」と表示されている場合は「リンクを知っている全員」に変更して「完了」</Step>
+    <Step number="4">コピーしたURLを以下の手順で使用する</Step>
+    <Img src="./manual/gdrive-share.png" alt="Google Drive 共有ダイアログ" caption="「リンクを知っている全員」に設定する" />
+
+    <Note type="danger">
+      共有設定が「制限付き」のままだと画像が表示されません。必ず「リンクを知っている全員（閲覧者）」に変更してください。
+    </Note>
+
+    <H3>② 枠内アイコンの設定</H3>
     <Step number="1">①の手順でURLをコピー</Step>
     <Step number="2">スプレッドシートの「枠内アイコン」シートを開く</Step>
     <Step number="3">該当行の C列 にURLを貼り付け（自動保存）</Step>
 
-    <H3>④ ランキングのメダル画像の設定</H3>
+    <H3>③ ランキングのメダル画像の設定</H3>
     <Step number="1">①の手順でURLをコピー</Step>
     <Step number="2">スプレッドシートの「目標管理・ランキング」シートを開く</Step>
     <Step number="3">該当ランキング行の G列 にURLを貼り付け（自動保存）</Step>
@@ -420,17 +429,30 @@ const TabImageShare = () => (
 /* ─────────────────────────────────────────
    メインコンポーネント
 ───────────────────────────────────────── */
-const TABS = [
-  { id: 'ss-share',   label: 'スプレッドシートの共有', short: 'SS共有',   component: TabSpreadsheetShare },
-  { id: 'admin',      label: '管理画面の操作方法',     short: '管理画面', component: TabAdminPanel },
-  { id: 'ss-entry',   label: 'スプレッドシートの記入', short: 'SS記入',   component: TabSpreadsheetEntry },
-  { id: 'header-img', label: 'ヘッダー画像の作成',     short: 'ヘッダー', component: TabHeaderImage },
-  { id: 'img-share',  label: '画像の共有方法',         short: '画像共有', component: TabImageShare },
+const TAB_GROUPS = [
+  {
+    label: 'スプレッドシート',
+    tabs: [
+      { id: 'ss-share',  label: 'スプレッドシートの初期設定', short: 'SS設定',  component: TabSpreadsheetShare },
+      { id: 'ss-entry',  label: 'スプレッドシートへの記入',   short: 'SS記入',  component: TabSpreadsheetEntry },
+      { id: 'img-share', label: 'アイコン・メダル画像の設定', short: '画像(SS)', component: TabImageShare },
+    ],
+  },
+  {
+    label: '管理画面',
+    tabs: [
+      { id: 'admin',      label: '管理画面の使い方',       short: '管理画面',  component: TabAdminPanel },
+      { id: 'header-img', label: 'ヘッダー画像の作成・設定', short: 'ヘッダー画像', component: TabHeaderImage },
+    ],
+  },
 ]
 
+const TABS = TAB_GROUPS.flatMap(g => g.tabs)
+
 function ManualApp() {
-  const [activeTab, setActiveTab] = useState(0)
-  const ActiveComponent = TABS[activeTab].component
+  const [activeTabId, setActiveTabId] = useState(TABS[0].id)
+  const activeTab = TABS.find(t => t.id === activeTabId)
+  const ActiveComponent = activeTab.component
 
   return (
     <div className="min-h-screen p-4 md:p-8">
@@ -443,26 +465,41 @@ function ManualApp() {
           <p className="text-gray-400 text-sm">ColorSing ランキング＆特典管理ページ</p>
         </header>
 
-        <nav className="flex flex-wrap gap-2 mb-6">
-          {TABS.map((tab, i) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(i)}
-              className={`px-4 py-2 rounded-full text-sm font-bold transition-all border ${
-                activeTab === i
-                  ? 'bg-light-blue/20 border-light-blue text-light-blue'
-                  : 'border-light-blue/20 text-gray-400 hover:border-light-blue/40 hover:text-gray-200'
-              }`}
-            >
-              <span className="hidden md:inline">{tab.label}</span>
-              <span className="md:hidden">{tab.short}</span>
-            </button>
+        <nav className="mb-6 space-y-2">
+          {TAB_GROUPS.map((group, gi) => (
+            <div key={group.label}>
+              {/* グループラベル */}
+              <p className="text-xs font-bold text-gray-500 mb-1.5 px-1 tracking-wide">
+                {group.label}
+              </p>
+              {/* タブボタン群 */}
+              <div className="flex flex-wrap gap-2">
+                {group.tabs.map(tab => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTabId(tab.id)}
+                    className={`px-4 py-2 rounded-full text-sm font-bold transition-all border ${
+                      activeTabId === tab.id
+                        ? 'bg-light-blue/20 border-light-blue text-light-blue'
+                        : 'border-light-blue/20 text-gray-400 hover:border-light-blue/40 hover:text-gray-200'
+                    }`}
+                  >
+                    <span className="hidden md:inline">{tab.label}</span>
+                    <span className="md:hidden">{tab.short}</span>
+                  </button>
+                ))}
+              </div>
+              {/* グループ間区切り線 */}
+              {gi < TAB_GROUPS.length - 1 && (
+                <hr className="border-light-blue/15 mt-3" />
+              )}
+            </div>
           ))}
         </nav>
 
         <section className="glass-effect rounded-xl border border-light-blue/30 p-6 md:p-8">
           <h2 className="text-xl md:text-2xl font-bold text-amber mb-6">
-            {TABS[activeTab].label}
+            {activeTab.label}
           </h2>
           <ActiveComponent />
         </section>
