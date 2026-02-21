@@ -26,17 +26,18 @@ const ColorField = ({ label, value, onChange, description }) => (
 
 import { COLOR_PRESETS } from '../../lib/presets'
 
-// baseKey: 未設定時のフォールバックとなるベースカラーのキー名
+// baseKey: 未設定時のカラーピッカー表示に使うベースカラーのキー名
+// defaultColor: baseKeyと実際のCSS挙動が異なる場合にピッカー表示を上書き
 const AREA_COLOR_FIELDS = [
-  { key: 'headerGradientStart', label: 'ヘッダーグラデーション（中央）', baseKey: 'oceanTeal', description: '未設定 → 背景中間色と同じ' },
-  { key: 'headerGradientEnd',   label: 'ヘッダーグラデーション（両端）', baseKey: 'deepBlue',  description: '未設定 → 背景メインと同じ' },
-  { key: 'primaryText',         label: 'メインテキスト色',               baseKey: 'lightBlue', description: '未設定 → UIメインカラーと同じ' },
-  { key: 'accentText',          label: 'アクセントテキスト色',           baseKey: 'amber',     description: '未設定 → UIアクセントカラーと同じ' },
-  { key: 'rank1Card',           label: '1位カード強調色',                baseKey: 'accent',    description: '未設定 → 強調色と同じ' },
-  { key: 'titleColor',          label: 'タイトルテキスト色',             baseKey: 'lightBlue', description: '未設定 → UIメインカラーと同じ（グラデーションOFF時のみ有効）' },
-  { key: 'nameText',            label: 'カード名前テキスト色',           baseKey: 'lightBlue', description: '未設定 → UIメインカラーと同じ（ランキング名・特典管理名）' },
-  { key: 'footerText',          label: 'フッターテキスト色',             baseKey: 'amber',     description: '未設定 → UIアクセントカラーと同じ' },
-  { key: 'contentText',         label: 'コンテンツ本文テキスト色',       baseKey: 'lightBlue', description: '未設定 → グレー（目標の内容・FAQ本文）' },
+  { key: 'headerGradientStart', label: 'ヘッダーグラデーション（中央）', baseKey: 'oceanTeal', description: 'ヘッダー背景の中央グラデーション。未設定 → 背景中間色' },
+  { key: 'headerGradientEnd',   label: 'ヘッダーグラデーション（両端）', baseKey: 'deepBlue',  description: 'ヘッダー背景の左右端グラデーション。未設定 → 背景メインと同じ' },
+  { key: 'primaryText',         label: 'メインテキスト色',               baseKey: 'lightBlue', description: 'セクションタイトル（Ranking・Targets）、カード内ラベル等。未設定 → UIメインカラー' },
+  { key: 'accentText',          label: 'アクセントテキスト色',           baseKey: 'amber',     description: '目標の▸矢印・FAQタイトル・質問文・ホバー強調等。未設定 → UIアクセントカラー' },
+  { key: 'rank1Card',           label: '1位カード強調色',                baseKey: 'accent',    description: '1位カードのボーダー・ポイント数テキスト。未設定 → 強調色' },
+  { key: 'titleColor',          label: 'タイトルテキスト色',             baseKey: 'lightBlue', description: 'ヘッダーのサイト名テキスト（グラデーションOFF時のみ有効）。未設定 → UIメインカラー' },
+  { key: 'nameText',            label: 'カード名前テキスト色',           baseKey: 'lightBlue', description: 'ランキング名・特典管理名・枠内アイコンのユーザー名。未設定 → UIメインカラーの白混ぜ（薄い同系色）' },
+  { key: 'footerText',          label: 'フッターテキスト色',             baseKey: 'amber',     description: 'フッターのメインテキスト。未設定 → UIアクセントカラー' },
+  { key: 'contentText',         label: 'コンテンツ本文テキスト色',       baseKey: 'lightBlue', defaultColor: '#d1d5db', description: '目標の内容テキスト・FAQの回答テキスト。未設定 → グレー (#d1d5db)' },
 ]
 
 const ColorsTab = ({ config, updateConfig }) => {
@@ -116,10 +117,10 @@ const ColorsTab = ({ config, updateConfig }) => {
         未設定の場合、上のベースカラーが適用されます。特定のUI要素だけ色を変えたい場合に設定してください。
       </p>
 
-      {AREA_COLOR_FIELDS.map(({ key, label, description, baseKey }) => {
+      {AREA_COLOR_FIELDS.map(({ key, label, description, baseKey, defaultColor }) => {
         const value = config.colorOverrides?.[key] || ''
-        // 未設定時はベースカラーをピッカーに表示（ブラック表示を防ぐ）
-        const pickerValue = value || config.colors?.[baseKey] || '#000000'
+        // 未設定時: defaultColor → ベースカラー の順でピッカーに表示（ブラック表示を防ぐ）
+        const pickerValue = value || defaultColor || config.colors?.[baseKey] || '#000000'
         return (
           <div key={key} className="mb-5">
             <label className="block text-sm font-body text-light-blue mb-1">{label}</label>
