@@ -107,11 +107,11 @@ const PersonPopup = ({ person, benefits, history, specialIndex = 8, onClose, onS
                     : 'border-card-border/20'
                 }`}
               >
-                {benefit?.[BENEFIT_FIELDS.LABEL] && (
+                {benefit && (
                   <div className="mb-4 pb-3 border-b border-highlight/30 bg-highlight/10 -mx-4 md:-mx-6 -mt-4 md:-mt-6 px-4 md:px-6 py-3 rounded-t-xl">
                     <div className="flex items-center justify-center pt-1">
                       <span className="text-sm md:text-base text-highlight font-body">
-                        {benefit[BENEFIT_FIELDS.TITLE]} {benefit[BENEFIT_FIELDS.LABEL]}
+                        {benefit[BENEFIT_FIELDS.TITLE]}{benefit[BENEFIT_FIELDS.LABEL] ? ` ${benefit[BENEFIT_FIELDS.LABEL]}` : ''}
                       </span>
                     </div>
                   </div>
