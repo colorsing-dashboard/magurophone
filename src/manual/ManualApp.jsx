@@ -51,6 +51,16 @@ const H3 = ({ children }) => (
   <h3 className="text-light-blue font-bold text-sm mt-6 mb-3 border-b border-light-blue/20 pb-1">{children}</h3>
 )
 
+const Cell = ({ range, label, desc }) => (
+  <div className="glass-effect rounded-lg border border-light-blue/20 p-3 flex gap-3 items-start">
+    <code className="flex-shrink-0 bg-black/40 text-amber px-2 py-0.5 rounded text-xs mt-0.5 whitespace-nowrap">{range}</code>
+    <div>
+      {label && <p className="text-sm font-bold text-gray-200">{label}</p>}
+      <p className="text-xs text-gray-400 mt-0.5">{desc}</p>
+    </div>
+  </div>
+)
+
 const SizeBox = ({ width, height, label }) => (
   <div className="flex flex-col items-center gap-2">
     <div
@@ -74,7 +84,7 @@ const TabSpreadsheetShare = () => (
 
     <H3>① スプレッドシート ID の確認</H3>
     <p className="text-gray-300 text-sm mb-3">
-      スプレッドシートを開いたときのURLの、<span className="text-amber font-bold">d/ から /edit の間</span>の文字列がスプレッドシート ID です。
+      スプレッドシートを開いたときのURLの、<span className="text-amber font-bold">/d/ と /edit の間</span>の文字列がスプレッドシート ID です。
     </p>
     <Img src="./manual/ss-url-id.png" alt="スプレッドシートURLでIDの場所を示す図" caption="赤枠部分がスプレッドシート ID" />
 
@@ -88,10 +98,11 @@ const TabSpreadsheetShare = () => (
     <Img src="./manual/gdrive-share.png" alt="Googleスプレッドシートの共有設定ダイアログ" caption="「制限付き」→「リンクを知っている全員」に変更する" />
 
     <H3>③ 管理画面に ID を登録</H3>
-    <Step number="1">管理画面（あなた専用URLの末尾を <span className="text-amber">/admin</span> に変更してアクセス）を開く</Step>
+    <Step number="1">管理画面（専用URLの末尾を <span className="text-amber">/admin</span> に変更）を開く</Step>
     <Step number="2">「Google Sheets」タブを選択</Step>
     <Step number="3">「スプレッドシート ID」欄にコピーした ID を貼り付け</Step>
-    <Step number="4">「設定を保存」ボタンをクリック</Step>
+    <Step number="4">「接続テスト」ボタンで正常に読み込めるか確認</Step>
+    <Step number="5">「設定を保存」→「デプロイ」タブから「GitHubに保存」</Step>
     <Img src="./manual/admin-sheets-tab.png" alt="管理画面 Google Sheetsタブ" caption="Google Sheets タブ" />
 
     <Note type="warn">
@@ -106,43 +117,80 @@ const TabSpreadsheetShare = () => (
 const ADMIN_TABS_DATA = [
   {
     name: 'ブランディング',
-    desc: 'サイト名・サイドバータイトル・フォント・ヘッダー画像・ローディング絵文字などを設定します。',
     img: './manual/admin-branding-tab.png',
+    items: [
+      { label: 'サイト名・サイドバータイトル・ページタイトル', desc: 'ヘッダーやブラウザタブに表示される各種名称を設定します。' },
+      { label: 'ヘッダー画像（PC用・モバイル用）', desc: 'Google DriveのURLまたはローカルパスを入力します。' },
+      { label: 'フォント設定', desc: 'タイトル用フォント・本文フォントをプリセットまたはカスタムで設定します。Google Fontsにも対応。' },
+      { label: 'タイトル表示・グラデーション', desc: 'ヘッダーへのサイト名表示のON/OFFやグラデーション方向を設定します。' },
+      { label: 'ローディング絵文字・テキスト', desc: 'ページ読み込み中に表示される絵文字とテキストを変更できます。' },
+    ],
   },
   {
     name: 'カラー',
-    desc: 'ページ背景・ヘッダーグラデーション・テキスト色・カードボーダー・1位カード色などを設定します。',
     img: './manual/admin-colors-tab.png',
+    items: [
+      { label: 'ページ背景（メイン・中間）', desc: '未設定の場合はデフォルトのDeep Blue / Ocean Tealが使われます。' },
+      { label: 'ヘッダーグラデーション', desc: '中央色と両端色を個別に設定できます。' },
+      { label: 'テキスト・カードボーダー色', desc: 'メインテキスト・アクセントテキスト・カードのボーダー色を設定します。' },
+      { label: '1位カード強調色', desc: 'ランキング1位のカードに使われる強調色です。' },
+    ],
   },
   {
     name: 'Google Sheets',
-    desc: 'スプレッドシート ID を登録します。サイトのデータソースとなるスプレッドシートを指定するタブです。',
     img: './manual/admin-sheets-tab.png',
+    items: [
+      { label: 'スプレッドシートID', desc: 'データを読み込むGoogleスプレッドシートのIDを入力します。' },
+      { label: 'シート名（5種類）', desc: '目標管理・ランキング / 特典管理 / 特典内容 / 特典履歴 / 枠内アイコン の各シート名を設定します。シート名を変更した場合はこちらも合わせて変更してください。' },
+      { label: 'セル範囲（5種類）', desc: '各データの読み込みセル範囲を設定します。通常は変更不要です。' },
+      { label: '自動更新間隔', desc: 'サイトが自動的にデータを再読み込みする間隔（分）を設定します。デフォルトは5分。' },
+    ],
   },
   {
     name: 'ビュー管理',
-    desc: '各ページ（ホーム・メニュー・権利者リスト・枠内アイコン等）の表示・非表示を切り替えます。',
     img: './manual/admin-views-tab.png',
+    items: [
+      { label: '表示・非表示の切り替え', desc: '各ページ（ホーム・メニュー・権利者リスト・枠内アイコン等）をON/OFFできます。' },
+      { label: 'ラベル・アイコンの変更', desc: 'ナビゲーションに表示されるページ名と絵文字アイコンを変更できます。' },
+      { label: '表示順の変更', desc: '上下ボタンでナビゲーションの並び順を変更できます。' },
+    ],
   },
   {
     name: '特典ティア',
-    desc: '特典の段階（ティア）ごとの名称・アイコン・しきい値を設定します。',
     img: './manual/admin-tiers-tab.png',
+    items: [
+      { label: 'ティアの追加・削除・並び替え', desc: '特典の段階（ティア）を自由に増減できます。' },
+      { label: 'キー名', desc: 'スプレッドシートの「特典内容」シートのA列と一致させる必要があります。' },
+      { label: '列インデックス', desc: '「特典管理」シートの何列目（B列=1）のデータと対応するかを指定します。0はメニュー表示のみ。' },
+      { label: '表示テンプレート', desc: '{value} にスプレッドシートの値が入ります（例: 「強制リクエスト: {value}曲」）。' },
+      { label: 'isBoolean', desc: 'ONにすると数値ではなく固定テキストで表示します（「済」など）。' },
+    ],
   },
   {
     name: 'コンテンツ',
-    desc: 'FAQや固定テキストなどのページ内コンテンツを編集します。',
     img: './manual/admin-content-tab.png',
+    items: [
+      { label: 'ホームビュー設定', desc: 'ランキングタイトル・ポイント単位（例: 歌推しPt）・目標セクションのラベルなどを設定します。' },
+      { label: 'FAQ', desc: 'サイト上に表示するよくある質問を追加・編集・削除できます。' },
+      { label: 'UIテキスト', desc: 'エラー文・更新ボタン・検索プレースホルダーなどの各種テキストを変更できます。' },
+    ],
   },
   {
     name: 'エフェクト',
-    desc: 'パーティクルエフェクト（泡・星・ハート・なし）の種類・サイズ・方向を設定します。',
     img: './manual/admin-effects-tab.png',
+    items: [
+      { label: 'パーティクル種類', desc: '泡・星・ハート・なし から選択できます。' },
+      { label: 'サイズ・方向', desc: 'パーティクルの大きさと流れる方向（上から下 / 下から上）を設定します。' },
+    ],
   },
   {
     name: 'デプロイ',
-    desc: '設定をGitHubに保存（デプロイ）します。このタブで保存した設定はサイトリロード後も維持されます。',
     img: './manual/admin-deploy-tab.png',
+    items: [
+      { label: 'GitHubに保存', desc: '現在の設定をGitHubリポジトリに保存し、サイトに反映します。「設定を保存」だけでは恒久的に保存されないため、必ずこちらで保存してください。' },
+      { label: 'GitHubから最新設定を取得', desc: 'GitHubに保存されている最新の設定をローカルに読み込みます。' },
+      { label: '接続設定', desc: 'GitHubのリポジトリオーナー・リポジトリ名・ブランチ・アクセストークンを設定します（初回のみ）。' },
+    ],
   },
 ]
 
@@ -153,18 +201,17 @@ const TabAdminPanel = () => {
   return (
     <div>
       <p className="text-gray-300 text-sm mb-6">
-        管理画面は、あなた専用URLの末尾を <span className="text-amber font-bold">/admin</span> に変更するとアクセスできます。
-        8つのタブで各種設定を行います。
+        管理画面は、専用URLの末尾を <span className="text-amber font-bold">/admin</span> に変更するとアクセスできます。
       </p>
 
       <H3>設定の基本的な流れ</H3>
       <Step number="1">管理画面を開く</Step>
-      <Step number="2">設定したい項目のタブを選択して値を変更</Step>
-      <Step number="3">画面下部の「設定を保存」ボタンをクリック（ブラウザに一時保存）</Step>
-      <Step number="4">「デプロイ」タブ → 「GitHubに保存」でサーバーに反映</Step>
+      <Step number="2">設定したいタブを選択して値を変更</Step>
+      <Step number="3">「設定を保存」ボタンをクリック（ブラウザに一時保存）</Step>
+      <Step number="4">「デプロイ」タブ →「GitHubに保存」で確定</Step>
 
       <Note type="warn">
-        「設定を保存」だけではブラウザを閉じると設定が消える場合があります。必ず最後に「デプロイ」タブからGitHubに保存してください。
+        「設定を保存」だけでは、ブラウザのキャッシュをクリアすると設定が消えます。必ず最後に「デプロイ」タブからGitHubに保存してください。
       </Note>
 
       <H3>各タブの説明</H3>
@@ -185,8 +232,15 @@ const TabAdminPanel = () => {
       </div>
 
       <div className="glass-effect rounded-xl border border-light-blue/20 p-4">
-        <p className="text-amber font-bold text-sm mb-2">{tab.name}</p>
-        <p className="text-gray-300 text-sm mb-3">{tab.desc}</p>
+        <p className="text-amber font-bold text-sm mb-3">{tab.name}</p>
+        <ul className="space-y-3 mb-4">
+          {tab.items.map(item => (
+            <li key={item.label} className="text-sm">
+              <span className="text-gray-200 font-bold">・{item.label}</span>
+              <span className="text-gray-400 text-xs block ml-3 mt-0.5">{item.desc}</span>
+            </li>
+          ))}
+        </ul>
         <Img src={tab.img} alt={`管理画面 ${tab.name}タブ`} caption={`${tab.name} タブ`} />
       </div>
     </div>
@@ -198,52 +252,75 @@ const TabAdminPanel = () => {
 ───────────────────────────────────────── */
 const TabSpreadsheetEntry = () => (
   <div>
-    <p className="text-gray-300 text-sm mb-6">
-      スプレッドシートには <span className="text-amber font-bold">「data」シート</span> と <span className="text-amber font-bold">「枠内アイコン」シート</span> の2種類があります。
+    <p className="text-gray-300 text-sm mb-4">
+      スプレッドシートは以下の <span className="text-amber font-bold">5つのシート</span> で構成されています。
     </p>
 
-    <H3>data シート</H3>
-    <Img src="./manual/ss-data-sheet.png" alt="dataシートのセル配置" caption="dataシート — 各セル範囲の役割" />
-
-    <div className="space-y-3 mt-2">
+    <div className="space-y-2 mb-6">
       {[
-        { range: 'A2:D5',    label: 'ランキング',     desc: '順位 / 名前 / ポイント / メダル画像URL（4列）' },
-        { range: 'A8:B12',   label: '月間目標',       desc: 'ラベル / 値（2列）。ホームの目標進捗に反映。' },
-        { range: 'G2:K12',   label: '特典説明',       desc: 'タイトル / 名前 / 説明 / アイコン / ラベル（5列）' },
-        { range: 'A15: 以降', label: '権利者リスト', desc: '名前 / 各ティアの達成値など（列数はティア数に依存）' },
-      ].map(r => (
-        <div key={r.range} className="glass-effect rounded-lg border border-light-blue/20 p-3 flex gap-3 items-start">
-          <code className="flex-shrink-0 bg-black/40 text-amber px-2 py-0.5 rounded text-xs mt-0.5">{r.range}</code>
-          <div>
-            <p className="text-sm font-bold text-gray-200">{r.label}</p>
-            <p className="text-xs text-gray-400 mt-0.5">{r.desc}</p>
-          </div>
+        { name: '目標管理・ランキング', desc: 'ランキングデータと月間目標を管理します。' },
+        { name: '特典内容',             desc: '各特典ティアの説明文を管理します。' },
+        { name: '特典管理',             desc: 'リスナーごとの特典達成状況を管理します。' },
+        { name: '特典履歴',             desc: '特典の付与・消費の履歴を記録します。' },
+        { name: '枠内アイコン',         desc: 'リスナーのアイコン画像URLを管理します。' },
+      ].map(s => (
+        <div key={s.name} className="glass-effect rounded-lg border border-light-blue/20 p-3 flex gap-3 items-start">
+          <code className="flex-shrink-0 bg-black/40 text-amber px-2 py-0.5 rounded text-xs mt-0.5">{s.name}</code>
+          <p className="text-xs text-gray-400">{s.desc}</p>
         </div>
       ))}
     </div>
 
+    <Img src="./manual/ss-data-sheet.png" alt="スプレッドシートの全体構成" caption="スプレッドシートのシート構成" />
+
+    {/* 目標管理・ランキング */}
+    <H3>目標管理・ランキング シート</H3>
+    <div className="space-y-3">
+      <Cell range="D2:G5" label="ランキングデータ（4列）"
+        desc="D列: 順位 / E列: 名前 / F列: ポイント / G列: メダル画像URL（Google DriveのURL）" />
+      <Cell range="A2:B10" label="月間目標（2列）"
+        desc="A列: ラベル（目標名） / B列: 値（数値）。ホームページの目標進捗に反映されます。" />
+    </div>
     <Note type="danger">
-      セル範囲（A2:D5 など）の位置を変えると、サイトに正しく表示されなくなります。データの追加・編集は既存の範囲内で行ってください。範囲の変更が必要な場合はご連絡ください。
+      ランキングデータはA列ではなくD列から始まります。列を間違えると表示されません。
     </Note>
 
+    {/* 特典内容 */}
+    <H3>特典内容 シート</H3>
+    <div className="space-y-3">
+      <Cell range="A2:E20（最大）" label="特典説明（5列）"
+        desc="A列: ティアキー（管理画面の特典ティア設定のキー名と一致させる） / B列: タイトル / C列: 簡易説明 / D列: 詳細説明 / E列: 記録機能（チェックボックス）" />
+    </div>
+    <Note type="warn">
+      A列のティアキーは管理画面「特典ティア」タブのキー名と完全一致させてください。一致しないと特典が表示されません。
+    </Note>
+
+    {/* 特典管理 */}
+    <H3>特典管理 シート</H3>
+    <div className="space-y-3">
+      <Cell range="A2:I1000（最大）" label="権利者リスト（9列）"
+        desc="A列: ユーザー名 / B列以降: 各ティアの達成値（何列目がどのティアかは管理画面「特典ティア」の「列インデックス」で設定）" />
+    </div>
+
+    {/* 特典履歴 */}
+    <H3>特典履歴 シート</H3>
+    <div className="space-y-3">
+      <Cell range="A2:D1000（最大）" label="履歴データ（4列）"
+        desc="A列: 年月（yyyymm形式、例: 202602） / B列: ユーザー名 / C列: ティアキー / D列: 特典内容（テキスト）" />
+    </div>
+
+    {/* 枠内アイコン */}
     <H3>枠内アイコン シート</H3>
     <Img src="./manual/ss-icon-sheet.png" alt="枠内アイコンシートの記入例" caption="枠内アイコンシート — 記入例" />
-
     <div className="space-y-3">
-      {[
-        { col: 'A列', desc: '月（yyyymm形式、例: 202601）またはカテゴリ名' },
-        { col: 'B列', desc: 'ユーザー名' },
-        { col: 'C列', desc: 'Google Drive の画像URL（共有リンク）' },
-      ].map(r => (
-        <div key={r.col} className="glass-effect rounded-lg border border-light-blue/20 p-3 flex gap-3 items-start">
-          <code className="flex-shrink-0 bg-black/40 text-amber px-2 py-0.5 rounded text-xs mt-0.5">{r.col}</code>
-          <p className="text-xs text-gray-400">{r.desc}</p>
-        </div>
-      ))}
+      <Cell range="A列" label="月またはカテゴリ"
+        desc="すべて6桁の数字（yyyymm）なら月別表示。それ以外の文字列（例: 歌枠、ゲーム実況）ならカテゴリ別表示になります。" />
+      <Cell range="B列" desc="ユーザー名" />
+      <Cell range="C列" desc="Google Drive の画像URL（共有リンク）" />
     </div>
 
     <Note type="info">
-      データはスプレッドシートを保存した時点で自動的に反映されます（Googleスプレッドシートは自動保存）。サイト側の更新は最大5分ほどかかる場合があります。サイト右上の更新ボタンで即時反映できます。
+      スプレッドシートはGoogleが自動保存します。サイトへの反映は最大5分ほどかかります。サイト右上の更新ボタンで即時反映できます。
     </Note>
   </div>
 )
@@ -265,8 +342,8 @@ const TabHeaderImage = () => (
 
     <div className="space-y-3 mt-2">
       {[
-        { label: 'PC用',     size: '1920 × 600 px', note: '横長。デスクトップブラウザで表示される画像。' },
-        { label: 'モバイル用', size: '750 × 400 px',  note: 'スマートフォンで表示される画像。PC用より縦方向に余裕があります。' },
+        { label: 'PC用',       size: '1920 × 600 px', note: '横長。1200px以上の画面幅で表示されます。' },
+        { label: 'モバイル用', size: '750 × 400 px',  note: 'スマートフォンで表示されます。' },
       ].map(r => (
         <div key={r.label} className="glass-effect rounded-lg border border-light-blue/20 p-3">
           <p className="text-sm font-bold text-amber">{r.label} — {r.size}</p>
@@ -284,11 +361,11 @@ const TabHeaderImage = () => (
     <H3>Canva で作成する場合</H3>
     <Step number="1">Canva（canva.com）にアクセスしてログイン</Step>
     <Step number="2">「カスタムサイズ」で幅・高さを入力してデザインを作成</Step>
-    <Step number="3">デザイン完了後「共有」→「ダウンロード」→「JPG」または「PNG」を選択</Step>
+    <Step number="3">「共有」→「ダウンロード」→「JPG」または「PNG」を選択</Step>
     <Step number="4">ダウンロードしたファイルをGoogle Driveにアップロード（次のタブ参照）</Step>
 
     <Note type="info">
-      ヘッダーの上にサイト名やサイドバーが重なって表示される場合があります。重要なデザイン要素は画像の端に配置しないようにするとバランスよく見えます。
+      ヘッダーの上にサイト名やサイドバーが重なります。重要なデザイン要素は画像の端を避けて中央寄りに配置することをおすすめします。
     </Note>
   </div>
 )
@@ -305,29 +382,28 @@ const TabImageShare = () => (
     <H3>① Google Drive へのアップロードと共有設定（共通手順）</H3>
     <Step number="1">Google Drive を開き、画像ファイルをアップロード</Step>
     <Step number="2">アップロードした画像を右クリック →「共有」→「リンクをコピー」</Step>
-    <Step number="3">「制限付き」と表示されている場合は「リンクを知っている全員」に変更してから「完了」</Step>
-    <Step number="4">コピーしたリンクURLを各手順で使用する</Step>
+    <Step number="3">「制限付き」と表示されている場合は「リンクを知っている全員」に変更して「完了」</Step>
+    <Step number="4">コピーしたURLを各手順で使用する</Step>
     <Img src="./manual/gdrive-share.png" alt="Google Drive 共有ダイアログ" caption="「リンクを知っている全員」に設定する" />
+
     <Note type="danger">
-      共有設定が「制限付き」のままだと、サイトに画像が表示されません。必ず「リンクを知っている全員（閲覧者）」に変更してください。
+      共有設定が「制限付き」のままだと画像が表示されません。必ず「リンクを知っている全員（閲覧者）」に変更してください。
     </Note>
 
     <H3>② ヘッダー画像の設定（PC用・モバイル用）</H3>
-    <Step number="1">①の手順でGoogle DriveのURLをコピー</Step>
-    <Step number="2">管理画面の「ブランディング」タブを開く</Step>
-    <Step number="3">「ヘッダー画像（PC用）」または「ヘッダー画像（モバイル用）」の入力欄にURLを貼り付け</Step>
-    <Step number="4">「設定を保存」→「デプロイ」タブから「GitHubに保存」</Step>
+    <Step number="1">①の手順でURLをコピー</Step>
+    <Step number="2">管理画面「ブランディング」タブ →「ヘッダー画像（PC用）」または「ヘッダー画像（モバイル用）」にURLを貼り付け</Step>
+    <Step number="3">「設定を保存」→「デプロイ」タブから「GitHubに保存」</Step>
 
     <H3>③ 枠内アイコンの設定</H3>
-    <Step number="1">①の手順でGoogle DriveのURLをコピー</Step>
+    <Step number="1">①の手順でURLをコピー</Step>
     <Step number="2">スプレッドシートの「枠内アイコン」シートを開く</Step>
-    <Step number="3">該当行の C列 にURLを貼り付け</Step>
-    <Step number="4">スプレッドシートは自動保存のため、数分後にサイトに反映される</Step>
+    <Step number="3">該当行の C列 にURLを貼り付け（自動保存）</Step>
 
     <H3>④ ランキングのメダル画像の設定</H3>
-    <Step number="1">①の手順でGoogle DriveのURLをコピー</Step>
-    <Step number="2">スプレッドシートの「data」シートを開く</Step>
-    <Step number="3">ランキング行（A2:D5）の D列 にURLを貼り付け</Step>
+    <Step number="1">①の手順でURLをコピー</Step>
+    <Step number="2">スプレッドシートの「目標管理・ランキング」シートを開く</Step>
+    <Step number="3">該当ランキング行の G列 にURLを貼り付け（自動保存）</Step>
 
     <Note type="info">
       Google DriveのURLはそのまま貼り付けてください。システムが自動的に表示用URLに変換します。
@@ -361,7 +437,6 @@ function ManualApp() {
           <p className="text-gray-400 text-sm">ColorSing ランキング＆特典管理ページ</p>
         </header>
 
-        {/* タブナビ */}
         <nav className="flex flex-wrap gap-2 mb-6">
           {TABS.map((tab, i) => (
             <button
@@ -379,7 +454,6 @@ function ManualApp() {
           ))}
         </nav>
 
-        {/* コンテンツ */}
         <section className="glass-effect rounded-xl border border-light-blue/30 p-6 md:p-8">
           <h2 className="text-xl md:text-2xl font-bold text-amber mb-6">
             {TABS[activeTab].label}
