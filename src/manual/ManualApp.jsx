@@ -253,26 +253,62 @@ const TabAdminPanel = () => {
 const TabSpreadsheetEntry = () => (
   <div>
     <p className="text-gray-300 text-sm mb-4">
-      スプレッドシートは主に <span className="text-amber font-bold">「data」シート</span> と <span className="text-amber font-bold">「枠内アイコン」シート</span> で構成されています。
+      スプレッドシートは以下の <span className="text-amber font-bold">5つのシート</span> で構成されています。
       シート名は管理画面の「Google Sheets」タブで変更できます。
     </p>
 
+    <div className="space-y-2 mb-6">
+      {[
+        { name: '目標管理・ランキング', desc: 'ランキングデータと月間目標を管理します。' },
+        { name: '特典内容',             desc: '各特典ティアの説明文を管理します。' },
+        { name: '特典管理',             desc: 'リスナーごとの特典達成状況を管理します。' },
+        { name: '特典履歴',             desc: '特典の付与・消費の履歴を記録します。' },
+        { name: '枠内アイコン',         desc: 'リスナーのアイコン画像URLを管理します。' },
+      ].map(s => (
+        <div key={s.name} className="glass-effect rounded-lg border border-light-blue/20 p-3 flex gap-3 items-start">
+          <code className="flex-shrink-0 bg-black/40 text-amber px-2 py-0.5 rounded text-xs mt-0.5">{s.name}</code>
+          <p className="text-xs text-gray-400">{s.desc}</p>
+        </div>
+      ))}
+    </div>
+
     <Img src="./manual/ss-data-sheet.png" alt="スプレッドシートの全体構成" caption="スプレッドシートの構成例" />
 
-    {/* data シート */}
-    <H3>data シート（メインデータ）</H3>
-    <p className="text-gray-300 text-sm mb-3">ランキング・月間目標・権利者リストを管理します。</p>
+    {/* 目標管理・ランキング */}
+    <H3>目標管理・ランキング シート</H3>
     <div className="space-y-3">
       <Cell range="D2:G5" label="ランキングデータ（4列）"
         desc="D列: 順位 / E列: 名前 / F列: ポイント / G列: メダル画像URL（Google DriveのURL）" />
       <Cell range="A2:B10" label="月間目標（2列）"
         desc="A列: ラベル（目標名） / B列: 値（数値）。ホームページの目標進捗に反映されます。" />
-      <Cell range="A列・B列以降" label="権利者リスト"
-        desc="A列: ユーザー名 / B列以降: 各ティアの達成値（何列目がどのティアかは管理画面「特典ティア」の「列インデックス」で設定）" />
     </div>
     <Note type="danger">
       ランキングデータはA列ではなくD列から始まります。列を間違えると表示されません。
     </Note>
+
+    {/* 特典内容 */}
+    <H3>特典内容 シート</H3>
+    <div className="space-y-3">
+      <Cell range="A3:E20（最大）" label="特典説明（5列）"
+        desc="A列: ティアキー（管理画面「特典ティア」のキー名と一致させる） / B列: タイトル / C列: 簡易説明 / D列: 詳細説明 / E列: 記録機能（チェックボックス）" />
+    </div>
+    <Note type="warn">
+      A列のティアキーは管理画面「特典ティア」タブのキー名と完全一致させてください。一致しないと特典が表示されません。
+    </Note>
+
+    {/* 特典管理 */}
+    <H3>特典管理 シート</H3>
+    <div className="space-y-3">
+      <Cell range="A2:I1000（最大）" label="権利者リスト（9列）"
+        desc="A列: ユーザー名 / B列以降: 各ティアの達成値（何列目がどのティアかは管理画面「特典ティア」の「列インデックス」で設定）" />
+    </div>
+
+    {/* 特典履歴 */}
+    <H3>特典履歴 シート</H3>
+    <div className="space-y-3">
+      <Cell range="A3:D1000（最大）" label="履歴データ（4列）"
+        desc="A列: 年月（yyyymm形式、例: 202602） / B列: ユーザー名 / C列: ティアキー / D列: 特典内容（テキスト）" />
+    </div>
 
     {/* 枠内アイコン */}
     <H3>枠内アイコン シート</H3>
