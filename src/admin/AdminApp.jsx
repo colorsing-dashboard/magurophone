@@ -219,7 +219,7 @@ function AdminApp() {
             rel="noopener noreferrer"
             className="block w-full px-4 py-2 bg-light-blue/10 hover:bg-light-blue/20 border border-light-blue/30 rounded-lg transition-all text-light-blue text-sm font-body text-center"
           >
-            顧客マニュアル
+            管理マニュアル
           </a>
         </div>
       </aside>
@@ -262,6 +262,14 @@ function AdminApp() {
             className="block w-full px-4 py-3 bg-ocean-teal/30 hover:bg-ocean-teal/50 border border-ocean-teal/50 rounded-lg transition-all text-light-blue font-body text-center"
           >
             プレビューを開く
+          </a>
+          <a
+            href="./manual.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block w-full px-4 py-3 bg-light-blue/10 hover:bg-light-blue/20 border border-light-blue/30 rounded-lg transition-all text-light-blue font-body text-center"
+          >
+            管理マニュアル
           </a>
         </div>
       </main>
