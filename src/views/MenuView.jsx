@@ -26,7 +26,7 @@ const MenuView = ({ benefits, onSelectBenefit }) => {
             }`}
           >
             {/* モバイル版：簡略表示 */}
-            <div className="md:hidden py-3 px-4 bg-highlight/10 rounded-2xl relative">
+            <div className="md:hidden py-3 px-4 bg-highlight/10 rounded-2xl relative flex-1">
               <div className="absolute top-2 left-2">
                 <span className="text-xs font-bold text-highlight font-body">{benefit[BENEFIT_FIELDS.TITLE]}</span>
               </div>
