@@ -13,14 +13,14 @@ import EffectsTab from './tabs/EffectsTab'
 import DeployTab from './tabs/DeployTab'
 
 const TABS = [
-  { id: 'branding', label: 'ブランディング', icon: 'tag' },
-  { id: 'colors', label: 'カラー', icon: 'palette' },
-  { id: 'sheets', label: 'Google Sheets', icon: 'bar-chart-3' },
-  { id: 'views', label: 'ビュー管理', icon: 'smartphone' },
-  { id: 'tiers', label: '特典ティア', icon: 'trophy' },
-  { id: 'content', label: 'コンテンツ', icon: 'file-text' },
-  { id: 'effects', label: 'エフェクト', icon: 'sparkles' },
-  { id: 'deploy', label: 'デプロイ', icon: 'rocket' },
+  { id: 'branding', label: 'ブランディング', short: 'ブランド', icon: 'tag' },
+  { id: 'colors',   label: 'カラー',         short: 'カラー',   icon: 'palette' },
+  { id: 'sheets',   label: 'Google Sheets',  short: 'シート',   icon: 'bar-chart-3' },
+  { id: 'views',    label: 'ビュー管理',     short: 'ビュー',   icon: 'smartphone' },
+  { id: 'tiers',    label: '特典ティア',     short: 'ティア',   icon: 'trophy' },
+  { id: 'content',  label: 'コンテンツ',     short: 'コンテンツ', icon: 'file-text' },
+  { id: 'effects',  label: 'エフェクト',     short: 'エフェクト', icon: 'sparkles' },
+  { id: 'deploy',   label: 'デプロイ',       short: 'デプロイ', icon: 'rocket' },
 ]
 
 function AdminApp() {
@@ -66,7 +66,6 @@ function AdminApp() {
 
       current[keys[keys.length - 1]] = value
 
-      // useEffect経由ではなく直接保存（確実にlocalStorageに反映）
       saveConfig(next)
       saveConfigMeta({ lastModified: Date.now() })
 
@@ -120,11 +119,9 @@ function AdminApp() {
   const handleSyncFromGitHub = (remoteConfig) => {
     setConfig(prev => {
       const synced = deepMerge(DEFAULT_CONFIG, remoteConfig)
-      // 反転トークンを復元（どんな環境でもデプロイボタンを押せるようにするため）
       if (synced.deploy?.token?.startsWith('rev:')) {
         synced.deploy.token = synced.deploy.token.slice(4).split('').reverse().join('')
       }
-      // ローカルに平文 token があればそちらを優先
       if (prev.deploy?.token && !prev.deploy.token.startsWith('rev:')) {
         synced.deploy = { ...synced.deploy, token: prev.deploy.token }
       }
@@ -167,66 +164,99 @@ function AdminApp() {
     deploy: DeployTab,
   }
   const ActiveTab = TAB_COMPONENTS[activeTab]
+  const activeTabDef = TABS.find(t => t.id === activeTab)
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
-      {/* サイドバー */}
-      <aside className="md:w-64 md:min-h-screen glass-effect border-b md:border-b-0 md:border-r border-light-blue/30 p-4 md:p-6 flex-shrink-0">
-        <h1 className="text-xl font-display font-black text-transparent bg-clip-text bg-gradient-to-r from-ocean-teal via-light-blue to-amber mb-6">
-          管理画面
-        </h1>
 
-        <nav className="flex md:flex-col gap-1 overflow-x-auto md:overflow-visible">
-          {TABS.map(tab => (
+      {/* ─── サイドバー / トップナビ ─── */}
+      <aside className="sticky top-0 z-40 md:w-52 md:h-screen md:overflow-y-auto glass-effect border-b md:border-b-0 md:border-r border-light-blue/20 flex-shrink-0">
+
+        {/* モバイル: タイトル行 + タブスクロール */}
+        <div className="md:hidden">
+          <div className="flex items-center gap-3 px-4 py-2 border-b border-light-blue/15">
+            <span className="text-sm font-display font-black text-transparent bg-clip-text bg-gradient-to-r from-ocean-teal via-light-blue to-amber whitespace-nowrap">
+              管理画面
+            </span>
+            <span className="text-light-blue/40 text-xs">›</span>
+            <span className="text-light-blue text-xs font-bold truncate">{activeTabDef?.label}</span>
+          </div>
+          <nav className="flex gap-1 overflow-x-auto px-2 py-2">
+            {TABS.map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex flex-col items-center gap-1 px-2.5 py-2 rounded-xl transition-all flex-shrink-0 min-w-[52px] ${
+                  activeTab === tab.id
+                    ? 'bg-light-blue/20 border border-light-blue/40 text-light-blue'
+                    : 'text-gray-500 hover:text-gray-300 border border-transparent hover:bg-white/5'
+                }`}
+              >
+                <IconRenderer icon={tab.icon} size={18} />
+                <span className="text-[10px] font-body leading-tight text-center">{tab.short}</span>
+              </button>
+            ))}
+          </nav>
+        </div>
+
+        {/* PC: サイドバー */}
+        <div className="hidden md:flex flex-col h-full">
+          <div className="px-5 py-5 border-b border-light-blue/15">
+            <h1 className="text-base font-display font-black text-transparent bg-clip-text bg-gradient-to-r from-ocean-teal via-light-blue to-amber">
+              管理画面
+            </h1>
+          </div>
+
+          <nav className="flex flex-col gap-0.5 p-3 flex-1">
+            {TABS.map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-all text-sm w-full text-left ${
+                  activeTab === tab.id
+                    ? 'bg-light-blue/20 border border-light-blue/40 text-light-blue font-bold'
+                    : 'hover:bg-white/5 text-gray-400 hover:text-gray-200 border border-transparent'
+                }`}
+              >
+                <IconRenderer icon={tab.icon} size={16} />
+                <span className="font-body">{tab.label}</span>
+              </button>
+            ))}
+          </nav>
+
+          <div className="px-3 pb-5 pt-4 space-y-2 border-t border-light-blue/20">
             <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all whitespace-nowrap text-sm ${
-                activeTab === tab.id
-                  ? 'bg-light-blue/20 border border-light-blue/50 text-light-blue'
-                  : 'hover:bg-light-blue/10 text-gray-300 hover:text-light-blue'
-              }`}
+              onClick={handleExport}
+              className="w-full px-3 py-2 bg-amber/20 hover:bg-amber/30 border border-amber/50 rounded-lg transition-all text-amber text-xs font-body"
             >
-              <IconRenderer icon={tab.icon} size={16} />
-              <span className="font-body">{tab.label}</span>
+              設定をダウンロード
             </button>
-          ))}
-        </nav>
-
-        {/* アクションボタン */}
-        <div className="hidden md:block mt-8 space-y-3 border-t border-light-blue/20 pt-6">
-          <button
-            onClick={handleExport}
-            className="w-full px-4 py-2 bg-amber/20 hover:bg-amber/30 border border-amber/50 rounded-lg transition-all text-amber text-sm font-body"
-          >
-            設定をダウンロード
-          </button>
-          <label className="block w-full px-4 py-2 bg-light-blue/10 hover:bg-light-blue/20 border border-light-blue/30 rounded-lg transition-all text-light-blue text-sm font-body text-center cursor-pointer">
-            設定をインポート
-            <input type="file" accept=".js,.json" onChange={handleImport} className="hidden" />
-          </label>
-          <a
-            href="./index.html"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block w-full px-4 py-2 bg-ocean-teal/30 hover:bg-ocean-teal/50 border border-ocean-teal/50 rounded-lg transition-all text-light-blue text-sm font-body text-center"
-          >
-            プレビューを開く
-          </a>
-          <a
-            href="./manual.html"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block w-full px-4 py-2 bg-light-blue/10 hover:bg-light-blue/20 border border-light-blue/30 rounded-lg transition-all text-light-blue text-sm font-body text-center"
-          >
-            管理マニュアル
-          </a>
+            <label className="block w-full px-3 py-2 bg-light-blue/10 hover:bg-light-blue/20 border border-light-blue/30 rounded-lg transition-all text-light-blue text-xs font-body text-center cursor-pointer">
+              設定をインポート
+              <input type="file" accept=".js,.json" onChange={handleImport} className="hidden" />
+            </label>
+            <a
+              href="./index.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full px-3 py-2 bg-ocean-teal/30 hover:bg-ocean-teal/50 border border-ocean-teal/50 rounded-lg transition-all text-light-blue text-xs font-body text-center"
+            >
+              プレビューを開く
+            </a>
+            <a
+              href="./manual.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full px-3 py-2 bg-light-blue/10 hover:bg-light-blue/20 border border-light-blue/30 rounded-lg transition-all text-light-blue text-xs font-body text-center"
+            >
+              管理マニュアル
+            </a>
+          </div>
         </div>
       </aside>
 
-      {/* メインコンテンツ */}
+      {/* ─── メインコンテンツ ─── */}
       <main className="flex-1 p-4 md:p-8 pb-24 md:pb-8">
-        {/* 保存メッセージ */}
         {saveMessage && (
           <div className="fixed top-4 right-4 z-50 glass-effect px-4 py-2 rounded-lg border border-amber/50 text-amber text-sm animate-shimmer">
             {saveMessage}
