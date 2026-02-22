@@ -164,14 +164,14 @@ const StepContent3 = () => (
     <Sub number="5">PC用・モバイル用それぞれのURLをメモしておく</Sub>
 
     <Img
-      src="./manual/gdrive-share-before.png"
-      alt="Google Drive 共有ダイアログ（変更前）"
-      caption="初期状態 — 「制限付き」になっている"
+      src="./manual/gdrive-share-menu.png"
+      alt="Google Drive ファイルの右クリックメニュー"
+      caption="ファイルを右クリック →「共有」をクリック"
     />
     <Img
-      src="./manual/gdrive-share-after.png"
-      alt="Google Drive 共有ダイアログ（変更後）"
-      caption="「リンクを知っている全員（閲覧者）」に変更後"
+      src="./manual/gdrive-share-dialog.png"
+      alt="Google Drive 共有ダイアログ"
+      caption="「制限付き」をクリック →「リンクを知っている全員」を選択"
     />
 
     <Note type="danger">
@@ -216,14 +216,14 @@ const StepContent4 = () => (
     <Sub number="3">「完了」をクリック</Sub>
 
     <Img
-      src="./manual/ss-share-before.png"
-      alt="スプレッドシート共有設定（変更前）"
-      caption="初期状態 — 「制限付き」になっている"
+      src="./manual/ss-share-button.png"
+      alt="スプレッドシート右上の共有ボタン"
+      caption="右上の「共有」ボタンをクリック"
     />
     <Img
-      src="./manual/ss-share-after.png"
-      alt="スプレッドシート共有設定（変更後）"
-      caption="「リンクを知っている全員（閲覧者）」に変更後"
+      src="./manual/ss-share-dialog.png"
+      alt="スプレッドシート共有ダイアログ"
+      caption="「制限付き」をクリック →「リンクを知っている全員」を選択"
     />
 
     <Note type="danger">
