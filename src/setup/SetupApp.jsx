@@ -207,9 +207,9 @@ const StepContent4 = () => (
     <p className="text-gray-300 text-sm mb-3">
       コピーしたスプレッドシートを「リンクを知っている全員が閲覧できる」設定に変更します。
     </p>
-    <Sub number="1">スプレッドシート右上の「共有」ボタンをクリック</Sub>
-    <Sub number="2">「リンクを知っている全員」を選択し、権限を「閲覧者」に設定</Sub>
-    <Sub number="3">「完了」をクリック</Sub>
+    <Sub number="1">スプレッドシート上部の👤+アイコンをタップ</Sub>
+    <Sub number="2">「アクセス管理」をタップ</Sub>
+    <Sub number="3">「制限付き」をタップ → もう一度「制限付き」をタップ → 「リンクを知っている全員」を選択</Sub>
 
     <Img
       src="./manual/ss-share-done.png"
