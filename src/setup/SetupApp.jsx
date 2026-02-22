@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import IconRenderer from '../components/IconRenderer'
 
 /* ─────────────────────────────────────────
    共通コンポーネント
@@ -207,7 +208,7 @@ const StepContent4 = () => (
     <p className="text-gray-300 text-sm mb-3">
       コピーしたスプレッドシートを「リンクを知っている全員が閲覧できる」設定に変更します。
     </p>
-    <Sub number="1">スプレッドシート上部の👤+アイコンをタップ</Sub>
+    <Sub number="1">スプレッドシート上部の<IconRenderer icon="user-plus" size={14} className="inline-block align-middle mx-0.5 text-gray-300" />をタップ</Sub>
     <Sub number="2">「アクセス管理」をタップ</Sub>
     <Sub number="3">「制限付き」をタップ → もう一度「制限付き」をタップ → 「リンクを知っている全員」を選択</Sub>
 
