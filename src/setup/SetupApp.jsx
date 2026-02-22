@@ -166,8 +166,8 @@ const StepContent3 = () => (
     <Sub number="6">PC用・モバイル用それぞれのURLをメモしておく</Sub>
 
     <Img
-      src="./manual/gdrive-share-done.png"
-      alt="Google Drive 共有設定完了後の状態"
+      src="./manual/share-done.png"
+      alt="共有設定完了後の状態"
       caption="「リンクを知っている全員（閲覧者）」になっていればOK"
     />
 
@@ -213,8 +213,8 @@ const StepContent4 = () => (
     <Sub number="3">「制限付き」をタップ → もう一度「制限付き」をタップ → 「リンクを知っている全員」を選択</Sub>
 
     <Img
-      src="./manual/ss-share-done.png"
-      alt="スプレッドシート共有設定完了後の状態"
+      src="./manual/share-done.png"
+      alt="共有設定完了後の状態"
       caption="「リンクを知っている全員（閲覧者）」になっていればOK"
     />
 
