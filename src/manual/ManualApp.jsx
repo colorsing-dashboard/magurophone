@@ -35,6 +35,7 @@ const Img = ({ src, alt, caption }) => {
         <div className="rounded-xl border border-dashed border-light-blue/30 bg-black/20 flex flex-col items-center justify-center gap-2 py-10 text-gray-500">
           <span className="text-2xl">🖼️</span>
           <span className="text-xs">{caption ?? alt}</span>
+          <span className="text-xs font-mono text-light-blue/50">{src.split('/').pop()}</span>
           <span className="text-xs opacity-50">（画像準備中）</span>
         </div>
       ) : (
