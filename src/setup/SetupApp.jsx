@@ -159,19 +159,20 @@ const StepContent3 = () => (
     <H4>作成後の保存・アップロード手順</H4>
     <Sub number="1">作成した画像をデバイスの写真フォルダに保存</Sub>
     <Sub number="2">Google Drive を開き、画像をアップロード</Sub>
-    <Sub number="3">アップロードした画像の横にある「・・・」をタップ（PCは右クリック）→「共有」→「リンクをコピー」</Sub>
-    <Sub number="4">「制限付き」と表示されている場合は「リンクを知っている全員」に変更して「完了」</Sub>
-    <Sub number="5">PC用・モバイル用それぞれのURLをメモしておく</Sub>
+    <Sub number="3">画像を開いた状態で画面右上の「・・・」をタップ（PCは右クリック）→「共有」</Sub>
+    <Sub number="4">「アクセス管理」をタップ</Sub>
+    <Sub number="5">「制限付き」をタップ → もう一度「制限付き」をタップ → 「リンクを知っている全員」を選択</Sub>
+    <Sub number="6">PC用・モバイル用それぞれのURLをメモしておく</Sub>
 
     <Img
       src="./manual/gdrive-share-menu.png"
       alt="Google Drive ファイルメニュー"
-      caption="ファイル横の「・・・」をタップ（PCは右クリック）→「共有」"
+      caption="右上の「・・・」をタップ →「共有」"
     />
     <Img
       src="./manual/gdrive-share-dialog.png"
-      alt="Google Drive 共有ダイアログ"
-      caption="「制限付き」をクリック →「リンクを知っている全員」を選択"
+      alt="Google Drive アクセス管理"
+      caption="「アクセス管理」→「制限付き」→「リンクを知っている全員」"
     />
 
     <Note type="danger">
