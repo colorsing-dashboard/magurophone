@@ -20,7 +20,7 @@ const RightsView = ({ rights, onSelectPerson, specialIndex = 8 }) => {
       icons.push('✨')
     }
     return icons
-  }, [config.benefitTiers])
+  }, [config.benefitTiers, specialIndex])
 
   // 権利者を50音順にソート
   const sortedRights = useMemo(() => {

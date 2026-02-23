@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useConfig } from '../context/ConfigContext'
 import { isMonthlyFormat } from '../lib/sheets'
 
@@ -38,6 +38,13 @@ const IconGallery = ({ icons, selectedMonth, setSelectedMonth, loading, iconErro
     if (!selectedMonth || !icons[selectedMonth]) return []
     return icons[selectedMonth].filter(item => item.label === user)
   }
+
+  useEffect(() => {
+    if (!popupUser) return
+    const handleEscape = (e) => { if (e.key === 'Escape') setPopupUser(null) }
+    document.addEventListener('keydown', handleEscape)
+    return () => document.removeEventListener('keydown', handleEscape)
+  }, [popupUser])
 
   const handleMonthChange = (month) => {
     setSelectedMonth(month)

@@ -63,18 +63,6 @@ const Cell = ({ range, label, desc }) => (
   </div>
 )
 
-const SizeBox = ({ width, height, label }) => (
-  <div className="flex flex-col items-center gap-2">
-    <div
-      className="border-2 border-dashed border-amber/50 bg-amber/5 rounded flex items-center justify-center text-amber text-xs font-bold"
-      style={{ width: Math.min(width / 8, 240) + 'px', height: Math.min(height / 8, 120) + 'px' }}
-    >
-      {width} × {height}px
-    </div>
-    <span className="text-gray-400 text-xs">{label}</span>
-  </div>
-)
-
 /* ─────────────────────────────────────────
    タブ2: 管理画面の操作方法
 ───────────────────────────────────────── */
@@ -82,7 +70,6 @@ const ADMIN_TABS_DATA = [
   {
     name: 'ブランディング',
     img: './manual/admin-branding-tab.png',
-    ratio: '16/9',
     items: [
       { type: 'section', label: 'タイトル設定' },
       { label: 'サイト名', desc: 'ヘッダー画像上に大きく表示されるサイト名。' },
@@ -98,7 +85,6 @@ const ADMIN_TABS_DATA = [
   {
     name: 'カラー',
     img: './manual/admin-colors-tab.png',
-    ratio: '16/9',
     items: [
       { label: 'カラープリセット', desc: 'ワンクリックでベースカラー4色を一括切り替えできます。' },
       { type: 'section', label: 'ベースカラー（6色）' },
@@ -117,18 +103,16 @@ const ADMIN_TABS_DATA = [
   {
     name: 'Google Sheets',
     img: './manual/admin-sheets-tab.png',
-    ratio: '1/1',
     items: [
       { label: 'スプレッドシートID', desc: 'データを読み込むGoogleスプレッドシートのIDを入力します。' },
       { label: 'シート名（5種類）', desc: '目標管理・ランキング / 特典管理 / 特典内容 / 特典履歴 / 枠内アイコン の各シート名を設定します。シート名を変更した場合はこちらも合わせて変更してください。' },
-      { label: 'セル範囲（5種類）', desc: '各データの読み込みセル範囲を設定します。通常は変更不要です。' },
+      { label: 'セル範囲（3種類）', desc: 'ランキング・目標・特典説明データのセル範囲を設定します。権利者データと特典履歴は行上限なしで自動取得されます。通常は変更不要です。' },
       { label: '自動更新', desc: 'サイトが自動的にデータを再読み込みする間隔（分）を設定します。デフォルトは5分。' },
     ],
   },
   {
     name: 'ビュー管理',
     img: './manual/admin-views-tab.png',
-    ratio: '16/9',
     items: [
       { label: '表示・非表示の切り替え', desc: '各ページ（ホーム・メニュー・権利者リスト・枠内アイコン等）をON/OFFできます。' },
       { label: 'ラベル・アイコンの変更', desc: 'ナビゲーションに表示されるページ名と絵文字アイコンを変更できます。' },
@@ -138,7 +122,6 @@ const ADMIN_TABS_DATA = [
   {
     name: '特典ティア',
     img: './manual/admin-tiers-tab.png',
-    ratio: '16/9',
     showImg: true,
     items: [
       { label: 'ティアの追加・削除・並び替え', desc: '特典の段階（ティア）を自由に増減できます。' },
@@ -153,7 +136,6 @@ const ADMIN_TABS_DATA = [
   {
     name: 'コンテンツ',
     img: './manual/admin-content-tab.png',
-    ratio: '16/9',
     items: [
       { label: 'ホームビュー設定', desc: 'ランキングタイトル・ポイント単位（例: 歌推しPt）・目標セクションのラベルなどを設定します。' },
       { label: 'FAQ・注意事項', desc: 'サイト上に表示するよくある質問を追加・編集・削除できます。' },
@@ -163,7 +145,6 @@ const ADMIN_TABS_DATA = [
   {
     name: 'エフェクト',
     img: './manual/admin-effects-tab.png',
-    ratio: '16/9',
     items: [
       { label: 'アイコン揺らぎ', desc: 'Menu・ボトルキープページのアイコンをふわふわ揺らすアニメーションのON/OFFです。' },
       { label: 'エフェクト種類', desc: '泡・星・ハート・なし から選択できます。' },
@@ -176,7 +157,6 @@ const ADMIN_TABS_DATA = [
   {
     name: 'デプロイ',
     img: './manual/admin-deploy-tab.png',
-    ratio: '16/9',
     items: [
       { label: 'デプロイ実行', desc: '現在の設定をGitHubリポジトリに保存し、サイトに反映します。ブラウザの設定変更（自動保存）をGitHubに確定するには必ずこちらをクリックしてください。' },
       { label: 'GitHubから最新設定を取得', desc: 'GitHubに保存されている最新の設定をローカルに読み込みます。' },
@@ -250,7 +230,6 @@ const SS_SHEET_DATA = [
   {
     name: '目標管理・ランキング',
     img: './manual/ss-ranking-sheet.png',
-    ratio: '16/9',
     content: () => (
       <>
         <div className="space-y-3">
@@ -265,7 +244,6 @@ const SS_SHEET_DATA = [
   {
     name: '特典内容',
     img: './manual/ss-benefits-content-sheet.png',
-    ratio: '16/9',
     content: () => (
       <>
         <div className="space-y-3">
@@ -281,29 +259,26 @@ const SS_SHEET_DATA = [
   {
     name: '特典管理',
     img: './manual/ss-benefits-sheet.png',
-    ratio: '16/9',
     content: () => (
       <div className="space-y-3">
-        <Cell range="A2:I1000（最大）" label="権利者リスト（9列）"
-          desc="A列: ユーザー名 / B列以降: 各ティアの達成値（何列目がどのティアかは管理画面「特典ティア」の「列インデックス」で設定）" />
+        <Cell range="A列以降（行上限なし）" label="権利者リスト"
+          desc="A列: ユーザー名 / B列以降: 各ティアの達成値（何列目がどのティアかは管理画面「特典ティア」の「列インデックス」で設定）。行数制限なしで自動取得されます。" />
       </div>
     ),
   },
   {
     name: '特典履歴',
     img: './manual/ss-history-sheet.png',
-    ratio: '16/9',
     content: () => (
       <div className="space-y-3">
-        <Cell range="A3:D1000（最大）" label="履歴データ（4列）"
-          desc="A列: 年月（yyyymm形式、例: 202602） / B列: ユーザー名 / C列: ティアキー / D列: 特典内容（テキスト）" />
+        <Cell range="A3:D（行上限なし）" label="履歴データ（4列）"
+          desc="A列: 年月（yyyymm形式、例: 202602） / B列: ユーザー名 / C列: ティアキー / D列: 特典内容（テキスト）。行数制限なしで自動取得されます。" />
       </div>
     ),
   },
   {
     name: '枠内アイコン',
     img: './manual/ss-icon-sheet.png',
-    ratio: '16/9',
     content: () => (
       <div className="space-y-3">
         <Cell range="A列" label="月またはカテゴリ"
