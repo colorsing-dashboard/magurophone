@@ -178,7 +178,7 @@ const TabAdminPanel = () => {
       <Step number="1">管理画面を開く</Step>
       <Step number="2">設定したいタブを選択して値を変更</Step>
       <Step number="3">値を変更すると自動的にブラウザに保存されます（「保存しました」と表示）</Step>
-      <Step number="4">サイドバー（PC）またはパンくず右端のアイコン（モバイル）から「プレビューを開く」で見た目を確認 — 変更はリアルタイムに反映されます</Step>
+      <Step number="4">サイドバー（PC）の「プレビューを開く」、またはモバイルのパンくず右端の <span className="inline-flex items-center gap-1 align-middle bg-white/5 border border-light-blue/20 rounded px-1.5 py-0.5 text-gray-300"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg></span> をタップして見た目を確認 — 変更はリアルタイムに反映されます</Step>
       <Step number="5">問題なければ「デプロイ」タブ →「デプロイ実行」ボタンでGitHubに確定</Step>
 
       <Note type="info">
