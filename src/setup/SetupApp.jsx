@@ -28,19 +28,17 @@ const Sub = ({ number, children }) => (
   </div>
 )
 
-const Img = ({ src, alt, caption, ratio = '16/9' }) => {
+const Img = ({ src, alt, caption }) => {
   const [failed, setFailed] = useState(false)
   return (
     <figure className="my-4">
       {failed ? (
-        <div
-          className="rounded-xl border border-dashed border-light-blue/30 bg-black/20 flex flex-col items-center justify-center gap-2 text-gray-500 w-full"
-          style={{ aspectRatio: ratio }}
-        >
-          <span className="text-2xl">🖼️</span>
-          <span className="text-xs">{caption ?? alt}</span>
-          <span className="text-xs font-mono text-light-blue/50">{src.split('/').pop()}</span>
-          <span className="text-xs opacity-50">（画像準備中）</span>
+        <div className="rounded-lg border border-dashed border-light-blue/20 bg-black/10 px-4 py-3 flex items-center gap-3 text-gray-600">
+          <span>🖼️</span>
+          <div className="min-w-0">
+            <span className="text-xs font-mono text-light-blue/40 truncate block">{src.split('/').pop()}</span>
+            <span className="text-xs opacity-40">（画像準備中）</span>
+          </div>
         </div>
       ) : (
         <div className="rounded-xl overflow-hidden border border-light-blue/20 bg-black/30">
@@ -172,7 +170,6 @@ const StepContent3 = () => (
       src="./manual/share-done.png"
       alt="共有設定完了後の状態"
       caption="「リンクを知っている全員（閲覧者）」になっていればOK"
-      ratio="524/191"
     />
 
     <Note type="danger">
@@ -220,7 +217,6 @@ const StepContent4 = () => (
       src="./manual/share-done.png"
       alt="共有設定完了後の状態"
       caption="「リンクを知っている全員（閲覧者）」になっていればOK"
-      ratio="524/191"
     />
 
     <Note type="danger">
@@ -247,7 +243,6 @@ const StepContent5 = () => (
       src="./manual/ss-url-id.png"
       alt="スプレッドシートURLでIDの場所を示す図"
       caption="赤枠部分がスプレッドシートID"
-      ratio="762/37"
     />
     <Sub number="1">受け取った管理画面URL（末尾が /admin）を開く</Sub>
     <Sub number="2">「Google Sheets」タブを選択</Sub>
@@ -257,7 +252,6 @@ const StepContent5 = () => (
       src="./manual/admin-sheets-tab.png"
       alt="管理画面 Google Sheetsタブ"
       caption="Google Sheets タブ"
-      ratio="1/1"
     />
 
     <H4>② ヘッダー画像の設定</H4>

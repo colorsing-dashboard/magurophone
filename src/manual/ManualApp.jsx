@@ -27,19 +27,17 @@ const Note = ({ children, type = 'info' }) => {
   )
 }
 
-const Img = ({ src, alt, caption, ratio = '16/9' }) => {
+const Img = ({ src, alt, caption }) => {
   const [failed, setFailed] = useState(false)
   return (
     <figure className="my-4">
       {failed ? (
-        <div
-          className="rounded-xl border border-dashed border-light-blue/30 bg-black/20 flex flex-col items-center justify-center gap-2 text-gray-500 w-full"
-          style={{ aspectRatio: ratio }}
-        >
-          <span className="text-2xl">🖼️</span>
-          <span className="text-xs">{caption ?? alt}</span>
-          <span className="text-xs font-mono text-light-blue/50">{src.split('/').pop()}</span>
-          <span className="text-xs opacity-50">（画像準備中）</span>
+        <div className="rounded-lg border border-dashed border-light-blue/20 bg-black/10 px-4 py-3 flex items-center gap-3 text-gray-600">
+          <span>🖼️</span>
+          <div className="min-w-0">
+            <span className="text-xs font-mono text-light-blue/40 truncate block">{src.split('/').pop()}</span>
+            <span className="text-xs opacity-40">（画像準備中）</span>
+          </div>
         </div>
       ) : (
         <div className="rounded-xl overflow-hidden border border-light-blue/20 bg-black/30">
@@ -219,7 +217,7 @@ const TabAdminPanel = () => {
             </li>
           ))}
         </ul>
-        <Img src={tab.img} alt={`管理画面 ${tab.name}タブ`} caption={`${tab.name} タブ`} ratio={tab.ratio} />
+        <Img src={tab.img} alt={`管理画面 ${tab.name}タブ`} caption={`${tab.name} タブ`} />
       </div>
     </div>
   )
@@ -329,7 +327,7 @@ const TabSpreadsheetEntry = () => {
       {/* 選択シートの詳細 */}
       <div className="glass-effect rounded-xl border border-light-blue/20 p-4">
         <p className="text-amber font-bold text-sm mb-3">{sheet.name}</p>
-        <Img src={sheet.img} alt={`${sheet.name}シートの記入例`} caption={`${sheet.name} — 記入例`} ratio={sheet.ratio} />
+        <Img src={sheet.img} alt={`${sheet.name}シートの記入例`} caption={`${sheet.name} — 記入例`} />
         <SheetContent />
       </div>
 
@@ -357,7 +355,7 @@ const TabImageShare = () => (
     <Note type="info">
       Canvaで作成した画像はCanvaから直接Google Driveに書き出せます（「共有」→「保存」→「Googleドライブ」）。スマートフォンの写真など、どこから用意しても問題ありません。
     </Note>
-    <Img src="./manual/gdrive-share.png" alt="Google Drive 共有ダイアログ" caption="「リンクを知っている全員」に設定する" ratio="524/191" />
+    <Img src="./manual/gdrive-share.png" alt="Google Drive 共有ダイアログ" caption="「リンクを知っている全員」に設定する" />
 
     <Note type="danger">
       共有設定が「制限付き」のままだと画像が表示されません。必ず「リンクを知っている全員（閲覧者）」に変更してください。
