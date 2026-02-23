@@ -27,12 +27,15 @@ const Note = ({ children, type = 'info' }) => {
   )
 }
 
-const Img = ({ src, alt, caption }) => {
+const Img = ({ src, alt, caption, ratio = '16/9' }) => {
   const [failed, setFailed] = useState(false)
   return (
     <figure className="my-4">
       {failed ? (
-        <div className="rounded-xl border border-dashed border-light-blue/30 bg-black/20 flex flex-col items-center justify-center gap-2 py-10 text-gray-500">
+        <div
+          className="rounded-xl border border-dashed border-light-blue/30 bg-black/20 flex flex-col items-center justify-center gap-2 text-gray-500 w-full"
+          style={{ aspectRatio: ratio }}
+        >
           <span className="text-2xl">🖼️</span>
           <span className="text-xs">{caption ?? alt}</span>
           <span className="text-xs font-mono text-light-blue/50">{src.split('/').pop()}</span>
@@ -81,6 +84,7 @@ const ADMIN_TABS_DATA = [
   {
     name: 'ブランディング',
     img: './manual/admin-branding-tab.png',
+    ratio: '16/9',
     items: [
       { label: 'サイト名・サイドバータイトル・ページタイトル', desc: 'ヘッダーやブラウザタブに表示される各種名称を設定します。' },
       { label: 'タイトル表示・グラデーション', desc: 'ヘッダーへのサイト名表示のON/OFFやグラデーション方向を設定します。' },
@@ -93,6 +97,7 @@ const ADMIN_TABS_DATA = [
   {
     name: 'カラー',
     img: './manual/admin-colors-tab.png',
+    ratio: '16/9',
     items: [
       { label: 'ページ背景（メイン・中間）', desc: '未設定の場合はデフォルトのDeep Blue / Ocean Tealが使われます。' },
       { label: 'ヘッダーグラデーション', desc: '中央色と両端色を個別に設定できます。' },
@@ -103,6 +108,7 @@ const ADMIN_TABS_DATA = [
   {
     name: 'Google Sheets',
     img: './manual/admin-sheets-tab.png',
+    ratio: '1/1',
     items: [
       { label: 'スプレッドシートID', desc: 'データを読み込むGoogleスプレッドシートのIDを入力します。' },
       { label: 'シート名（5種類）', desc: '目標管理・ランキング / 特典管理 / 特典内容 / 特典履歴 / 枠内アイコン の各シート名を設定します。シート名を変更した場合はこちらも合わせて変更してください。' },
@@ -113,6 +119,7 @@ const ADMIN_TABS_DATA = [
   {
     name: 'ビュー管理',
     img: './manual/admin-views-tab.png',
+    ratio: '16/9',
     items: [
       { label: '表示・非表示の切り替え', desc: '各ページ（ホーム・メニュー・権利者リスト・枠内アイコン等）をON/OFFできます。' },
       { label: 'ラベル・アイコンの変更', desc: 'ナビゲーションに表示されるページ名と絵文字アイコンを変更できます。' },
@@ -122,6 +129,7 @@ const ADMIN_TABS_DATA = [
   {
     name: '特典ティア',
     img: './manual/admin-tiers-tab.png',
+    ratio: '16/9',
     items: [
       { label: 'ティアの追加・削除・並び替え', desc: '特典の段階（ティア）を自由に増減できます。' },
       { label: 'キー名', desc: 'スプレッドシートの「特典内容」シートのA列と一致させる必要があります。' },
@@ -133,6 +141,7 @@ const ADMIN_TABS_DATA = [
   {
     name: 'コンテンツ',
     img: './manual/admin-content-tab.png',
+    ratio: '16/9',
     items: [
       { label: 'ホームビュー設定', desc: 'ランキングタイトル・ポイント単位（例: 歌推しPt）・目標セクションのラベルなどを設定します。' },
       { label: 'FAQ', desc: 'サイト上に表示するよくある質問を追加・編集・削除できます。' },
@@ -142,6 +151,7 @@ const ADMIN_TABS_DATA = [
   {
     name: 'エフェクト',
     img: './manual/admin-effects-tab.png',
+    ratio: '16/9',
     items: [
       { label: 'アイコン揺らぎ', desc: 'Menu・ボトルキープページのアイコンをふわふわ揺らすアニメーションのON/OFFです。' },
       { label: 'パーティクル種類', desc: '泡・星・ハート・なし から選択できます。' },
@@ -154,6 +164,7 @@ const ADMIN_TABS_DATA = [
   {
     name: 'デプロイ',
     img: './manual/admin-deploy-tab.png',
+    ratio: '16/9',
     items: [
       { label: 'デプロイ実行', desc: '現在の設定をGitHubリポジトリに保存し、サイトに反映します。ブラウザの設定変更（自動保存）をGitHubに確定するには必ずこちらをクリックしてください。' },
       { label: 'GitHubから最新設定を取得', desc: 'GitHubに保存されている最新の設定をローカルに読み込みます。' },
@@ -208,7 +219,7 @@ const TabAdminPanel = () => {
             </li>
           ))}
         </ul>
-        <Img src={tab.img} alt={`管理画面 ${tab.name}タブ`} caption={`${tab.name} タブ`} />
+        <Img src={tab.img} alt={`管理画面 ${tab.name}タブ`} caption={`${tab.name} タブ`} ratio={tab.ratio} />
       </div>
     </div>
   )
@@ -221,6 +232,7 @@ const SS_SHEET_DATA = [
   {
     name: '目標管理・ランキング',
     img: './manual/ss-ranking-sheet.png',
+    ratio: '16/9',
     content: () => (
       <>
         <div className="space-y-3">
@@ -235,6 +247,7 @@ const SS_SHEET_DATA = [
   {
     name: '特典内容',
     img: './manual/ss-benefits-content-sheet.png',
+    ratio: '16/9',
     content: () => (
       <>
         <div className="space-y-3">
@@ -250,6 +263,7 @@ const SS_SHEET_DATA = [
   {
     name: '特典管理',
     img: './manual/ss-benefits-sheet.png',
+    ratio: '16/9',
     content: () => (
       <div className="space-y-3">
         <Cell range="A2:I1000（最大）" label="権利者リスト（9列）"
@@ -260,6 +274,7 @@ const SS_SHEET_DATA = [
   {
     name: '特典履歴',
     img: './manual/ss-history-sheet.png',
+    ratio: '16/9',
     content: () => (
       <div className="space-y-3">
         <Cell range="A3:D1000（最大）" label="履歴データ（4列）"
@@ -270,6 +285,7 @@ const SS_SHEET_DATA = [
   {
     name: '枠内アイコン',
     img: './manual/ss-icon-sheet.png',
+    ratio: '16/9',
     content: () => (
       <div className="space-y-3">
         <Cell range="A列" label="月またはカテゴリ"
@@ -313,7 +329,7 @@ const TabSpreadsheetEntry = () => {
       {/* 選択シートの詳細 */}
       <div className="glass-effect rounded-xl border border-light-blue/20 p-4">
         <p className="text-amber font-bold text-sm mb-3">{sheet.name}</p>
-        <Img src={sheet.img} alt={`${sheet.name}シートの記入例`} caption={`${sheet.name} — 記入例`} />
+        <Img src={sheet.img} alt={`${sheet.name}シートの記入例`} caption={`${sheet.name} — 記入例`} ratio={sheet.ratio} />
         <SheetContent />
       </div>
 
@@ -341,7 +357,7 @@ const TabImageShare = () => (
     <Note type="info">
       Canvaで作成した画像はCanvaから直接Google Driveに書き出せます（「共有」→「保存」→「Googleドライブ」）。スマートフォンの写真など、どこから用意しても問題ありません。
     </Note>
-    <Img src="./manual/gdrive-share.png" alt="Google Drive 共有ダイアログ" caption="「リンクを知っている全員」に設定する" />
+    <Img src="./manual/gdrive-share.png" alt="Google Drive 共有ダイアログ" caption="「リンクを知っている全員」に設定する" ratio="524/191" />
 
     <Note type="danger">
       共有設定が「制限付き」のままだと画像が表示されません。必ず「リンクを知っている全員（閲覧者）」に変更してください。
