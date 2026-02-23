@@ -43,6 +43,17 @@ export function ConfigProvider({ config, children }) {
         root.style.removeProperty(`--${key}`)
       }
     })
+
+    // glass-effect 背景色（カラーピッカー色 + 不透明度スライダーを rgba に変換）
+    if (o.glassBgColor && /^#[0-9a-f]{6}$/i.test(o.glassBgColor)) {
+      const r = parseInt(o.glassBgColor.slice(1, 3), 16)
+      const g = parseInt(o.glassBgColor.slice(3, 5), 16)
+      const b = parseInt(o.glassBgColor.slice(5, 7), 16)
+      const a = o.glassBgOpacity ?? 0.6
+      root.style.setProperty('--override-glass-bg', `rgba(${r}, ${g}, ${b}, ${a})`)
+    } else {
+      root.style.removeProperty('--override-glass-bg')
+    }
   }, [config?.colors, config?.colorOverrides])
 
   // ヘッダー画像をプリロード

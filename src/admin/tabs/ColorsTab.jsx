@@ -125,6 +125,42 @@ const ColorsTab = ({ config, updateConfig }) => {
         未設定の場合、上のベースカラーが適用されます。特定のUI要素だけ色を変えたい場合に設定してください。
       </p>
 
+      {/* glass-effect 背景色（色 + 不透明度の組み合わせ） */}
+      <div className="mb-5">
+        <label className="block text-sm font-body text-light-blue mb-1">カード・サイドバー背景色</label>
+        <p className="text-xs text-gray-500 mb-2">ランキングカード・管理画面サイドバー等の背景色。未設定 → デフォルト（深い紺、透明度60%）</p>
+        <div className="flex items-center gap-3 mb-2">
+          <input
+            type="color"
+            value={config.colorOverrides?.glassBgColor || '#0a1628'}
+            onChange={(e) => updateConfig('colorOverrides.glassBgColor', e.target.value)}
+            className="w-12 h-10 rounded-lg border border-light-blue/30 cursor-pointer bg-transparent"
+          />
+          <span className="text-xs text-gray-400 w-16">透明度</span>
+          <input
+            type="range"
+            min="0" max="1" step="0.05"
+            value={config.colorOverrides?.glassBgOpacity ?? 0.6}
+            onChange={(e) => updateConfig('colorOverrides.glassBgOpacity', parseFloat(e.target.value))}
+            className="flex-1"
+          />
+          <span className="text-xs text-gray-300 w-10 text-right">
+            {Math.round((config.colorOverrides?.glassBgOpacity ?? 0.6) * 100)}%
+          </span>
+          {config.colorOverrides?.glassBgColor && (
+            <button
+              onClick={() => { updateConfig('colorOverrides.glassBgColor', ''); updateConfig('colorOverrides.glassBgOpacity', undefined) }}
+              className="px-3 py-2 text-xs text-gray-400 hover:text-tuna-red transition-all"
+              title="リセット"
+            >クリア</button>
+          )}
+          <div
+            className="w-10 h-10 rounded-lg border border-light-blue/30"
+            style={{ backgroundColor: (() => { const c = config.colorOverrides?.glassBgColor || '#0a1628'; const a = config.colorOverrides?.glassBgOpacity ?? 0.6; const r = parseInt(c.slice(1,3),16); const g = parseInt(c.slice(3,5),16); const b = parseInt(c.slice(5,7),16); return `rgba(${r},${g},${b},${a})` })() }}
+          />
+        </div>
+      </div>
+
       {AREA_COLOR_FIELDS.map(({ key, label, description, baseKey }) => {
         const value = config.colorOverrides?.[key] || ''
         // nameText/contentTextはCSS color-mix()と同じ比率でJS側でもブレンドして表示
