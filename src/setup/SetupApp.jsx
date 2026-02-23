@@ -164,7 +164,6 @@ const StepContent3 = () => (
     <Sub number="3">画像を開いた状態で画面右上の「・・・」をタップ（PCは右クリック）→「共有」</Sub>
     <Sub number="4">「アクセス管理」をタップ</Sub>
     <Sub number="5">「制限付き」をタップ → もう一度「制限付き」をタップ → 「リンクを知っている全員」を選択</Sub>
-    <Sub number="6">PC用・モバイル用それぞれのURLをメモしておく</Sub>
 
     <Img
       src="./manual/share-done.png"
