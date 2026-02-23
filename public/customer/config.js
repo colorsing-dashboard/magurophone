@@ -211,7 +211,7 @@ window.DASHBOARD_CONFIG = {
     "token": "rev:Sc9LdGZ04IAEXE76dLXwApfIhKrt6RkkUwOJKRNYlNylCCKFV49Kuqf1fgc_d4JfN2TwVnEG0IMBSTQB11_tap_buhtig"
   },
   "admin": {
-    "password": "CSadmin",
+    "password": "",
     "developerKey": "CSadmin"
   }
 }

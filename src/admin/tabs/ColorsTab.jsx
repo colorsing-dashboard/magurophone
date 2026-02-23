@@ -127,12 +127,12 @@ const ColorsTab = ({ config, updateConfig }) => {
 
       {/* glass-effect 背景色（色 + 不透明度の組み合わせ） */}
       <div className="mb-5">
-        <label className="block text-sm font-body text-light-blue mb-1">カード・サイドバー背景色</label>
-        <p className="text-xs text-gray-500 mb-2">ランキングカード・管理画面サイドバー等の背景色。未設定 → デフォルト（深い紺、透明度60%）</p>
+        <label className="block text-sm font-body text-light-blue mb-1">カード背景色</label>
+        <p className="text-xs text-gray-500 mb-2">ランキングカード等の背景色。未設定 → 背景メイン（deepBlue）ベース、透明度60%</p>
         <div className="flex items-center gap-3 mb-2">
           <input
             type="color"
-            value={config.colorOverrides?.glassBgColor || '#0a1628'}
+            value={config.colorOverrides?.glassBgColor || config.colors?.deepBlue || '#0a1628'}
             onChange={(e) => updateConfig('colorOverrides.glassBgColor', e.target.value)}
             className="w-12 h-10 rounded-lg border border-light-blue/30 cursor-pointer bg-transparent"
           />
@@ -149,7 +149,7 @@ const ColorsTab = ({ config, updateConfig }) => {
           </span>
           {config.colorOverrides?.glassBgColor && (
             <button
-              onClick={() => { updateConfig('colorOverrides.glassBgColor', ''); updateConfig('colorOverrides.glassBgOpacity', undefined) }}
+              onClick={() => { updateConfig('colorOverrides.glassBgColor', ''); updateConfig('colorOverrides.glassBgOpacity', '') }}
               className="px-3 py-2 text-xs text-gray-400 hover:text-tuna-red transition-all"
               title="リセット"
             >クリア</button>
