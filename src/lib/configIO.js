@@ -1,7 +1,9 @@
 import DEFAULT_CONFIG from './defaults'
 
-const STORAGE_KEY = 'dashboard_config'
-const META_STORAGE_KEY = 'config_meta'
+// パス第1セグメント（リポジトリ名）でキーを分離。同一ドメインの複数顧客が混在しないように
+const _repoSlug = (typeof window !== 'undefined' ? window.location.pathname.split('/')[1] : '') || 'default'
+const STORAGE_KEY = `dashboard_config_${_repoSlug}`
+const META_STORAGE_KEY = `config_meta_${_repoSlug}`
 
 // オブジェクトの深いマージ（配列はそのまま上書き）
 export function deepMerge(target, source) {
