@@ -3,10 +3,6 @@ import { convertDriveUrl } from '../lib/sheets'
 
 const ConfigContext = createContext(null)
 
-const sanitizeCssUrl = (url) => {
-  if (!url || typeof url !== 'string') return null
-  return url.replace(/['");\s]/g, '')
-}
 
 export function ConfigProvider({ config, children }) {
   // ベースカラー + オーバーライドをCSS変数に注入
@@ -49,26 +45,11 @@ export function ConfigProvider({ config, children }) {
     })
   }, [config?.colors, config?.colorOverrides])
 
-  // ヘッダー画像をCSS変数に注入 + プリロード
+  // ヘッダー画像をプリロード
   useEffect(() => {
     if (!config?.images) return
-    const root = document.documentElement
     const resolvedMobile = convertDriveUrl(config.images.headerMobile, 800)
-    const safeMobile = sanitizeCssUrl(resolvedMobile)
-    if (safeMobile) {
-      root.style.setProperty('--header-image-mobile', `url('${safeMobile}')`)
-    } else {
-      root.style.removeProperty('--header-image-mobile')
-    }
     const resolvedDesktop = convertDriveUrl(config.images.headerDesktop, 1600)
-    const safeDesktop = sanitizeCssUrl(resolvedDesktop)
-    if (safeDesktop) {
-      root.style.setProperty('--header-image-desktop', `url('${safeDesktop}')`)
-    } else {
-      root.style.removeProperty('--header-image-desktop')
-    }
-
-    // ヘッダー画像をプリロード
     const isMobile = window.matchMedia('(max-width: 767.98px)').matches
     const preloadUrl = isMobile ? resolvedMobile : resolvedDesktop
     if (preloadUrl) {
