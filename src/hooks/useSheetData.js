@@ -50,18 +50,26 @@ export function useSheetData(sheetsConfig) {
 
       const [rankingData, goalsData, benefitsData, rawRightsData, historyData] = await Promise.all(fetches)
 
-      // ヘッダー行からSpecial列インデックスを動的検出
-      let detectedSpecialIndex = rawRightsData[0]?.findIndex(col => String(col).toLowerCase() === 'special') ?? -1
+      // "Special"列を含む行をヘッダー行として動的検出（先頭の空行・タイトル行をスキップ）
+      let detectedSpecialIndex = -1
+      let headerRowIndex = 0
+      for (let i = 0; i < rawRightsData.length; i++) {
+        const idx = rawRightsData[i].findIndex(col => String(col).toLowerCase() === 'special')
+        if (idx >= 0) {
+          detectedSpecialIndex = idx
+          headerRowIndex = i
+          break
+        }
+      }
       if (detectedSpecialIndex < 0) {
-        // "Special"列が見つからない場合は最終列をfallback
-        const maxLen = Math.max(0, ...rawRightsData.slice(1).map(r => r.length))
+        const maxLen = Math.max(0, ...rawRightsData.map(r => r.length))
         detectedSpecialIndex = maxLen > 0 ? maxLen - 1 : 8
       }
 
       setRanking(rankingData)
       setGoals(goalsData.slice(1))
       setBenefits(benefitsData)
-      setRights(rawRightsData.slice(1)) // ヘッダー行を除いたデータ
+      setRights(rawRightsData.slice(headerRowIndex + 1)) // ヘッダー行の次から
       setSpecialIndex(detectedSpecialIndex)
       setHistory(historyData || [])
       setLastUpdate(new Date())
