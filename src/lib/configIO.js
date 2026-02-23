@@ -73,31 +73,6 @@ export function loadBaseConfig() {
   return merged
 }
 
-// benefitTiers を key ベースでマージ（localStorage の値を優先しつつ、config.js の新規ティアも保持）
-function mergeBenefitTiers(baseTiers, storedTiers) {
-  if (!storedTiers || !Array.isArray(storedTiers)) return baseTiers
-  if (!baseTiers || !Array.isArray(baseTiers)) return storedTiers
-
-  const storedMap = new Map(storedTiers.map(t => [t.key, t]))
-  const merged = []
-  const seen = new Set()
-
-  // localStorage の順序を尊重
-  for (const tier of storedTiers) {
-    merged.push(tier)
-    seen.add(tier.key)
-  }
-
-  // config.js にあって localStorage にないティアを追加
-  for (const tier of baseTiers) {
-    if (!seen.has(tier.key)) {
-      merged.push(tier)
-    }
-  }
-
-  return merged
-}
-
 // 設定を読み込む（config.js + デフォルト → localStorage で上書き）
 export function loadConfig() {
   const baseConfig = loadBaseConfig()
@@ -109,11 +84,10 @@ export function loadConfig() {
       const stored = localStorage.getItem(STORAGE_KEY)
       if (stored) {
         const parsed = JSON.parse(stored)
-        // benefitTiers は key ベースでマージ（配列の丸ごと上書きを防止）
-        const baseTiers = config.benefitTiers
+        // benefitTiers は localStorage を正とする（管理画面での削除を永続化）
         config = deepMerge(config, parsed)
         if (parsed.benefitTiers) {
-          config.benefitTiers = mergeBenefitTiers(baseTiers, parsed.benefitTiers)
+          config.benefitTiers = parsed.benefitTiers
         }
       }
     } catch {
