@@ -149,7 +149,7 @@ function AdminApp() {
     <div className="min-h-screen flex flex-col md:flex-row">
 
       {/* ─── サイドバー / トップナビ ─── */}
-      <aside className="sticky top-0 z-40 md:w-52 md:h-screen md:overflow-y-auto glass-effect border-b md:border-b-0 md:border-r border-light-blue/20 flex-shrink-0">
+      <aside className="fixed top-0 left-0 right-0 z-40 md:relative md:top-auto md:left-auto md:right-auto md:w-52 md:h-screen md:overflow-y-auto glass-effect border-b md:border-b-0 md:border-r border-light-blue/20 flex-shrink-0">
 
         {/* モバイル: タイトル行 + タブスクロール */}
         <div className="md:hidden">
@@ -225,7 +225,7 @@ function AdminApp() {
       </aside>
 
       {/* ─── メインコンテンツ ─── */}
-      <main className="flex-1 p-4 md:p-8 pb-24 md:pb-8">
+      <main className="flex-1 p-4 md:p-8 pt-[6.5rem] md:pt-8 pb-20 md:pb-8">
         {saveMessage && (
           <div className="fixed top-4 right-4 z-50 glass-effect px-4 py-2 rounded-lg border border-amber/50 text-amber text-sm animate-shimmer">
             {saveMessage}
@@ -239,22 +239,24 @@ function AdminApp() {
       </main>
 
       {/* モバイル固定フッター */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-30 glass-effect border-t border-light-blue/20 flex">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 glass-effect border-t border-light-blue/20 flex justify-around px-2 py-2" style={{ paddingBottom: 'calc(0.5rem + env(safe-area-inset-bottom, 0px))' }}>
         <a
           href="./index.html"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 py-3 text-center text-sm text-light-blue font-body border-r border-light-blue/20"
+          className="flex flex-col items-center gap-1 px-5 py-2 rounded-xl text-gray-400 hover:text-gray-200 hover:bg-white/5 transition-all border border-transparent"
         >
-          プレビュー
+          <IconRenderer icon="monitor" size={18} />
+          <span className="text-[10px] font-body leading-tight">プレビュー</span>
         </a>
         <a
           href="./manual.html"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 py-3 text-center text-sm text-light-blue font-body"
+          className="flex flex-col items-center gap-1 px-5 py-2 rounded-xl text-gray-400 hover:text-gray-200 hover:bg-white/5 transition-all border border-transparent"
         >
-          マニュアル
+          <IconRenderer icon="book-open" size={18} />
+          <span className="text-[10px] font-body leading-tight">マニュアル</span>
         </a>
       </div>
     </div>
