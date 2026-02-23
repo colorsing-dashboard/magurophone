@@ -46,11 +46,11 @@ if command -v jq &> /dev/null; then
   REPOS=$(jq -r '.repos[]' "$CUSTOMERS_FILE")
 elif command -v python &> /dev/null || command -v python3 &> /dev/null; then
   PY=$(command -v python3 2>/dev/null || command -v python)
-  ORG=$("$PY" -c "import json,sys;d=json.load(open(sys.argv[1]));print(d['org'])" "$CUSTOMERS_FILE")
-  REPOS=$("$PY" -c "import json,sys;d=json.load(open(sys.argv[1]));print('\n'.join(d['repos']))" "$CUSTOMERS_FILE")
+  ORG=$("$PY" -c "import json,sys;d=json.load(open(sys.argv[1]));print(d['org'])" "$CUSTOMERS_FILE" | tr -d '\r')
+  REPOS=$("$PY" -c "import json,sys;d=json.load(open(sys.argv[1]));print('\n'.join(d['repos']))" "$CUSTOMERS_FILE" | tr -d '\r')
 elif command -v node &> /dev/null; then
-  ORG=$(node -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>console.log(JSON.parse(d).org))" < "$CUSTOMERS_FILE")
-  REPOS=$(node -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>JSON.parse(d).repos.forEach(r=>console.log(r)))" < "$CUSTOMERS_FILE")
+  ORG=$(node -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>console.log(JSON.parse(d).org))" < "$CUSTOMERS_FILE" | tr -d '\r')
+  REPOS=$(node -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>JSON.parse(d).repos.forEach(r=>console.log(r)))" < "$CUSTOMERS_FILE" | tr -d '\r')
 else
   error "jq / python / node のいずれかが必要です"
   exit 1
@@ -146,7 +146,7 @@ for repo in $REPOS; do
     done < <(find "$BACKUP_DIR/customer" -type f -print0)
   fi
 
-  # deploy.yml を復元
+  # deploy.yml を復元（既存リポジトリのみ: 顧客固有の branches 設定を維持）
   if [ -f "$BACKUP_DIR/.github/workflows/deploy.yml" ]; then
     if ! cmp -s "$BACKUP_DIR/.github/workflows/deploy.yml" ".github/workflows/deploy.yml" 2>/dev/null; then
       cp "$BACKUP_DIR/.github/workflows/deploy.yml" ".github/workflows/deploy.yml"
