@@ -172,7 +172,7 @@ export function downloadConfigJS(config) {
   a.href = url
   a.download = 'config.js'
   a.click()
-  URL.revokeObjectURL(url)
+  setTimeout(() => URL.revokeObjectURL(url), 100)
 }
 
 // メタデータを読み込む（タイムスタンプ等、config本体とは別管理）

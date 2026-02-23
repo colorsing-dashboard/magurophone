@@ -97,16 +97,6 @@ body {
   overflow: hidden;
 }
 
-/* ヘッダー画像 */
-.header-image {
-  background-image: var(--header-image-mobile, url('/header-mobile.png'));
-}
-
-@media (min-width: 768px) {
-  .header-image {
-    background-image: var(--header-image-desktop, url('/header.png'));
-  }
-}
 
 /* Water shimmer エフェクト */
 .water-shimmer::after {

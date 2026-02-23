@@ -15,8 +15,11 @@ export const fetchSheetData = async (spreadsheetId, sheetName, range = null, ret
   }
 
   for (let attempt = 0; attempt < retries; attempt++) {
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 10000)
     try {
-      const response = await fetch(url)
+      const response = await fetch(url, { signal: controller.signal })
+      clearTimeout(timeoutId)
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
@@ -37,6 +40,7 @@ export const fetchSheetData = async (spreadsheetId, sheetName, range = null, ret
 
       return json.table.rows.map(row => (row.c ?? []).map(cell => cell?.v ?? ''))
     } catch (error) {
+      clearTimeout(timeoutId)
       console.error(`Error fetching ${sheetName}${range ? ` (${range})` : ''} (attempt ${attempt + 1}/${retries}):`, error)
 
       if (attempt === retries - 1) {
