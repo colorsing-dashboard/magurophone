@@ -41,7 +41,7 @@ const Img = ({ src, alt, caption }) => {
         </div>
       ) : (
         <div className="rounded-xl overflow-hidden border border-light-blue/20 bg-black/30">
-          <img src={src} alt={alt} className="w-full h-auto block" onError={() => setFailed(true)} />
+          <img src={`${src}?v=${__BUILD_TIME__}`} alt={alt} className="w-full h-auto block" onError={() => setFailed(true)} />
         </div>
       )}
       {caption && <figcaption className="text-center text-xs text-gray-500 mt-2">{caption}</figcaption>}
