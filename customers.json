@@ -1,6 +1,7 @@
 {
   "org": "colorsing-dashboard",
   "repos": [
-    "magurophone"
+    "magurophone",
+    "npe"
   ]
 }

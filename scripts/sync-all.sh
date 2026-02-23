@@ -146,7 +146,7 @@ for repo in $REPOS; do
     done < <(find "$BACKUP_DIR/customer" -type f -print0)
   fi
 
-  # deploy.yml を復元
+  # deploy.yml を復元（既存リポジトリのみ: 顧客固有の branches 設定を維持）
   if [ -f "$BACKUP_DIR/.github/workflows/deploy.yml" ]; then
     if ! cmp -s "$BACKUP_DIR/.github/workflows/deploy.yml" ".github/workflows/deploy.yml" 2>/dev/null; then
       cp "$BACKUP_DIR/.github/workflows/deploy.yml" ".github/workflows/deploy.yml"
