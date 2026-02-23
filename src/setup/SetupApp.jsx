@@ -241,7 +241,7 @@ const StepContent5 = () => (
     <Img
       src="./manual/ss-url-id.png"
       alt="スプレッドシートURLでIDの場所を示す図"
-      caption="赤枠部分がスプレッドシートID"
+      caption="ハイライト部分がスプレッドシートID"
     />
     <Sub number="1">受け取った管理画面URL（末尾が /admin）を開く</Sub>
     <Sub number="2">「Google Sheets」タブを選択</Sub>
