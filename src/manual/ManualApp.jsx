@@ -139,6 +139,7 @@ const ADMIN_TABS_DATA = [
     name: '特典ティア',
     img: './manual/admin-tiers-tab.png',
     ratio: '16/9',
+    showImg: true,
     items: [
       { label: 'ティアの追加・削除・並び替え', desc: '特典の段階（ティア）を自由に増減できます。' },
       { label: 'キー名', desc: 'スプレッドシートの「特典内容」シートのA列と一致させる必要があります。' },
@@ -236,7 +237,7 @@ const TabAdminPanel = () => {
             )
           )}
         </ul>
-        <Img src={tab.img} alt={`管理画面 ${tab.name}タブ`} caption={`${tab.name} タブ`} />
+        {tab.showImg && <Img src={tab.img} alt={`管理画面 ${tab.name}タブ`} caption={`${tab.name} タブ`} />}
       </div>
     </div>
   )
