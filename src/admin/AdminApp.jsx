@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { loadConfig, saveConfig, downloadConfigJS, importConfigFromText, deepMerge, saveConfigMeta } from '../lib/configIO'
+import { loadConfig, saveConfig, deepMerge, saveConfigMeta } from '../lib/configIO'
 import DEFAULT_CONFIG from '../lib/defaults'
 import IconRenderer from '../components/IconRenderer'
 import BrandingTab from './tabs/BrandingTab'
@@ -28,7 +28,6 @@ function AdminApp() {
   const [activeTab, setActiveTab] = useState('branding')
   const [authenticated, setAuthenticated] = useState(false)
   const [passwordInput, setPasswordInput] = useState('')
-  const [importError, setImportError] = useState(null)
   const [saveMessage, setSaveMessage] = useState(null)
 
   // パスワード保護チェック
@@ -94,26 +93,6 @@ function AdminApp() {
     } else {
       alert('パスワードが違います')
     }
-  }
-
-  const handleExport = () => {
-    downloadConfigJS(config)
-  }
-
-  const handleImport = async (e) => {
-    const file = e.target.files[0]
-    if (!file) return
-    setImportError(null)
-
-    try {
-      const text = await file.text()
-      const imported = importConfigFromText(text)
-      setConfig(prev => deepMerge(prev, imported))
-    } catch (err) {
-      setImportError(err.message)
-    }
-
-    e.target.value = ''
   }
 
   const handleSyncFromGitHub = (remoteConfig) => {
@@ -225,16 +204,6 @@ function AdminApp() {
           </nav>
 
           <div className="px-3 pb-5 pt-4 space-y-2 border-t border-light-blue/20">
-            <button
-              onClick={handleExport}
-              className="w-full px-3 py-2 bg-amber/20 hover:bg-amber/30 border border-amber/50 rounded-lg transition-all text-amber text-xs font-body"
-            >
-              設定をダウンロード
-            </button>
-            <label className="block w-full px-3 py-2 bg-light-blue/10 hover:bg-light-blue/20 border border-light-blue/30 rounded-lg transition-all text-light-blue text-xs font-body text-center cursor-pointer">
-              設定をインポート
-              <input type="file" accept=".js,.json" onChange={handleImport} className="hidden" />
-            </label>
             <a
               href="./index.html"
               target="_blank"
@@ -263,46 +232,31 @@ function AdminApp() {
           </div>
         )}
 
-        {importError && (
-          <div className="mb-4 glass-effect px-4 py-3 rounded-lg border border-tuna-red/50 text-tuna-red text-sm">
-            インポートエラー: {importError}
-          </div>
-        )}
-
         <div className="max-w-3xl">
           <ActiveTab config={config} updateConfig={updateConfig} onSyncFromGitHub={handleSyncFromGitHub} />
         </div>
 
-        {/* モバイル用アクションボタン */}
-        <div className="md:hidden mt-8 space-y-3 border-t border-light-blue/20 pt-6 max-w-3xl">
-          <button
-            onClick={handleExport}
-            className="w-full px-4 py-3 bg-amber/20 hover:bg-amber/30 border border-amber/50 rounded-lg transition-all text-amber font-body"
-          >
-            設定をダウンロード
-          </button>
-          <label className="block w-full px-4 py-3 bg-light-blue/10 hover:bg-light-blue/20 border border-light-blue/30 rounded-lg transition-all text-light-blue font-body text-center cursor-pointer">
-            設定をインポート
-            <input type="file" accept=".js,.json" onChange={handleImport} className="hidden" />
-          </label>
-          <a
-            href="./index.html"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block w-full px-4 py-3 bg-ocean-teal/30 hover:bg-ocean-teal/50 border border-ocean-teal/50 rounded-lg transition-all text-light-blue font-body text-center"
-          >
-            プレビューを開く
-          </a>
-          <a
-            href="./manual.html"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block w-full px-4 py-3 bg-light-blue/10 hover:bg-light-blue/20 border border-light-blue/30 rounded-lg transition-all text-light-blue font-body text-center"
-          >
-            管理マニュアル
-          </a>
-        </div>
       </main>
+
+      {/* モバイル固定フッター */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-30 glass-effect border-t border-light-blue/20 flex">
+        <a
+          href="./index.html"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex-1 py-3 text-center text-sm text-light-blue font-body border-r border-light-blue/20"
+        >
+          プレビュー
+        </a>
+        <a
+          href="./manual.html"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex-1 py-3 text-center text-sm text-light-blue font-body"
+        >
+          マニュアル
+        </a>
+      </div>
     </div>
   )
 }

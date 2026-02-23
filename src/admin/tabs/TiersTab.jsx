@@ -5,6 +5,10 @@ const TiersTab = ({ config, updateConfig }) => {
   const tiers = config.benefitTiers || []
 
   const updateTier = (index, field, value) => {
+    if (field === 'key') {
+      const duplicate = tiers.some((t, i) => i !== index && t.key === value)
+      if (duplicate) return
+    }
     const next = tiers.map((t, i) => i === index ? { ...t, [field]: value } : t)
     updateConfig('benefitTiers', next)
   }
