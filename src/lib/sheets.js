@@ -9,9 +9,12 @@ export const fetchSheetData = async (spreadsheetId, sheetName, range = null, ret
   if (range) {
     url += `&range=${encodeURIComponent(range)}`
   }
-  // headers=0 を指定するとgvizがrow1をヘッダーとして吸収せず、全行をrowsに返す
+  // headers=0: 全行をデータとして返す（allRows）
+  // headers=1: 1行目をヘッダーとして明示スキップ（skipHeader）
   if (options.allRows) {
     url += '&headers=0'
+  } else if (options.skipHeader) {
+    url += '&headers=1'
   }
 
   for (let attempt = 0; attempt < retries; attempt++) {
@@ -86,7 +89,7 @@ export const fetchHistoryData = async (spreadsheetId, historySheetName, range = 
 export const fetchIconData = async (spreadsheetId, iconSheetName) => {
   const iconData = {}
   const orderedKeys = []
-  const data = await fetchSheetData(spreadsheetId, iconSheetName)
+  const data = await fetchSheetData(spreadsheetId, iconSheetName, null, 3, { skipHeader: true })
 
   if (!data || data.length < 1) {
     return iconData
