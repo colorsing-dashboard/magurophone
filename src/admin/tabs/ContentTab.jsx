@@ -192,6 +192,9 @@ const ContentTab = ({ config, updateConfig }) => {
         <Field label="Special権利ラベル" value={config.ui?.specialRightLabel} onChange={(v) => updateConfig('ui.specialRightLabel', v)} />
         <Field label="獲得者一覧タイトル" value={config.ui?.userListTitle} onChange={(v) => updateConfig('ui.userListTitle', v)} />
         <Field label="ユーザーアイコンタイトル" value={config.ui?.userIconTitle} onChange={(v) => updateConfig('ui.userIconTitle', v)} />
+        <Field label="アイコン読み込み中テキスト" value={config.ui?.iconLoading} onChange={(v) => updateConfig('ui.iconLoading', v)} placeholder="アイコンデータを読み込み中..." />
+        <Field label="アイコンデータなしテキスト" value={config.ui?.iconEmpty} onChange={(v) => updateConfig('ui.iconEmpty', v)} placeholder="アイコンデータがありません" />
+        <Field label="アイコンなしテキスト" value={config.ui?.iconNoImages} onChange={(v) => updateConfig('ui.iconNoImages', v)} placeholder="アイコンがありません" />
       </div>
 
       <div className="mt-4">
