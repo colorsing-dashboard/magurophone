@@ -30,6 +30,9 @@ export function ConfigProvider({ config, children }) {
       'override-background-mid': o.backgroundMid,       // → body背景グラデ
       'color-header-gradient-start': o.headerGradientStart, // → Header.jsx
       'color-header-gradient-end': o.headerGradientEnd,     // → Header.jsx
+      'color-title-gradient-start': o.titleGradientStart,   // → Header.jsx / Sidebar.jsx（タイトルグラデ開始色）
+      'color-title-gradient-mid': o.titleGradientMid,       // → Header.jsx / Sidebar.jsx（タイトルグラデ中間色）
+      'color-title-gradient-end': o.titleGradientEnd,       // → Header.jsx / Sidebar.jsx（タイトルグラデ終了色）
       'color-rank1-card': o.rank1Card,                      // → HomeView.jsx
       'color-title': o.titleColor,                          // → Header.jsx（グラデーションOFF時）
       'override-name-text': o.nameText,                     // → text-name-text（ランキング名・権利者名）

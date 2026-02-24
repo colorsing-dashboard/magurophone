@@ -9,9 +9,11 @@ const DEFAULT_CONFIG = {
     pageTitle: 'ColorSing LP - 特典管理',
     loadingEmoji: '🎵',
     loadingText: 'Loading...',
+    showHeader: true,
     showTitle: true,
     titleGradient: true,
     titleGradientDirection: 'to-r',
+    titleGlow: true,
   },
 
   colors: {
@@ -26,6 +28,9 @@ const DEFAULT_CONFIG = {
   colorOverrides: {
     headerGradientStart: '',
     headerGradientEnd: '',
+    titleGradientStart: '',
+    titleGradientMid: '',
+    titleGradientEnd: '',
     cardBorder: '',
     cardBorderHover: '',
     primaryText: '',
@@ -90,6 +95,7 @@ const DEFAULT_CONFIG = {
   home: {
     rankingTitle: 'Ranking',
     pointsLabel: '歌推しPt',
+    pointsUnit: 'k',
     targetsTitle: 'Targets',
     targetLabels: ['今旬の目標', '今月の目標'],
     faq: {

@@ -49,6 +49,12 @@ const ContentTab = ({ config, updateConfig }) => {
           placeholder="ポイントの単位名を入力"
         />
         <Field
+          label="ポイント数値の単位（数字の直後）"
+          value={config.home?.pointsUnit}
+          onChange={(v) => updateConfig('home.pointsUnit', v)}
+          placeholder="k"
+        />
+        <Field
           label="目標タイトル"
           value={config.home?.targetsTitle}
           onChange={(v) => updateConfig('home.targetsTitle', v)}
