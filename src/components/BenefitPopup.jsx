@@ -20,7 +20,8 @@ const BenefitPopup = ({ benefit, onClose }) => {
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-[60]"
+      className="fixed inset-0 flex items-center justify-center p-4 z-[60]"
+      style={{ backgroundColor: 'var(--popup-overlay-bg)' }}
     >
       <div
         onClick={(e) => e.stopPropagation()}
@@ -28,7 +29,7 @@ const BenefitPopup = ({ benefit, onClose }) => {
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-2xl text-gray-400 hover:text-white transition-colors"
+          className="absolute top-4 right-4 text-2xl text-sub-text hover:text-white transition-colors"
         >
           ×
         </button>

@@ -8,6 +8,7 @@
   --base-amber: #d4a574;
   --base-accent: #c1121f;
   --base-gold: #ffd700;
+  --popup-overlay-bg: rgba(0, 0, 0, 0.7);
 }
 
 /* Tailwindテーマ */
@@ -29,6 +30,7 @@
   --color-name-text: var(--override-name-text, color-mix(in oklab, var(--base-light-blue) 20%, white));
   --color-footer-text: var(--override-footer-text, var(--base-amber));
   --color-content-text: var(--override-content-text, color-mix(in oklab, var(--base-light-blue) 10%, white));
+  --color-sub-text: var(--override-sub-text, #9ca3af);
 
   --font-display: 'Playfair Display', serif;
   --font-body: 'Yu Gothic Medium', 'YuGothic', 'Inter', sans-serif;
@@ -61,7 +63,7 @@ body {
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(138, 180, 248, 0.3) transparent;
+  scrollbar-color: color-mix(in srgb, var(--base-light-blue) 30%, transparent) transparent;
 }
 
 *::-webkit-scrollbar {
@@ -73,7 +75,7 @@ body {
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: rgba(138, 180, 248, 0.3);
+  background-color: color-mix(in srgb, var(--base-light-blue) 30%, transparent);
   border-radius: 3px;
 }
 
@@ -85,11 +87,11 @@ body {
 }
 
 @utility text-glow-soft {
-  text-shadow: 0 0 20px rgba(138, 180, 248, 0.3);
+  text-shadow: 0 0 20px color-mix(in srgb, var(--base-light-blue) 30%, transparent);
 }
 
 @utility box-glow-soft {
-  box-shadow: 0 0 20px rgba(193, 18, 31, 0.3);
+  box-shadow: 0 0 20px color-mix(in srgb, var(--base-accent) 30%, transparent);
 }
 
 @utility water-shimmer {
@@ -109,7 +111,7 @@ body {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(138, 180, 248, 0.05),
+    color-mix(in srgb, var(--base-light-blue) 5%, transparent),
     transparent
   );
   animation: waterShimmer 4s ease-in-out infinite;

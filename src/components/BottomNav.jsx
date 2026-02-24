@@ -21,7 +21,7 @@ const BottomNav = ({ currentView, onViewChange }) => {
             className={`flex flex-col items-center justify-center gap-1 transition-all ${
               currentView === view.id
                 ? 'text-primary'
-                : 'text-gray-400 hover:text-primary'
+                : 'text-sub-text hover:text-primary'
             }`}
           >
             <IconRenderer icon={view.icon} size={20} />

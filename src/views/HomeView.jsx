@@ -36,7 +36,7 @@ const HomeView = ({ ranking, goals }) => {
               >
                 <CountUp end={person[RANKING_FIELDS.POINTS]} />
               </div>
-              <div className="text-xs md:text-sm text-gray-400 mt-1 md:mt-2">{config.home.pointsLabel}</div>
+              <div className="text-xs md:text-sm text-sub-text mt-1 md:mt-2">{config.home.pointsLabel}</div>
             </div>
           ))}
         </div>

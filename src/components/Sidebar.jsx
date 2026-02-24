@@ -53,7 +53,7 @@ const Sidebar = ({ currentView, onViewChange, lastUpdate }) => {
       </nav>
 
       {lastUpdate && (
-        <div className="mt-auto pt-6 border-t border-card-border/20 text-xs text-gray-500">
+        <div className="mt-auto pt-6 border-t border-card-border/20 text-xs text-sub-text">
           {config.ui.lastUpdate}: {lastUpdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })}
         </div>
       )}

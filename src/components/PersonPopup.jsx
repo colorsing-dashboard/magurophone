@@ -69,7 +69,8 @@ const PersonPopup = ({ person, benefits, history, specialIndex = 8, onClose, onS
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 bg-black/70 flex items-start justify-center p-4 z-50 overflow-y-auto"
+      className="fixed inset-0 flex items-start justify-center p-4 z-50 overflow-y-auto"
+      style={{ backgroundColor: 'var(--popup-overlay-bg)' }}
     >
       <div
         onClick={(e) => e.stopPropagation()}
@@ -77,7 +78,7 @@ const PersonPopup = ({ person, benefits, history, specialIndex = 8, onClose, onS
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-2xl text-gray-400 hover:text-white transition-colors z-10"
+          className="absolute top-4 right-4 text-2xl text-sub-text hover:text-white transition-colors z-10"
         >
           ×
         </button>
@@ -128,13 +129,13 @@ const PersonPopup = ({ person, benefits, history, specialIndex = 8, onClose, onS
                   <div className="mt-3 pt-3 border-t border-card-border/20 text-left" onClick={(e) => e.stopPropagation()}>
                     {historyByTier[tier.key].map((yearGroup) => (
                       <div key={yearGroup.year} className="mb-2 last:mb-0">
-                        <p className="text-xs text-gray-500 font-bold mb-0.5">{yearGroup.year}年</p>
+                        <p className="text-xs text-sub-text font-bold mb-0.5">{yearGroup.year}年</p>
                         {yearGroup.entries.map((entry, i) => {
                           const monthNum = String(entry.month).slice(4)
                           const monthLabel = monthNum ? `${parseInt(monthNum, 10)}月` : ''
                           return (
-                            <div key={i} className="flex text-xs text-gray-400">
-                              <span className="text-gray-500 flex-shrink-0">{monthLabel}</span>
+                            <div key={i} className="flex text-xs text-sub-text">
+                              <span className="text-sub-text flex-shrink-0">{monthLabel}</span>
                               <span className="ml-2 overflow-x-auto whitespace-nowrap">{entry.content}</span>
                             </div>
                           )

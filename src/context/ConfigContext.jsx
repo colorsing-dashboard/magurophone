@@ -35,6 +35,7 @@ export function ConfigProvider({ config, children }) {
       'override-name-text': o.nameText,                     // → text-name-text（ランキング名・権利者名）
       'override-footer-text': o.footerText,                 // → text-footer-text（フッターメインテキスト）
       'override-content-text': o.contentText,               // → text-content-text（目標内容・FAQ本文）
+      'override-sub-text': o.subText,                       // → text-sub-text（補足テキスト・ナビ非選択）
     }
     Object.entries(overrides).forEach(([key, value]) => {
       if (value) {
@@ -53,6 +54,17 @@ export function ConfigProvider({ config, children }) {
       root.style.setProperty('--override-glass-bg', `rgba(${r}, ${g}, ${b}, ${a})`)
     } else {
       root.style.removeProperty('--override-glass-bg')
+    }
+
+    // popup overlay 背景色
+    if (o.popupOverlayColor && /^#[0-9a-f]{6}$/i.test(o.popupOverlayColor)) {
+      const r = parseInt(o.popupOverlayColor.slice(1, 3), 16)
+      const g = parseInt(o.popupOverlayColor.slice(3, 5), 16)
+      const b = parseInt(o.popupOverlayColor.slice(5, 7), 16)
+      const a = o.popupOverlayOpacity ?? 0.7
+      root.style.setProperty('--popup-overlay-bg', `rgba(${r}, ${g}, ${b}, ${a})`)
+    } else {
+      root.style.removeProperty('--popup-overlay-bg')
     }
   }, [config?.colors, config?.colorOverrides])
 

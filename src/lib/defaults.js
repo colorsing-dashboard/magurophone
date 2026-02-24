@@ -36,6 +36,10 @@ const DEFAULT_CONFIG = {
     nameText: '',
     footerText: '',
     contentText: '',
+    titleColor: '',
+    subText: '',
+    popupOverlayColor: '',
+    popupOverlayOpacity: '',
   },
 
   fonts: {

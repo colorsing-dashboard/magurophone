@@ -1,11 +1,14 @@
-const ColorField = ({ label, value, onChange, description }) => (
+import { useState } from 'react'
+import { COLOR_PRESETS } from '../../lib/presets'
+
+const ColorField = ({ label, value, onChange, onClear, description, pickerValue }) => (
   <div className="mb-5">
     <label className="block text-sm font-body text-light-blue mb-1">{label}</label>
     {description && <p className="text-xs text-gray-500 mb-1">{description}</p>}
     <div className="flex items-center gap-3">
       <input
         type="color"
-        value={value || '#000000'}
+        value={pickerValue || value || '#000000'}
         onChange={(e) => onChange(e.target.value)}
         className="w-12 h-10 rounded-lg border border-light-blue/30 cursor-pointer bg-transparent"
       />
@@ -13,18 +16,25 @@ const ColorField = ({ label, value, onChange, description }) => (
         type="text"
         value={value || ''}
         onChange={(e) => onChange(e.target.value)}
-        placeholder="#000000"
+        placeholder="未設定（ベースカラー使用）"
         className="flex-1 px-4 py-2 glass-effect border border-light-blue/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber transition-all text-sm font-mono"
       />
+      {value && onClear && (
+        <button
+          onClick={onClear}
+          className="px-3 py-2 text-xs text-gray-400 hover:text-tuna-red transition-all"
+          title="リセット"
+        >
+          クリア
+        </button>
+      )}
       <div
         className="w-10 h-10 rounded-lg border border-light-blue/30"
-        style={{ backgroundColor: value || '#000000' }}
+        style={{ backgroundColor: pickerValue || value || '#000000' }}
       />
     </div>
   </div>
 )
-
-import { COLOR_PRESETS } from '../../lib/presets'
 
 // CSS color-mix() の近似計算（ピッカー表示用）
 const blendWithWhite = (hex, ratio) => {
@@ -35,175 +45,245 @@ const blendWithWhite = (hex, ratio) => {
   return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`
 }
 
-// baseKey: 未設定時のカラーピッカー表示に使うベースカラーのキー名
-const AREA_COLOR_FIELDS = [
-  { key: 'headerGradientStart', label: 'ヘッダーグラデーション（中央）', baseKey: 'oceanTeal', description: 'ヘッダー背景の中央グラデーション。未設定 → 背景中間色' },
-  { key: 'headerGradientEnd',   label: 'ヘッダーグラデーション（両端）', baseKey: 'deepBlue',  description: 'ヘッダー背景の左右端グラデーション。未設定 → 背景メインと同じ' },
-  { key: 'primaryText',         label: 'メインテキスト色',               baseKey: 'lightBlue', description: 'セクションタイトル（Ranking・Targets）、カード内ラベル等。未設定 → UIメインカラー' },
-  { key: 'accentText',          label: 'アクセントテキスト色',           baseKey: 'amber',     description: '目標の▸矢印・FAQタイトル・質問文・ホバー強調等。未設定 → UIアクセントカラー' },
-  { key: 'rank1Card',           label: '1位カード強調色',                baseKey: 'accent',    description: '1位カードのボーダー・ポイント数テキスト。未設定 → 強調色' },
-  { key: 'titleColor',          label: 'タイトルテキスト色',             baseKey: 'lightBlue', description: 'ヘッダーのサイト名テキスト（グラデーションOFF時のみ有効）。未設定 → UIメインカラー' },
-  { key: 'nameText',            label: 'カード名前テキスト色',           baseKey: 'lightBlue', description: 'ランキング名・特典管理名・枠内アイコンのユーザー名。未設定 → UIメインカラーの白混ぜ20%（薄い同系色）' },
-  { key: 'footerText',          label: 'フッターテキスト色',             baseKey: 'amber',     description: 'フッターのメインテキスト。未設定 → UIアクセントカラー' },
-  { key: 'contentText',         label: 'コンテンツ本文テキスト色',       baseKey: 'lightBlue', description: '目標の内容・FAQ回答・特典ポップアップのテキスト。未設定 → UIメインカラーの白混ぜ10%（名前より薄い同系色）' },
-]
+const TABS = ['ベースカラー', 'テキスト', '背景・カード']
 
 const ColorsTab = ({ config, updateConfig }) => {
+  const [activeTab, setActiveTab] = useState(0)
+
   const applyPreset = (preset) => {
-    // まず全オーバーライドをクリア（残存防止）
-    AREA_COLOR_FIELDS.forEach(({ key }) => {
-      updateConfig(`colorOverrides.${key}`, '')
-    })
-    // ベースカラーを適用
+    // オーバーライドをクリア（残存防止）
+    const overrideKeys = [
+      'headerGradientStart', 'headerGradientEnd',
+      'primaryText', 'accentText', 'nameText', 'contentText', 'footerText', 'titleColor',
+      'glassBgColor', 'glassBgOpacity',
+      'backgroundMain', 'backgroundMid', 'cardBorder', 'cardBorderHover', 'rank1Card',
+    ]
+    overrideKeys.forEach((key) => updateConfig(`colorOverrides.${key}`, ''))
     Object.entries(preset.colors).forEach(([key, value]) => {
       updateConfig(`colors.${key}`, value)
     })
   }
 
+  const o = config.colorOverrides || {}
+  const c = config.colors || {}
+
+  const overrideField = (key, label, description, baseValue) => (
+    <ColorField
+      key={key}
+      label={label}
+      description={description}
+      value={o[key] || ''}
+      pickerValue={o[key] || baseValue || '#000000'}
+      onChange={(v) => updateConfig(`colorOverrides.${key}`, v)}
+      onClear={() => updateConfig(`colorOverrides.${key}`, '')}
+    />
+  )
+
   return (
     <div>
       <h2 className="text-2xl font-body text-light-blue mb-6">カラー設定</h2>
-      <p className="text-sm text-gray-400 mb-4">プリセットを選ぶか、個別にカスタマイズできます。</p>
 
-      <div className="flex flex-wrap gap-3 mb-8">
-        {COLOR_PRESETS.map((preset) => (
+      {/* タブ切り替え */}
+      <div className="flex gap-2 mb-6">
+        {TABS.map((tab, i) => (
           <button
-            key={preset.name}
-            onClick={() => applyPreset(preset)}
-            className="flex items-center gap-2 px-3 py-2 glass-effect border border-light-blue/30 rounded-lg hover:border-amber transition-all text-sm"
+            key={i}
+            onClick={() => setActiveTab(i)}
+            className={`px-4 py-2 rounded-lg text-sm transition-all ${
+              activeTab === i
+                ? 'bg-amber/30 border border-amber/60 text-amber'
+                : 'glass-effect border border-light-blue/30 text-gray-300 hover:border-amber/40'
+            }`}
           >
-            <div className="flex gap-1">
-              {[preset.colors.deepBlue, preset.colors.lightBlue, preset.colors.amber, preset.colors.accent].map((c, i) => (
-                <div key={i} className="w-4 h-4 rounded-full border border-white/20" style={{ backgroundColor: c }} />
-              ))}
-            </div>
-            <span className="text-gray-300">{preset.name}</span>
+            {tab}
           </button>
         ))}
       </div>
 
-      <ColorField
-        label="背景メイン"
-        value={config.colors.deepBlue}
-        onChange={(v) => updateConfig('colors.deepBlue', v)}
-        description="サイト背景のメインカラー（最暗部）"
-      />
-      <ColorField
-        label="背景グラデーション（中間色）"
-        value={config.colors.oceanTeal}
-        onChange={(v) => updateConfig('colors.oceanTeal', v)}
-        description="背景グラデーションの中間色"
-      />
-      <ColorField
-        label="UIメインカラー"
-        value={config.colors.lightBlue}
-        onChange={(v) => updateConfig('colors.lightBlue', v)}
-        description="テキスト、ボーダー、ボタンなどに使われるメインカラー"
-      />
-      <ColorField
-        label="UIアクセントカラー"
-        value={config.colors.amber}
-        onChange={(v) => updateConfig('colors.amber', v)}
-        description="目標、名前のホバー、ボトルラベルなどのアクセントカラー"
-      />
-      <ColorField
-        label="強調色（1位カード・エラー）"
-        value={config.colors.accent}
-        onChange={(v) => updateConfig('colors.accent', v)}
-        description="1位のランキングカード、エラー表示などの強調色"
-      />
-      <ColorField
-        label="プレミアムカラー"
-        value={config.colors.gold}
-        onChange={(v) => updateConfig('colors.gold', v)}
-        description="メンバーシップなどプレミアム要素のカラー"
-      />
+      {/* タブ1: ベースカラー */}
+      {activeTab === 0 && (
+        <div>
+          <p className="text-sm text-gray-400 mb-4">プリセットを選ぶか、個別にカスタマイズできます。ベースカラーはサイト全体の色調を決めます。</p>
 
-      <hr className="border-light-blue/20 my-8" />
-      <h3 className="text-lg font-body text-amber mb-2">エリア別カラー（オプション）</h3>
-      <p className="text-xs text-gray-500 mb-6">
-        未設定の場合、上のベースカラーが適用されます。特定のUI要素だけ色を変えたい場合に設定してください。
-      </p>
+          <div className="flex flex-wrap gap-3 mb-8">
+            {COLOR_PRESETS.map((preset) => (
+              <button
+                key={preset.name}
+                onClick={() => applyPreset(preset)}
+                className="flex items-center gap-2 px-3 py-2 glass-effect border border-light-blue/30 rounded-lg hover:border-amber transition-all text-sm"
+              >
+                <div className="flex gap-1">
+                  {[preset.colors.deepBlue, preset.colors.lightBlue, preset.colors.amber, preset.colors.accent].map((col, i) => (
+                    <div key={i} className="w-4 h-4 rounded-full border border-white/20" style={{ backgroundColor: col }} />
+                  ))}
+                </div>
+                <span className="text-gray-300">{preset.name}</span>
+              </button>
+            ))}
+          </div>
 
-      {/* glass-effect 背景色（色 + 不透明度の組み合わせ） */}
-      <div className="mb-5">
-        <label className="block text-sm font-body text-light-blue mb-1">カード背景色</label>
-        <p className="text-xs text-gray-500 mb-2">ランキングカード等の背景色。未設定 → 背景メイン（deepBlue）ベース、透明度60%</p>
-        <div className="flex items-center gap-3 mb-2">
-          <input
-            type="color"
-            value={config.colorOverrides?.glassBgColor || config.colors?.deepBlue || '#0a1628'}
-            onChange={(e) => updateConfig('colorOverrides.glassBgColor', e.target.value)}
-            className="w-12 h-10 rounded-lg border border-light-blue/30 cursor-pointer bg-transparent"
+          <ColorField
+            label="背景メイン"
+            value={c.deepBlue}
+            onChange={(v) => updateConfig('colors.deepBlue', v)}
+            description="サイト背景のメインカラー（最暗部）"
           />
-          <span className="text-xs text-gray-400 w-16">透明度</span>
-          <input
-            type="range"
-            min="0" max="1" step="0.05"
-            value={config.colorOverrides?.glassBgOpacity ?? 0.6}
-            onChange={(e) => updateConfig('colorOverrides.glassBgOpacity', parseFloat(e.target.value))}
-            className="flex-1"
+          <ColorField
+            label="背景グラデーション（中間色）"
+            value={c.oceanTeal}
+            onChange={(v) => updateConfig('colors.oceanTeal', v)}
+            description="背景グラデーションの中間色"
           />
-          <span className="text-xs text-gray-300 w-10 text-right">
-            {Math.round((config.colorOverrides?.glassBgOpacity ?? 0.6) * 100)}%
-          </span>
-          {config.colorOverrides?.glassBgColor && (
-            <button
-              onClick={() => { updateConfig('colorOverrides.glassBgColor', ''); updateConfig('colorOverrides.glassBgOpacity', '') }}
-              className="px-3 py-2 text-xs text-gray-400 hover:text-tuna-red transition-all"
-              title="リセット"
-            >クリア</button>
-          )}
-          <div
-            className="w-10 h-10 rounded-lg border border-light-blue/30"
-            style={{ backgroundColor: (() => { const c = config.colorOverrides?.glassBgColor || '#0a1628'; const a = config.colorOverrides?.glassBgOpacity ?? 0.6; const r = parseInt(c.slice(1,3),16); const g = parseInt(c.slice(3,5),16); const b = parseInt(c.slice(5,7),16); return `rgba(${r},${g},${b},${a})` })() }}
+          <ColorField
+            label="UIメインカラー"
+            value={c.lightBlue}
+            onChange={(v) => updateConfig('colors.lightBlue', v)}
+            description="テキスト、ボーダー、ボタンなどに使われるメインカラー"
+          />
+          <ColorField
+            label="UIアクセントカラー"
+            value={c.amber}
+            onChange={(v) => updateConfig('colors.amber', v)}
+            description="目標、名前のホバー、ボトルラベルなどのアクセントカラー"
+          />
+          <ColorField
+            label="強調色（1位カード・エラー）"
+            value={c.accent}
+            onChange={(v) => updateConfig('colors.accent', v)}
+            description="1位のランキングカード、エラー表示などの強調色"
+          />
+          <ColorField
+            label="プレミアムカラー"
+            value={c.gold}
+            onChange={(v) => updateConfig('colors.gold', v)}
+            description="メンバーシップなどプレミアム要素のカラー"
           />
         </div>
-      </div>
+      )}
 
-      {AREA_COLOR_FIELDS.map(({ key, label, description, baseKey }) => {
-        const value = config.colorOverrides?.[key] || ''
-        // nameText/contentTextはCSS color-mix()と同じ比率でJS側でもブレンドして表示
-        const computedDefault =
-          key === 'nameText'    ? blendWithWhite(config.colors?.lightBlue, 0.2) :
-          key === 'contentText' ? blendWithWhite(config.colors?.lightBlue, 0.1) :
-          config.colors?.[baseKey] || '#000000'
-        const pickerValue = value || computedDefault
-        return (
-          <div key={key} className="mb-5">
-            <label className="block text-sm font-body text-light-blue mb-1">{label}</label>
-            {description && <p className="text-xs text-gray-500 mb-1">{description}</p>}
-            <div className="flex items-center gap-3">
+      {/* タブ2: テキスト */}
+      {activeTab === 1 && (
+        <div>
+          <p className="text-sm text-gray-400 mb-6">未設定の場合、ベースカラーが適用されます。</p>
+
+          {overrideField('primaryText', 'メインテキスト色',
+            'セクションタイトル（Ranking・Targets）、カード内ラベル等。未設定 → UIメインカラー',
+            c.lightBlue)}
+          {overrideField('accentText', 'アクセントテキスト色',
+            '目標の▸矢印・FAQタイトル・質問文・ホバー強調等。未設定 → UIアクセントカラー',
+            c.amber)}
+          {overrideField('nameText', 'カード名前テキスト色',
+            'ランキング名・特典管理名・枠内アイコンのユーザー名。未設定 → UIメインカラーの白混ぜ20%',
+            blendWithWhite(c.lightBlue, 0.2))}
+          {overrideField('contentText', 'コンテンツ本文テキスト色',
+            '目標の内容・FAQ回答・特典ポップアップのテキスト。未設定 → UIメインカラーの白混ぜ10%',
+            blendWithWhite(c.lightBlue, 0.1))}
+          {overrideField('footerText', 'フッターテキスト色',
+            'フッターのメインテキスト。未設定 → UIアクセントカラー',
+            c.amber)}
+          {overrideField('titleColor', 'タイトルテキスト色',
+            'ヘッダーのサイト名テキスト（グラデーションOFF時のみ有効）。未設定 → UIメインカラー',
+            c.lightBlue)}
+          {overrideField('subText', '補足テキスト色',
+            'ナビ非選択ラベル・タイムスタンプ・説明文等の灰色テキスト。未設定 → gray-400相当（#9ca3af）',
+            '#9ca3af')}
+        </div>
+      )}
+
+      {/* タブ3: 背景・カード */}
+      {activeTab === 2 && (
+        <div>
+          <p className="text-sm text-gray-400 mb-6">未設定の場合、ベースカラーが適用されます。</p>
+
+          {/* カード背景色（色 + 不透明度） */}
+          <div className="mb-5">
+            <label className="block text-sm font-body text-light-blue mb-1">カード背景色</label>
+            <p className="text-xs text-gray-500 mb-2">ランキングカード等の背景色。未設定 → 背景メイン（deepBlue）ベース、透明度60%</p>
+            <div className="flex items-center gap-3 mb-2">
               <input
                 type="color"
-                value={pickerValue}
-                onChange={(e) => updateConfig(`colorOverrides.${key}`, e.target.value)}
+                value={o.glassBgColor || c.deepBlue || '#0a1628'}
+                onChange={(e) => updateConfig('colorOverrides.glassBgColor', e.target.value)}
                 className="w-12 h-10 rounded-lg border border-light-blue/30 cursor-pointer bg-transparent"
               />
+              <span className="text-xs text-gray-400 w-16">透明度</span>
               <input
-                type="text"
-                value={value}
-                onChange={(e) => updateConfig(`colorOverrides.${key}`, e.target.value)}
-                placeholder="未設定（ベースカラー使用）"
-                className="flex-1 px-4 py-2 glass-effect border border-light-blue/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber transition-all text-sm font-mono"
+                type="range"
+                min="0" max="1" step="0.05"
+                value={o.glassBgOpacity ?? 0.6}
+                onChange={(e) => updateConfig('colorOverrides.glassBgOpacity', parseFloat(e.target.value))}
+                className="flex-1"
               />
-              {value && (
+              <span className="text-xs text-gray-300 w-10 text-right">
+                {Math.round((o.glassBgOpacity ?? 0.6) * 100)}%
+              </span>
+              {o.glassBgColor && (
                 <button
-                  onClick={() => updateConfig(`colorOverrides.${key}`, '')}
+                  onClick={() => { updateConfig('colorOverrides.glassBgColor', ''); updateConfig('colorOverrides.glassBgOpacity', '') }}
                   className="px-3 py-2 text-xs text-gray-400 hover:text-tuna-red transition-all"
                   title="リセット"
-                >
-                  クリア
-                </button>
+                >クリア</button>
               )}
               <div
                 className="w-10 h-10 rounded-lg border border-light-blue/30"
-                style={{ backgroundColor: pickerValue }}
+                style={{ backgroundColor: (() => { const col = o.glassBgColor || '#0a1628'; const a = o.glassBgOpacity ?? 0.6; const r = parseInt(col.slice(1,3),16); const g = parseInt(col.slice(3,5),16); const b = parseInt(col.slice(5,7),16); return `rgba(${r},${g},${b},${a})` })() }}
               />
             </div>
           </div>
-        )
-      })}
+
+          {overrideField('backgroundMain', '背景メインカラー',
+            'body背景グラデーションのメイン（暗い側）。未設定 → 背景メイン（deepBlue）',
+            c.deepBlue)}
+          {overrideField('backgroundMid', '背景中間グラデーション',
+            'body背景グラデーションの中間色。未設定 → 背景グラデーション中間色（oceanTeal）',
+            c.oceanTeal)}
+          {overrideField('cardBorder', 'カードボーダー色',
+            'ランキングカード・特典カード等のボーダー。未設定 → UIメインカラー',
+            c.lightBlue)}
+          {overrideField('cardBorderHover', 'カードボーダー（ホバー時）',
+            'カードホバー時のボーダー色。未設定 → UIアクセントカラー',
+            c.amber)}
+          {overrideField('rank1Card', '1位カード強調色',
+            '1位カードのボーダー・ポイント数テキスト。未設定 → 強調色（accent）',
+            c.accent)}
+
+          {/* ポップアップ暗幕（色 + 不透明度） */}
+          <div className="mb-5">
+            <label className="block text-sm font-body text-light-blue mb-1">ポップアップ暗幕色</label>
+            <p className="text-xs text-gray-500 mb-2">ポップアップ表示時の背景暗幕。未設定 → 黒70%</p>
+            <div className="flex items-center gap-3 mb-2">
+              <input
+                type="color"
+                value={o.popupOverlayColor || '#000000'}
+                onChange={(e) => updateConfig('colorOverrides.popupOverlayColor', e.target.value)}
+                className="w-12 h-10 rounded-lg border border-light-blue/30 cursor-pointer bg-transparent"
+              />
+              <span className="text-xs text-gray-400 w-16">透明度</span>
+              <input
+                type="range"
+                min="0" max="1" step="0.05"
+                value={o.popupOverlayOpacity ?? 0.7}
+                onChange={(e) => updateConfig('colorOverrides.popupOverlayOpacity', parseFloat(e.target.value))}
+                className="flex-1"
+              />
+              <span className="text-xs text-gray-300 w-10 text-right">
+                {Math.round((o.popupOverlayOpacity ?? 0.7) * 100)}%
+              </span>
+              {o.popupOverlayColor && (
+                <button
+                  onClick={() => { updateConfig('colorOverrides.popupOverlayColor', ''); updateConfig('colorOverrides.popupOverlayOpacity', '') }}
+                  className="px-3 py-2 text-xs text-gray-400 hover:text-tuna-red transition-all"
+                  title="リセット"
+                >クリア</button>
+              )}
+              <div
+                className="w-10 h-10 rounded-lg border border-light-blue/30"
+                style={{ backgroundColor: (() => { const col = o.popupOverlayColor || '#000000'; const a = o.popupOverlayOpacity ?? 0.7; const r = parseInt(col.slice(1,3),16); const g = parseInt(col.slice(3,5),16); const b = parseInt(col.slice(5,7),16); return `rgba(${r},${g},${b},${a})` })() }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

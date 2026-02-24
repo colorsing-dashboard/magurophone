@@ -84,7 +84,7 @@ const IconGallery = ({ icons, selectedMonth, setSelectedMonth, loading, iconErro
     return (
       <div className="text-center py-16">
         <div className="text-4xl mb-4">📭</div>
-        <div className="text-xl text-gray-400">{config.ui.iconEmpty}</div>
+        <div className="text-xl text-sub-text">{config.ui.iconEmpty}</div>
       </div>
     )
   }
@@ -103,7 +103,7 @@ const IconGallery = ({ icons, selectedMonth, setSelectedMonth, loading, iconErro
               className={`px-4 py-2 rounded-lg transition-all whitespace-nowrap ${
                 selectedMonth === month
                   ? 'bg-primary/20 border border-primary/50 text-primary'
-                  : 'glass-effect border border-card-border/20 text-gray-400 hover:text-primary hover:border-card-border/40'
+                  : 'glass-effect border border-card-border/20 text-sub-text hover:text-primary hover:border-card-border/40'
               }`}
             >
               {formatKey(month)}
@@ -125,7 +125,7 @@ const IconGallery = ({ icons, selectedMonth, setSelectedMonth, loading, iconErro
 
           {/* ユーザー名グリッド */}
           {filteredUsers.length === 0 ? (
-            <div className="text-center py-8 text-gray-400">{config.ui.iconNoImages}</div>
+            <div className="text-center py-8 text-sub-text">{config.ui.iconNoImages}</div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
               {filteredUsers.map((user) => (
@@ -146,7 +146,8 @@ const IconGallery = ({ icons, selectedMonth, setSelectedMonth, loading, iconErro
       {popupUser && (
         <div
           onClick={() => setPopupUser(null)}
-          className="fixed inset-0 bg-black/70 flex items-start justify-center p-4 z-50 overflow-y-auto"
+          className="fixed inset-0 flex items-start justify-center p-4 z-50 overflow-y-auto"
+          style={{ backgroundColor: 'var(--popup-overlay-bg)' }}
         >
           <div
             onClick={(e) => e.stopPropagation()}
@@ -154,7 +155,7 @@ const IconGallery = ({ icons, selectedMonth, setSelectedMonth, loading, iconErro
           >
             <button
               onClick={() => setPopupUser(null)}
-              className="absolute top-4 right-4 text-2xl text-gray-400 hover:text-white transition-colors z-10"
+              className="absolute top-4 right-4 text-2xl text-sub-text hover:text-white transition-colors z-10"
             >
               ×
             </button>
@@ -164,7 +165,7 @@ const IconGallery = ({ icons, selectedMonth, setSelectedMonth, loading, iconErro
             </h2>
 
             {popupIcons.length === 0 ? (
-              <div className="text-center py-8 text-gray-400">{config.ui.iconNoImages}</div>
+              <div className="text-center py-8 text-sub-text">{config.ui.iconNoImages}</div>
             ) : (
               <div className="flex flex-wrap gap-4 justify-center">
                 {popupIcons.map((icon, index) => (

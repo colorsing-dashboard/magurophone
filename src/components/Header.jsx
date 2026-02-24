@@ -65,7 +65,7 @@ const Header = ({ lastUpdate, loading, onRefresh }) => {
 
       <div className="absolute top-4 right-4 flex items-center gap-3">
         {lastUpdate && (
-          <div className="hidden md:block text-xs text-gray-400">
+          <div className="hidden md:block text-xs text-sub-text">
             {config.ui.lastUpdate}: {lastUpdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })}
           </div>
         )}
