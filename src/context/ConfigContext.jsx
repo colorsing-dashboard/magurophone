@@ -49,14 +49,18 @@ export function ConfigProvider({ config, children }) {
     })
 
     // glass-effect 背景色（カラーピッカー色 + 不透明度スライダーを rgba に変換）
-    if (o.glassBgColor && /^#[0-9a-f]{6}$/i.test(o.glassBgColor)) {
-      const r = parseInt(o.glassBgColor.slice(1, 3), 16)
-      const g = parseInt(o.glassBgColor.slice(3, 5), 16)
-      const b = parseInt(o.glassBgColor.slice(5, 7), 16)
-      const a = o.glassBgOpacity ?? 0.6
-      root.style.setProperty('--override-glass-bg', `rgba(${r}, ${g}, ${b}, ${a})`)
-    } else {
-      root.style.removeProperty('--override-glass-bg')
+    // 未設定時も base deepBlue を基準に常に計算することで preset 変更に追従させる
+    {
+      const col = (o.glassBgColor && /^#[0-9a-f]{6}$/i.test(o.glassBgColor))
+        ? o.glassBgColor
+        : config.colors.deepBlue
+      const a = (o.glassBgOpacity !== '' && o.glassBgOpacity != null) ? o.glassBgOpacity : 0.6
+      if (col && /^#[0-9a-f]{6}$/i.test(col)) {
+        const r = parseInt(col.slice(1, 3), 16)
+        const g = parseInt(col.slice(3, 5), 16)
+        const b = parseInt(col.slice(5, 7), 16)
+        root.style.setProperty('--override-glass-bg', `rgba(${r}, ${g}, ${b}, ${a})`)
+      }
     }
 
     // popup overlay 背景色
