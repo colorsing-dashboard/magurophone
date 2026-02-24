@@ -212,7 +212,7 @@ const ColorsTab = ({ config, updateConfig }) => {
             'フッターのメインテキスト。未設定 → UIアクセントカラー',
             c.amber)}
           {overrideField('subText', '補足テキスト色',
-            'ナビ非選択ラベル・タイムスタンプ・説明文等の灰色テキスト。未設定 → gray-400相当（#9ca3af）',
+            'ナビ非選択ラベル・タイムスタンプ・説明文等の灰色テキスト。未設定 → グレー',
             '#9ca3af')}
 
           <hr className="border-light-blue/20 my-6" />
@@ -226,13 +226,13 @@ const ColorsTab = ({ config, updateConfig }) => {
             <p className="text-xs text-gray-500 mb-4">グラデーションON時のタイトル色（3色）。未設定の場合はベースカラー（UIメインカラー周辺）が使われます。</p>
           </div>
           {overrideField('titleGradientStart', 'タイトルグラデーション（開始色）',
-            'ヘッダー・サイドバーのタイトルグラデーション開始色。未設定 → 背景グラデーション中間色（oceanTeal）',
+            'ヘッダー・サイドバーのタイトルグラデーション開始色。未設定 → 背景グラデーション中間色',
             c.oceanTeal)}
           {overrideField('titleGradientMid', 'タイトルグラデーション（中間色）',
-            'タイトルグラデーションの中間色。未設定 → UIメインカラー（lightBlue）',
+            'タイトルグラデーションの中間色。未設定 → UIメインカラー',
             c.lightBlue)}
           {overrideField('titleGradientEnd', 'タイトルグラデーション（終了色）',
-            'タイトルグラデーションの終了色。未設定 → UIアクセントカラー（amber）',
+            'タイトルグラデーションの終了色。未設定 → UIアクセントカラー',
             c.amber)}
         </div>
       )}
@@ -245,7 +245,7 @@ const ColorsTab = ({ config, updateConfig }) => {
           {/* カード背景色（色 + 透明度） */}
           <div className="mb-5">
             <label className="block text-sm font-body text-light-blue mb-1">カード背景色</label>
-            <p className="text-xs text-gray-500 mb-2">ランキングカード等の背景色。未設定 → 背景メイン（deepBlue）ベース、透明度60%</p>
+            <p className="text-xs text-gray-500 mb-2">ランキングカード等の背景色。未設定 → 背景メイン色ベース、透明度60%</p>
             <div className="flex items-center gap-3 mb-2">
               <input
                 type="color"
@@ -279,10 +279,10 @@ const ColorsTab = ({ config, updateConfig }) => {
           </div>
 
           {overrideField('backgroundMain', '背景メインカラー',
-            'body背景グラデーションのメイン（暗い側）。未設定 → 背景メイン（deepBlue）',
+            'body背景グラデーションのメイン（暗い側）。未設定 → 背景メイン色',
             c.deepBlue)}
           {overrideField('backgroundMid', '背景中間グラデーション',
-            'body背景グラデーションの中間色。未設定 → 背景グラデーション中間色（oceanTeal）',
+            'body背景グラデーションの中間色。未設定 → 背景グラデーション中間色',
             c.oceanTeal)}
           {overrideField('cardBorder', 'カードボーダー色',
             'ランキングカード・特典カード等のボーダー。未設定 → UIメインカラー',
@@ -291,7 +291,7 @@ const ColorsTab = ({ config, updateConfig }) => {
             'カードホバー時のボーダー色。未設定 → UIアクセントカラー',
             c.amber)}
           {overrideField('rank1Card', '1位カード強調色',
-            '1位カードのボーダー・ポイント数テキスト。未設定 → 強調色（accent）',
+            '1位カードのボーダー・ポイント数テキスト。未設定 → 強調色',
             c.accent)}
 
           {/* ポップアップ暗幕（色 + 透明度） */}
