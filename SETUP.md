@@ -1,150 +1,128 @@
 # 新規顧客サイト作成手順
 
-## ブランチ構成の前提
+## リポジトリ構成
 
 ```
 magurophone/ColorSing_LP（テンプレートリポジトリ）
-  ├─ main ブランチ  ← おおもと。sync-all.sh はここを参照して全顧客に配布する
-  └─ magurophone ブランチ  ← 開発・テスト用 兼 magurophoneサイトのバックアップ
-                              コード変更後は必ず main にも反映すること
+  └─ main ブランチ  ← 全顧客への配布元。ここを変更して sync-all.sh で展開
 
-colorsing-dashboard/magurophone（顧客リポジトリ）
-  └─ main ブランチ  ← magurophoneの本番サイト（他の顧客と同じ構造）
-                      https://colorsing-dashboard.github.io/magurophone/
+colorsing-dashboard/{username}（顧客リポジトリ）
+  └─ main ブランチ  ← 本番サイト
+                      https://colorsing-dashboard.github.io/{username}/
 ```
 
-> **注意**: magurophoneも一般顧客と同じく `colorsing-dashboard` org 側が本番。
-> テンプレートリポジトリの `magurophone` ブランチはあくまで開発環境・バックアップであり、
-> 実際のサービスは `colorsing-dashboard/magurophone` から配信される。
-
-**新機能・バグ修正の流れ:**
-1. `magurophone` ブランチで開発・動作確認
-2. `main` ブランチに反映（`public/customer/config.js` は除く）
-3. `bash scripts/sync-all.sh` で全顧客に配布
+**コード変更→全顧客反映の流れ:**
+1. テンプレート（`main` ブランチ）で修正・push
+2. `bash scripts/sync-all.sh` で全顧客に自動展開
 
 ---
 
-## 事前準備
-
-- GitHub Org `colorsing-dashboard` への管理者アクセス
-- Fine-grained PAT（Contents: Read and write）を発行済み
-- 顧客から受領: スプレッドシートID、ブランド名、ヘッダー画像（PC用・モバイル用）、カラー希望
-
----
-
-## 手順
+## 新規顧客追加手順
 
 ### 1. 顧客リポジトリを作成
 
 ```
 GitHub → colorsing-dashboard org → New repository
-  リポジトリ名: {username}（例: customer-a）
+  名前: {username}（英数字・ハイフン。URLになる）
   Public
-  README: なし（空のリポジトリ）
+  README: なし（空リポジトリで作成）
 ```
 
-### 2. テンプレートからクローンして初期設定
+### 2. customers.json に追記
 
-```bash
-# テンプレートのルートで実行
-REPO=customer-a  # ← 顧客のリポジトリ名に変更
-
-WORK=$(mktemp -d)
-git clone "https://github.com/colorsing-dashboard/$REPO.git" "$WORK/$REPO"
-
-# テンプレートのファイルをコピー（public/customer/ は除く）
-cp -r src "$WORK/$REPO/"
-cp -r public/*.html public/*.js "$WORK/$REPO/public/" 2>/dev/null || true
-cp package.json vite.config.js tailwind.config.js postcss.config.js index.html "$WORK/$REPO/" 2>/dev/null || true
-cp .github/workflows/deploy.yml "$WORK/$REPO/.github/workflows/"
-
-cd "$WORK/$REPO"
-```
-
-### 3. deploy.yml のブランチを main に変更
-
-テンプレートの deploy.yml は `branches: [magurophone]` になっているので必ず変更する。
-
-```bash
-sed -i 's/branches: \[magurophone\]/branches: [main]/' .github/workflows/deploy.yml
-```
-
-### 4. 初回コミット＆プッシュ
-
-```bash
-git add .
-git commit -m "feat: ColorSing LP 初期セットアップ"
-git push origin main
-```
-
-### 5. GitHub Pages を有効化
-
-```
-GitHubリポジトリ → Settings → Pages
-  → Source: 「GitHub Actions」を選択
-```
-
-その後、空コミットでActionsをトリガー（初回のみ）:
-
-```bash
-git commit --allow-empty -m "trigger pages" && git push
-```
-
-### 6. 管理画面で設定
-
-デプロイが完了したら `https://colorsing-dashboard.github.io/{username}/admin.html` を開く。
-
-| タブ | 設定内容 |
-|------|---------|
-| ブランディング | ブランド名・フッター・ページタイトル・ヘッダー画像URL |
-| カラー | テーマカラー・rank1Card等 |
-| Google Sheets | スプレッドシートID |
-| ビュー管理 | 使用するビューの有効/無効 |
-| 特典ティア | ティア構成・表示テンプレート |
-| デプロイ | Owner: colorsing-dashboard / Repo: {username} / Branch: main / Token |
-
-### 7. デプロイ実行
-
-管理画面の「デプロイ実行」ボタンを押す → GitHub Actionsが自動ビルド＆デプロイ。
-
-### 8. customers.json に追記
-
-テンプレートリポジトリの `customers.json` に追記（sync-all.sh の同期対象に含めるため）:
+テンプレートリポジトリの `customers.json` に追加:
 
 ```json
 {
   "org": "colorsing-dashboard",
-  "repos": ["magurophone", "customer-a"]
+  "repos": ["magurophone", "npe", "{username}"]
 }
 ```
 
-### 9. 顧客にURLを共有
+### 3. sync-all.sh を実行
+
+```bash
+bash scripts/sync-all.sh
+```
+
+テンプレートのコードが顧客リポジトリにプッシュされる。
+
+### 4. GitHub Pages を有効化（手動・1回のみ）
 
 ```
-https://colorsing-dashboard.github.io/{username}/
+顧客リポジトリ → Settings → Pages
+  → Source: 「GitHub Actions」を選択 → Save
 ```
+
+その後 GitHub Actions が自動でビルド＆デプロイされる（数分かかる）。
+
+> **Tips:** Actions タブでジョブの進捗を確認できる。
+
+### 5. 顧客に管理画面URLを共有
+
+```
+https://colorsing-dashboard.github.io/{username}/admin.html
+```
+
+---
+
+## 顧客側の初期設定（管理画面で行う）
+
+| 優先 | タブ | 設定内容 |
+|------|------|---------|
+| 必須 | Google Sheets | スプレッドシートID（「リンクを知っている全員が閲覧可」に設定必須） |
+| 必須 | デプロイ | Owner: `colorsing-dashboard` / Repo: `{username}` / Branch: `main` / Token（顧客のGitHub PAT） |
+| 必須 | ブランディング | ブランド名・ページタイトル |
+| 推奨 | カラー | テーマカラー |
+| 推奨 | ビュー管理 | 使用するビューの有効/無効、ラベル |
+| 推奨 | 特典ティア | ティア構成・スプレッドシートの列構成に合わせる |
+| 任意 | コンテンツ | FAQ・UIテキスト |
+| 任意 | エフェクト | パーティクル等 |
+
+### GitHub PAT（Personal Access Token）の発行方法（顧客向け）
+
+```
+GitHub にログイン → Settings → Developer settings（左メニュー最下部）
+  → Fine-grained tokens → Generate new token
+
+設定:
+  Token name: ColorSing LP
+  Expiration: 任意（1年推奨）
+  Resource owner: colorsing-dashboard
+  Repository access: Only select repositories → {username}
+  Permissions:
+    Contents: Read and write
+    Pages: Read and write（または Write）
+```
+
+> **注意:** Fine-grained token は org 管理者が `colorsing-dashboard` の Settings → Personal access tokens → Allow fine-grained personal access tokens を許可しておく必要がある。
 
 ---
 
 ## チェックリスト
 
-- [ ] colorsing-dashboard org にリポジトリ作成
-- [ ] テンプレートのコードをコピー
-- [ ] deploy.yml のブランチを `main` に変更
-- [ ] GitHub Pages を GitHub Actions に設定
-- [ ] 管理画面で全タブ設定
-- [ ] デプロイ実行・動作確認
-- [ ] customers.json に追記
-- [ ] 顧客にURL共有
+```
+管理者側:
+  □ colorsing-dashboard org にリポジトリ作成（Public・空）
+  □ customers.json に追記
+  □ bash scripts/sync-all.sh を実行
+  □ GitHub Pages を「GitHub Actions」に設定（Settings → Pages）
+  □ 管理画面URLを顧客に共有
+
+顧客側（管理画面）:
+  □ Sheets タブ: スプレッドシートID入力
+  □ デプロイ タブ: Repo / Token 入力
+  □ ブランディング タブ: 名前・タイトル入力
+  □ デプロイ実行（→ Actions でビルド完了確認）
+  □ カラー・ティア等カスタマイズ
+  □ 管理画面パスワードを設定してデプロイ
+```
 
 ---
 
 ## テンプレート同期（コード更新時）
 
-バグ修正・機能追加を全顧客に反映する場合:
-
 ```bash
-# テンプレートのルートで実行（jq が必要）
 bash scripts/sync-all.sh
 ```
 
@@ -154,14 +132,28 @@ bash scripts/sync-all.sh
 
 ---
 
+## スプレッドシートの構成
+
+| シート名（デフォルト） | 内容 |
+|----------------------|------|
+| `目標管理・ランキング` | ランキング（D2:G5）・目標（A2:B10） |
+| `特典管理` | 権利者データ（1行目: ヘッダー。Special列必須） |
+| `特典内容` | メニュー表示用特典一覧（A2:E20） |
+| `特典履歴` | 特典実行履歴（A列: 年月, B列: ユーザー名, C列: ティアキー） |
+| `枠内アイコン` | アイコン（1行目: ヘッダー, A列: 月/カテゴリ, B列: 名前, C列: 画像URL） |
+
+**特典管理シートのヘッダー行（1行目）は必須。**
+`Special` という列名が必要（大文字小文字不問）。なければ最終列が自動でSpecial列扱いになる。
+
+---
+
 ## トラブルシューティング
 
-### GitHub Actions が動かない
-→ deploy.yml の `branches:` が `[magurophone]` のまま。`[main]` に変更してプッシュ。
-
-### 管理画面の設定がリセットされた
-→ 「GitHubから最新設定を取得」ボタンで復元。
-→ リポジトリの `public/customer/config.js` が空なら、管理画面で再入力してデプロイ。
-
-### デプロイボタンが表示されない
-→ デプロイタブの接続設定（Owner/Repo/Branch/Token）が未入力。
+| 症状 | 原因・対処 |
+|------|----------|
+| GitHub Actions が動かない | Settings → Pages が「GitHub Actions」になっているか確認 |
+| データが表示されない | スプレッドシートの共有設定が「リンクを知っている全員が閲覧可」になっているか確認 |
+| ヘッダー行がデータに混入する | 特典管理シートの1行目が正しくヘッダー（Special列含む）になっているか確認 |
+| デプロイが失敗する | DeployTab の Token が正しいか確認。org の fine-grained token 許可設定を確認 |
+| 設定が反映されない | 管理画面で「デプロイ実行」後、Actions の完了を待つ。ブラウザキャッシュをクリア |
+| 削除したティアが復活する | ページリロード後に再確認（修正済み） |

@@ -205,10 +205,10 @@ window.DASHBOARD_CONFIG = {
     "particleOpacity": 1
   },
   "deploy": {
-    "owner": "magurophone",
-    "repo": "ColorSing_LP",
-    "branch": "magurophone",
-    "token": "rev:Sc9LdGZ04IAEXE76dLXwApfIhKrt6RkkUwOJKRNYlNylCCKFV49Kuqf1fgc_d4JfN2TwVnEG0IMBSTQB11_tap_buhtig"
+    "owner": "colorsing-dashboard",
+    "repo": "",
+    "branch": "main",
+    "token": ""
   },
   "admin": {
     "password": "CSadmin",
