@@ -16,8 +16,8 @@ const ColorField = ({ label, value, onChange, onClear, description, pickerValue 
         type="text"
         value={value || ''}
         onChange={(e) => onChange(e.target.value)}
-        placeholder="未設定（ベースカラー使用）"
-        className="flex-1 px-4 py-2 glass-effect border border-light-blue/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber transition-all text-sm font-mono"
+        placeholder={!value && pickerValue ? pickerValue : '未設定'}
+        className="flex-1 px-4 py-2 glass-effect border border-light-blue/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-amber transition-all text-sm font-mono"
       />
       {value && onClear && (
         <button

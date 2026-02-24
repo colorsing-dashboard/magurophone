@@ -7,7 +7,7 @@ const IconsView = ({ icons, selectedMonth, setSelectedMonth, loading, iconError 
 
   return (
     <section>
-      <h2 className="text-2xl md:text-4xl font-body mb-6 md:mb-12 text-center text-glow-soft text-highlight">
+      <h2 className="text-2xl md:text-4xl font-body mb-6 md:mb-12 text-center text-glow-soft text-primary">
         {viewConfig.title || '🖼️ 枠内アイコン'}
       </h2>
       <IconGallery
