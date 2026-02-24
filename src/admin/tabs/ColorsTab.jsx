@@ -45,6 +45,15 @@ const blendWithWhite = (hex, ratio) => {
   return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`
 }
 
+// rgba プレビュー計算（opacity = 0〜1 の不透明度）
+const toRgba = (hex, opacity) => {
+  const col = hex || '#000000'
+  const r = parseInt(col.slice(1, 3), 16)
+  const g = parseInt(col.slice(3, 5), 16)
+  const b = parseInt(col.slice(5, 7), 16)
+  return `rgba(${r},${g},${b},${opacity})`
+}
+
 const TABS = ['ベースカラー', 'テキスト', '背景・カード']
 
 const ColorsTab = ({ config, updateConfig }) => {
@@ -54,9 +63,12 @@ const ColorsTab = ({ config, updateConfig }) => {
     // オーバーライドをクリア（残存防止）
     const overrideKeys = [
       'headerGradientStart', 'headerGradientEnd',
+      'titleGradientStart', 'titleGradientMid', 'titleGradientEnd',
       'primaryText', 'accentText', 'nameText', 'contentText', 'footerText', 'titleColor',
       'glassBgColor', 'glassBgOpacity',
+      'popupOverlayColor', 'popupOverlayOpacity',
       'backgroundMain', 'backgroundMid', 'cardBorder', 'cardBorderHover', 'rank1Card',
+      'subText',
     ]
     overrideKeys.forEach((key) => updateConfig(`colorOverrides.${key}`, ''))
     Object.entries(preset.colors).forEach(([key, value]) => {
@@ -78,6 +90,24 @@ const ColorsTab = ({ config, updateConfig }) => {
       onClear={() => updateConfig(`colorOverrides.${key}`, '')}
     />
   )
+
+  // 透明度スライダー: UIは「透明度(%)」で表示（100%=完全透明）、内部はopacity(0〜1)で保存
+  // opacityDefault: 未設定時のデフォルト不透明度
+  const opacitySlider = (opacityKey, opacityDefault) => {
+    const opacity = o[opacityKey] !== '' && o[opacityKey] != null ? o[opacityKey] : opacityDefault
+    const transparency = 1 - opacity  // UIに表示する透明度（0〜1）
+    return {
+      sliderValue: transparency,
+      displayPct: Math.round(transparency * 100),
+      onChange: (e) => updateConfig(`colorOverrides.${opacityKey}`, 1 - parseFloat(e.target.value)),
+    }
+  }
+
+  const glassSlider = opacitySlider('glassBgOpacity', 0.6)
+  const popupSlider = opacitySlider('popupOverlayOpacity', 0.7)
+
+  const glassHasChange = o.glassBgColor || (o.glassBgOpacity !== '' && o.glassBgOpacity != null)
+  const popupHasChange = o.popupOverlayColor || (o.popupOverlayOpacity !== '' && o.popupOverlayOpacity != null)
 
   return (
     <div>
@@ -181,12 +211,29 @@ const ColorsTab = ({ config, updateConfig }) => {
           {overrideField('footerText', 'フッターテキスト色',
             'フッターのメインテキスト。未設定 → UIアクセントカラー',
             c.amber)}
-          {overrideField('titleColor', 'タイトルテキスト色',
-            'ヘッダーのサイト名テキスト（グラデーションOFF時のみ有効）。未設定 → UIメインカラー',
-            c.lightBlue)}
           {overrideField('subText', '補足テキスト色',
             'ナビ非選択ラベル・タイムスタンプ・説明文等の灰色テキスト。未設定 → gray-400相当（#9ca3af）',
             '#9ca3af')}
+
+          <hr className="border-light-blue/20 my-6" />
+          <h3 className="text-base font-body text-amber mb-4">タイトルテキスト色</h3>
+
+          {overrideField('titleColor', 'タイトルテキスト色（グラデーションOFF時）',
+            'ヘッダー・サイドバーのサイト名テキスト（グラデーションOFF時のみ有効）。未設定 → UIメインカラー',
+            c.lightBlue)}
+
+          <div className="mb-2">
+            <p className="text-xs text-gray-500 mb-4">グラデーションON時のタイトル色（3色）。未設定の場合はベースカラー（UIメインカラー周辺）が使われます。</p>
+          </div>
+          {overrideField('titleGradientStart', 'タイトルグラデーション（開始色）',
+            'ヘッダー・サイドバーのタイトルグラデーション開始色。未設定 → 背景グラデーション中間色（oceanTeal）',
+            c.oceanTeal)}
+          {overrideField('titleGradientMid', 'タイトルグラデーション（中間色）',
+            'タイトルグラデーションの中間色。未設定 → UIメインカラー（lightBlue）',
+            c.lightBlue)}
+          {overrideField('titleGradientEnd', 'タイトルグラデーション（終了色）',
+            'タイトルグラデーションの終了色。未設定 → UIアクセントカラー（amber）',
+            c.amber)}
         </div>
       )}
 
@@ -195,7 +242,7 @@ const ColorsTab = ({ config, updateConfig }) => {
         <div>
           <p className="text-sm text-gray-400 mb-6">未設定の場合、ベースカラーが適用されます。</p>
 
-          {/* カード背景色（色 + 不透明度） */}
+          {/* カード背景色（色 + 透明度） */}
           <div className="mb-5">
             <label className="block text-sm font-body text-light-blue mb-1">カード背景色</label>
             <p className="text-xs text-gray-500 mb-2">ランキングカード等の背景色。未設定 → 背景メイン（deepBlue）ベース、透明度60%</p>
@@ -210,14 +257,14 @@ const ColorsTab = ({ config, updateConfig }) => {
               <input
                 type="range"
                 min="0" max="1" step="0.05"
-                value={o.glassBgOpacity ?? 0.6}
-                onChange={(e) => updateConfig('colorOverrides.glassBgOpacity', parseFloat(e.target.value))}
+                value={glassSlider.sliderValue}
+                onChange={glassSlider.onChange}
                 className="flex-1"
               />
               <span className="text-xs text-gray-300 w-10 text-right">
-                {Math.round((o.glassBgOpacity ?? 0.6) * 100)}%
+                {glassSlider.displayPct}%
               </span>
-              {o.glassBgColor && (
+              {glassHasChange && (
                 <button
                   onClick={() => { updateConfig('colorOverrides.glassBgColor', ''); updateConfig('colorOverrides.glassBgOpacity', '') }}
                   className="px-3 py-2 text-xs text-gray-400 hover:text-tuna-red transition-all"
@@ -226,7 +273,7 @@ const ColorsTab = ({ config, updateConfig }) => {
               )}
               <div
                 className="w-10 h-10 rounded-lg border border-light-blue/30"
-                style={{ backgroundColor: (() => { const col = o.glassBgColor || '#0a1628'; const a = o.glassBgOpacity ?? 0.6; const r = parseInt(col.slice(1,3),16); const g = parseInt(col.slice(3,5),16); const b = parseInt(col.slice(5,7),16); return `rgba(${r},${g},${b},${a})` })() }}
+                style={{ backgroundColor: toRgba(o.glassBgColor || c.deepBlue || '#0a1628', 1 - glassSlider.sliderValue) }}
               />
             </div>
           </div>
@@ -247,7 +294,7 @@ const ColorsTab = ({ config, updateConfig }) => {
             '1位カードのボーダー・ポイント数テキスト。未設定 → 強調色（accent）',
             c.accent)}
 
-          {/* ポップアップ暗幕（色 + 不透明度） */}
+          {/* ポップアップ暗幕（色 + 透明度） */}
           <div className="mb-5">
             <label className="block text-sm font-body text-light-blue mb-1">ポップアップ暗幕色</label>
             <p className="text-xs text-gray-500 mb-2">ポップアップ表示時の背景暗幕。未設定 → 黒70%</p>
@@ -262,14 +309,14 @@ const ColorsTab = ({ config, updateConfig }) => {
               <input
                 type="range"
                 min="0" max="1" step="0.05"
-                value={o.popupOverlayOpacity ?? 0.7}
-                onChange={(e) => updateConfig('colorOverrides.popupOverlayOpacity', parseFloat(e.target.value))}
+                value={popupSlider.sliderValue}
+                onChange={popupSlider.onChange}
                 className="flex-1"
               />
               <span className="text-xs text-gray-300 w-10 text-right">
-                {Math.round((o.popupOverlayOpacity ?? 0.7) * 100)}%
+                {popupSlider.displayPct}%
               </span>
-              {o.popupOverlayColor && (
+              {popupHasChange && (
                 <button
                   onClick={() => { updateConfig('colorOverrides.popupOverlayColor', ''); updateConfig('colorOverrides.popupOverlayOpacity', '') }}
                   className="px-3 py-2 text-xs text-gray-400 hover:text-tuna-red transition-all"
@@ -278,10 +325,21 @@ const ColorsTab = ({ config, updateConfig }) => {
               )}
               <div
                 className="w-10 h-10 rounded-lg border border-light-blue/30"
-                style={{ backgroundColor: (() => { const col = o.popupOverlayColor || '#000000'; const a = o.popupOverlayOpacity ?? 0.7; const r = parseInt(col.slice(1,3),16); const g = parseInt(col.slice(3,5),16); const b = parseInt(col.slice(5,7),16); return `rgba(${r},${g},${b},${a})` })() }}
+                style={{ backgroundColor: toRgba(o.popupOverlayColor || '#000000', 1 - popupSlider.sliderValue) }}
               />
             </div>
           </div>
+
+          {/* ヘッダー背景グラデーション */}
+          <hr className="border-light-blue/20 my-6" />
+          <h3 className="text-base font-body text-amber mb-2">ヘッダー背景グラデーション</h3>
+          <p className="text-xs text-gray-500 mb-4">未設定の場合、ヘッダー背景はグラデーションなし（透明）。画像がある場合は画像が表示されます。</p>
+          {overrideField('headerGradientStart', 'ヘッダー背景グラデーション（明るい側）',
+            'ヘッダー背景グラデーションの中間の明るい色。未設定 → 背景なし',
+            c.oceanTeal)}
+          {overrideField('headerGradientEnd', 'ヘッダー背景グラデーション（暗い側）',
+            'ヘッダー背景グラデーションの両端の暗い色。未設定 → 背景なし',
+            c.deepBlue)}
         </div>
       )}
     </div>

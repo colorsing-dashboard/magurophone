@@ -34,7 +34,7 @@ const HomeView = ({ ranking, goals }) => {
                 className={`text-2xl md:text-4xl font-black ${index !== 0 ? 'text-highlight' : ''}`}
                 style={index === 0 ? { color: `var(--color-rank1-card, var(--base-accent))` } : undefined}
               >
-                <CountUp end={person[RANKING_FIELDS.POINTS]} />
+                <CountUp end={person[RANKING_FIELDS.POINTS]} unit={config.home.pointsUnit ?? 'k'} />
               </div>
               <div className="text-xs md:text-sm text-sub-text mt-1 md:mt-2">{config.home.pointsLabel}</div>
             </div>

@@ -55,6 +55,19 @@ const BrandingTab = ({ config, updateConfig }) => {
         description="ヘッダー画像上に大きく表示されるタイトル"
       />
 
+      <div className="mb-3 flex items-center gap-4">
+        <label className="flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={config.brand.showHeader !== false}
+            onChange={(e) => updateConfig('brand.showHeader', e.target.checked)}
+            className="accent-amber"
+          />
+          ヘッダー画像エリアを表示
+        </label>
+      </div>
+      <p className="text-xs text-gray-500 mb-5 ml-6">OFFにすると大きなヘッダー領域を非表示にしてタイトルをコンパクト表示します（画像なしの場合に推奨）</p>
+
       <div className="mb-5 flex items-center gap-4">
         <label className="flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
           <input
@@ -72,13 +85,24 @@ const BrandingTab = ({ config, updateConfig }) => {
           <label className="flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
             <input
               type="checkbox"
+              checked={config.brand.titleGlow !== false}
+              onChange={(e) => updateConfig('brand.titleGlow', e.target.checked)}
+              className="accent-amber"
+            />
+            タイトルにグロー（発光）エフェクトを適用
+          </label>
+
+          <label className="flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
+            <input
+              type="checkbox"
               checked={config.brand.titleGradient !== false}
               onChange={(e) => updateConfig('brand.titleGradient', e.target.checked)}
               className="accent-amber"
             />
             タイトルにグラデーションを適用
           </label>
-          <p className="text-xs text-gray-500">OFFにすると単色（プライマリカラー）で表示されます</p>
+          <p className="text-xs text-gray-500">OFFにすると単色で表示されます（カラー設定の「タイトルテキスト色」が適用）</p>
+          <p className="text-xs text-gray-500">グラデーション色の変更は「カラー設定 → テキスト」タブの「タイトルグラデーション色」で設定できます</p>
 
           {config.brand.titleGradient !== false && (
             <div>

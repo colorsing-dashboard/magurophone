@@ -15,21 +15,25 @@ const GRADIENT_DIR = {
 const Sidebar = ({ currentView, onViewChange, lastUpdate }) => {
   const config = useConfig()
   const enabledViews = config.views.filter(v => v.enabled)
+  const glowClass = config.brand.titleGlow !== false ? 'text-glow-soft' : ''
 
   return (
     <aside className="hidden md:fixed md:flex md:flex-col md:left-0 md:top-0 md:bottom-0 md:w-64 glass-effect border-r border-card-border/30 z-40 p-6">
       <div className="mb-8">
         {config.brand.titleGradient !== false ? (
           <h1
-            className="text-2xl font-display font-black text-transparent bg-clip-text"
+            className={`text-2xl font-display font-black text-transparent bg-clip-text ${glowClass}`}
             style={{
-              backgroundImage: `linear-gradient(${GRADIENT_DIR[config.brand.titleGradientDirection] || 'to right'}, var(--color-ocean-teal), var(--color-light-blue), var(--color-amber))`,
+              backgroundImage: `linear-gradient(${GRADIENT_DIR[config.brand.titleGradientDirection] || 'to right'}, var(--color-title-gradient-start, var(--color-ocean-teal)), var(--color-title-gradient-mid, var(--color-light-blue)), var(--color-title-gradient-end, var(--color-amber)))`,
             }}
           >
             {config.brand.sidebarTitle}
           </h1>
         ) : (
-          <h1 className="text-2xl font-display font-black text-primary">
+          <h1
+            className={`text-2xl font-display font-black text-primary ${glowClass}`}
+            style={{ color: 'var(--color-title, var(--color-primary))' }}
+          >
             {config.brand.sidebarTitle}
           </h1>
         )}
@@ -43,7 +47,7 @@ const Sidebar = ({ currentView, onViewChange, lastUpdate }) => {
             className={`w-full text-left px-4 py-3 rounded-lg transition-all flex items-center gap-3 ${
               currentView === view.id
                 ? 'bg-primary/20 border border-primary/50 text-primary'
-                : 'hover:bg-primary/10 text-gray-300 hover:text-primary'
+                : 'hover:bg-primary/10 text-sub-text hover:text-primary'
             }`}
           >
             <IconRenderer icon={view.icon} size={20} />

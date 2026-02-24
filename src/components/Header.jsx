@@ -19,14 +19,69 @@ const sanitizeCssUrl = (url) => {
   return sanitized ? `url('${sanitized}')` : null
 }
 
+const TitleText = ({ config, sizeClass, glowClass }) => {
+  const dir = GRADIENT_DIR[config.brand.titleGradientDirection] || 'to right'
+  if (config.brand.titleGradient !== false) {
+    return (
+      <h1
+        className={`${sizeClass} font-display font-black text-transparent bg-clip-text ${glowClass} mb-4 leading-relaxed py-2`}
+        style={{
+          backgroundImage: `linear-gradient(${dir}, var(--color-title-gradient-start, var(--color-ocean-teal)), var(--color-title-gradient-mid, var(--color-light-blue)), var(--color-title-gradient-end, var(--color-amber)))`,
+        }}
+      >
+        {config.brand.name}
+      </h1>
+    )
+  }
+  return (
+    <h1
+      className={`${sizeClass} font-display font-black ${glowClass} mb-4 leading-relaxed py-2`}
+      style={{ color: 'var(--color-title, var(--color-primary))' }}
+    >
+      {config.brand.name}
+    </h1>
+  )
+}
+
 const Header = ({ lastUpdate, loading, onRefresh }) => {
   const config = useConfig()
+  const o = config.colorOverrides || {}
+  const hasHeaderBg = o.headerGradientStart || o.headerGradientEnd
+  const glowClass = config.brand.titleGlow !== false ? 'text-glow-soft' : ''
+
+  // ヘッダー非表示モード（コンパクト表示）
+  if (config.brand.showHeader === false) {
+    return (
+      <div className="w-full px-6 py-4 flex items-center justify-between gap-4">
+        {config.brand.showTitle !== false && (
+          <TitleText config={config} sizeClass="text-2xl md:text-3xl" glowClass={glowClass} />
+        )}
+        <div className="flex items-center gap-3 ml-auto shrink-0">
+          {lastUpdate && (
+            <div className="hidden md:block text-xs text-sub-text">
+              {config.ui.lastUpdate}: {lastUpdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })}
+            </div>
+          )}
+          <button
+            onClick={onRefresh}
+            disabled={loading}
+            className="glass-effect px-4 py-2 rounded-lg border border-card-border/30 hover:border-card-hover transition-all text-sm font-body text-primary disabled:opacity-50 disabled:cursor-not-allowed"
+            title="データを再読み込み"
+          >
+            {loading ? '🔄' : '↻'} {config.ui.refreshButton}
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div
       className="w-full h-[300px] md:h-[600px] relative overflow-hidden"
       style={{
-        background: `linear-gradient(to bottom, var(--color-header-gradient-end, var(--color-deep-blue)), var(--color-header-gradient-start, var(--color-ocean-teal)) 50%, var(--color-header-gradient-end, var(--color-deep-blue)))`,
+        background: hasHeaderBg
+          ? `linear-gradient(to bottom, var(--color-header-gradient-end, var(--color-deep-blue)), var(--color-header-gradient-start, var(--color-ocean-teal)) 50%, var(--color-header-gradient-end, var(--color-deep-blue)))`
+          : 'transparent',
       }}
     >
       <div
@@ -42,23 +97,7 @@ const Header = ({ lastUpdate, loading, onRefresh }) => {
       {config.brand.showTitle !== false && (
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center px-4">
-            {config.brand.titleGradient !== false ? (
-              <h1
-                className="text-4xl md:text-8xl font-display font-black text-transparent bg-clip-text text-glow-soft mb-4 leading-relaxed py-2"
-                style={{
-                  backgroundImage: `linear-gradient(${GRADIENT_DIR[config.brand.titleGradientDirection] || 'to right'}, var(--color-ocean-teal), var(--color-light-blue), var(--color-amber))`,
-                }}
-              >
-                {config.brand.name}
-              </h1>
-            ) : (
-              <h1
-                className="text-4xl md:text-8xl font-display font-black text-glow-soft mb-4 leading-relaxed py-2"
-                style={{ color: 'var(--color-title, var(--color-primary))' }}
-              >
-                {config.brand.name}
-              </h1>
-            )}
+            <TitleText config={config} sizeClass="text-4xl md:text-8xl" glowClass={glowClass} />
           </div>
         </div>
       )}
@@ -72,7 +111,7 @@ const Header = ({ lastUpdate, loading, onRefresh }) => {
         <button
           onClick={onRefresh}
           disabled={loading}
-          className="glass-effect px-4 py-2 rounded-lg border border-card-border/30 hover:border-card-hover transition-all text-sm font-body disabled:opacity-50 disabled:cursor-not-allowed"
+          className="glass-effect px-4 py-2 rounded-lg border border-card-border/30 hover:border-card-hover transition-all text-sm font-body text-primary disabled:opacity-50 disabled:cursor-not-allowed"
           title="データを再読み込み"
         >
           {loading ? '🔄' : '↻'} {config.ui.refreshButton}

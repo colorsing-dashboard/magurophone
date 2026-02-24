@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 
-const CountUp = ({ end, duration = 2000 }) => {
-  const rawEnd = typeof end === 'number' ? end : parseInt(String(end).replace('k', ''), 10)
+const CountUp = ({ end, duration = 2000, unit = 'k' }) => {
+  const rawEnd = typeof end === 'number' ? end : parseInt(String(end), 10)
   const endNum = Number.isFinite(rawEnd) ? rawEnd : 0
 
   const [count, setCount] = useState(0)
@@ -43,7 +43,7 @@ const CountUp = ({ end, duration = 2000 }) => {
     return () => cancelAnimationFrame(animationFrameId)
   }, [endNum])
 
-  return <span>{count}k</span>
+  return <span>{count}{unit}</span>
 }
 
 export default CountUp
