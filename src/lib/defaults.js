@@ -45,6 +45,8 @@ const DEFAULT_CONFIG = {
     subText: '',
     popupOverlayColor: '',
     popupOverlayOpacity: '',
+    menuCardLabelColor: '',
+    menuCardLabelOpacity: '',
   },
 
   fonts: {
