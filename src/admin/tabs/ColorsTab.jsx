@@ -67,6 +67,7 @@ const ColorsTab = ({ config, updateConfig }) => {
       'primaryText', 'accentText', 'nameText', 'contentText', 'footerText', 'titleColor',
       'glassBgColor', 'glassBgOpacity',
       'popupOverlayColor', 'popupOverlayOpacity',
+      'menuCardLabelColor', 'menuCardLabelOpacity',
       'backgroundMain', 'backgroundMid', 'cardBorder', 'cardBorderHover', 'rank1Card',
       'subText',
     ]
@@ -105,9 +106,11 @@ const ColorsTab = ({ config, updateConfig }) => {
 
   const glassSlider = opacitySlider('glassBgOpacity', 0.6)
   const popupSlider = opacitySlider('popupOverlayOpacity', 0.7)
+  const menuLabelSlider = opacitySlider('menuCardLabelOpacity', 0.1)
 
   const glassHasChange = o.glassBgColor || (o.glassBgOpacity !== '' && o.glassBgOpacity != null)
   const popupHasChange = o.popupOverlayColor || (o.popupOverlayOpacity !== '' && o.popupOverlayOpacity != null)
+  const menuLabelHasChange = o.menuCardLabelColor || (o.menuCardLabelOpacity !== '' && o.menuCardLabelOpacity != null)
 
   return (
     <div>
@@ -274,6 +277,42 @@ const ColorsTab = ({ config, updateConfig }) => {
               <div
                 className="w-10 h-10 rounded-lg border border-light-blue/30"
                 style={{ backgroundColor: toRgba(o.glassBgColor || c.deepBlue || '#0a1628', 1 - glassSlider.sliderValue) }}
+              />
+            </div>
+          </div>
+
+          {/* メニューカードラベル背景色（色 + 透明度） */}
+          <div className="mb-5">
+            <label className="block text-sm font-body text-light-blue mb-1">メニューカードラベル背景色</label>
+            <p className="text-xs text-gray-500 mb-2">メニュータブのカード上部ラベル背景色。未設定 → アクセントカラーベース、透明度90%</p>
+            <div className="flex items-center gap-3 mb-2">
+              <input
+                type="color"
+                value={o.menuCardLabelColor || o.accentText || c.amber || '#d4a574'}
+                onChange={(e) => updateConfig('colorOverrides.menuCardLabelColor', e.target.value)}
+                className="w-12 h-10 rounded-lg border border-light-blue/30 cursor-pointer bg-transparent"
+              />
+              <span className="text-xs text-gray-400 w-16">透明度</span>
+              <input
+                type="range"
+                min="0" max="1" step="0.05"
+                value={menuLabelSlider.sliderValue}
+                onChange={menuLabelSlider.onChange}
+                className="flex-1"
+              />
+              <span className="text-xs text-gray-300 w-10 text-right">
+                {menuLabelSlider.displayPct}%
+              </span>
+              {menuLabelHasChange && (
+                <button
+                  onClick={() => { updateConfig('colorOverrides.menuCardLabelColor', ''); updateConfig('colorOverrides.menuCardLabelOpacity', '') }}
+                  className="px-3 py-2 text-xs text-gray-400 hover:text-tuna-red transition-all"
+                  title="リセット"
+                >クリア</button>
+              )}
+              <div
+                className="w-10 h-10 rounded-lg border border-light-blue/30"
+                style={{ backgroundColor: toRgba(o.menuCardLabelColor || o.accentText || c.amber || '#d4a574', 1 - menuLabelSlider.sliderValue) }}
               />
             </div>
           </div>

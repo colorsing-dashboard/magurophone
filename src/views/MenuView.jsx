@@ -27,7 +27,7 @@ const MenuView = ({ benefits, onSelectBenefit }) => {
             }`}
           >
             {/* モバイル版：簡略表示 */}
-            <div className="md:hidden py-3 px-4 bg-highlight/10 rounded-2xl relative flex-1">
+            <div className="md:hidden py-3 px-4 rounded-2xl relative flex-1" style={{ backgroundColor: 'var(--menu-card-label-bg)' }}>
               <div className="absolute top-2 left-2">
                 <span className="text-xs font-bold text-highlight font-body">{benefit[BENEFIT_FIELDS.TITLE]}</span>
               </div>
@@ -38,7 +38,7 @@ const MenuView = ({ benefits, onSelectBenefit }) => {
 
             {/* ボトルラベル（PC版のみ） */}
             {benefit[BENEFIT_FIELDS.LABEL] && (
-              <div className="hidden md:block py-3 px-4 md:px-6 bg-highlight/10 rounded-2xl md:rounded-t-2xl md:mb-4 md:pb-3 md:border-b border-card-hover/30 md:-mx-6 md:-mt-6">
+              <div className="hidden md:block py-3 px-4 md:px-6 rounded-2xl md:rounded-t-2xl md:mb-4 md:pb-3 md:border-b border-card-hover/30 md:-mx-6 md:-mt-6" style={{ backgroundColor: 'var(--menu-card-label-bg)' }}>
                 <div className="flex items-center justify-center pt-1">
                   <span className="text-sm md:text-base text-highlight font-body">{benefit[BENEFIT_FIELDS.TITLE]} {benefit[BENEFIT_FIELDS.LABEL]}</span>
                 </div>

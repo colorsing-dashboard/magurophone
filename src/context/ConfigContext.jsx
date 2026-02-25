@@ -63,6 +63,22 @@ export function ConfigProvider({ config, children }) {
       }
     }
 
+    // menu card label background（未設定時はアクセントカラー10%）
+    {
+      const col = (o.menuCardLabelColor && /^#[0-9a-f]{6}$/i.test(o.menuCardLabelColor))
+        ? o.menuCardLabelColor
+        : (o.accentText || config.colors.amber)
+      const a = (o.menuCardLabelOpacity !== '' && o.menuCardLabelOpacity != null)
+        ? o.menuCardLabelOpacity
+        : 0.1
+      if (col && /^#[0-9a-f]{6}$/i.test(col)) {
+        const r = parseInt(col.slice(1, 3), 16)
+        const g = parseInt(col.slice(3, 5), 16)
+        const b = parseInt(col.slice(5, 7), 16)
+        root.style.setProperty('--menu-card-label-bg', `rgba(${r}, ${g}, ${b}, ${a})`)
+      }
+    }
+
     // popup overlay 背景色
     if (o.popupOverlayColor && /^#[0-9a-f]{6}$/i.test(o.popupOverlayColor)) {
       const r = parseInt(o.popupOverlayColor.slice(1, 3), 16)
