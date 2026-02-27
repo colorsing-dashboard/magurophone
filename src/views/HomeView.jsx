@@ -107,7 +107,7 @@ const HomeView = ({ ranking, goals, events }) => {
                       src={closedImg}
                       alt="CLOSED"
                       className="w-2/3 md:w-1/2 max-w-sm select-none pointer-events-none"
-                      style={{ filter: 'drop-shadow(0 0 8px rgba(0,0,0,1)) drop-shadow(0 2px 12px rgba(0,0,0,1)) drop-shadow(0 0 30px rgba(0,0,0,0.8))' }}
+                      style={{ filter: 'drop-shadow(0 0 8px rgba(0,0,0,1)) drop-shadow(0 0 16px rgba(0,0,0,1)) drop-shadow(0 2px 24px rgba(0,0,0,1)) drop-shadow(0 0 50px rgba(0,0,0,1)) drop-shadow(0 0 80px rgba(0,0,0,0.8))' }}
                     />
                   </div>
                 )}
