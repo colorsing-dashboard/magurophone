@@ -106,13 +106,14 @@ const HomeView = ({ ranking, goals, events }) => {
                     <img
                       src={closedImg}
                       alt="CLOSED"
-                      className="w-1/2 md:w-2/5 max-w-xs drop-shadow-2xl select-none pointer-events-none"
+                      className="w-1/2 md:w-2/5 max-w-xs select-none pointer-events-none"
+                      style={{ filter: 'drop-shadow(0 0 8px rgba(0,0,0,1)) drop-shadow(0 2px 12px rgba(0,0,0,1)) drop-shadow(0 0 30px rgba(0,0,0,0.8))' }}
                     />
                   </div>
                 )}
               </div>
             )}
-            <div className="p-5 md:p-8 text-center">
+            <div className={`p-5 md:p-8 text-center${ended ? ' opacity-40' : ''}`}>
               {events.upcoming.date && (
                 <div className="text-amber text-sm font-body mb-2">
                   {formatEventDate(events.upcoming.date)}
