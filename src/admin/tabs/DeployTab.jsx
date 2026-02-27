@@ -78,19 +78,6 @@ const DeployTab = ({ config, updateConfig, onSyncFromGitHub }) => {
     setMeta(loadConfigMeta())
   }, [config])
 
-  // GitHub Pages URL からオーナー・リポジトリを自動検出（初回のみ）
-  useEffect(() => {
-    const { hostname, pathname } = window.location
-    const parts = hostname.split('.')
-    if (parts.length >= 3 && parts[1] === 'github' && parts[2] === 'io') {
-      const autoOwner = parts[0]
-      const autoRepo  = pathname.split('/').filter(Boolean)[0] || ''
-      if (!deploy.owner && autoOwner) updateConfig('deploy.owner', autoOwner)
-      if (!deploy.repo  && autoRepo)  updateConfig('deploy.repo',  autoRepo)
-      if (!deploy.branch)             updateConfig('deploy.branch', 'main')
-    }
-  }, [])
-
   return (
     <div>
       <h2 className="text-2xl font-body text-light-blue mb-6">GitHub デプロイ</h2>
