@@ -3,13 +3,17 @@ import IconRenderer from '../../components/IconRenderer'
 
 // 絵文字プリセット（variation selector U+FE0F 付きで正しくカラー表示される）
 const EMOJI_GROUPS = {
-  '定番': ['🏠', '🍾', '👥', '🖼\uFE0F', '📝', '🎵', '🎮', '💬', '🎤', '⚡', '🏆', '👑', '🎧', '📱', '🚀', '🔔'],
-  '音楽・エンタメ': ['🎶', '🎼', '🎹', '🎸', '🎺', '🎻', '🥁', '🎬', '🎭', '🎪', '🎠', '🎡', '🎢'],
-  '食事・ドリンク': ['🍷', '🥂', '🍸', '🍹', '🍺', '🍻', '☕', '🍰', '🎂', '🍩', '🍫', '🍿'],
-  'ハート・感情': ['❤\uFE0F', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '💖', '💗', '💝', '✨', '🌟', '⭐', '💫'],
-  '動物': ['🐟', '🐱', '🐶', '🐰', '🦊', '🐻', '🐼', '🐨', '🦁', '🐯', '🐮', '🐷', '🐸', '🐵', '🦄', '🐲'],
-  '自然': ['🌸', '🌺', '🌻', '🌹', '🌷', '💐', '🍀', '🌙', '☀\uFE0F', '🌈', '❄\uFE0F', '🔥', '💧', '🌊'],
-  '記号・マーク': ['📊', '📈', '📉', '🏷\uFE0F', '🎨', '🔑', '🛡\uFE0F', '💡', '🔒', '📷', '💎', '🎁', '🎯', '🏅', '🥇', '🥈', '🥉'],
+  '定番': ['🏠', '🍾', '👥', '🖼\uFE0F', '📝', '🎵', '🎮', '💬', '🎤', '⚡', '🏆', '👑', '🎧', '📱', '🚀', '🔔', '📌', '📣', '💌', '🗓\uFE0F', '⏰', '🔗', '📢', '✅', '🆕', '🎖\uFE0F', '🔖', '📍'],
+  '音楽・エンタメ': ['🎶', '🎼', '🎹', '🎸', '🎺', '🎻', '🥁', '🪗', '🪘', '🎙\uFE0F', '📻', '🎬', '🎭', '🎪', '🎞\uFE0F', '🎦', '🎟\uFE0F', '🎫', '🎲', '🎰', '🕹\uFE0F', '🃏', '🎴', '🀄', '🎠', '🎡', '🎢'],
+  '配信・テック': ['📸', '🤳', '📲', '💻', '🖥\uFE0F', '📡', '🎚\uFE0F', '🎛\uFE0F', '📺', '🔭', '🔬', '🧪', '⚙\uFE0F', '🔧', '🔩', '💾', '💿', '📀', '🖨\uFE0F', '⌨\uFE0F'],
+  '食事・ドリンク': ['🍷', '🥂', '🍸', '🍹', '🍺', '🍻', '🥃', '🍶', '🧋', '🧃', '☕', '🍵', '🫖', '🍰', '🎂', '🧁', '🍩', '🍫', '🍿', '🍣', '🍱', '🍜', '🍔', '🍕', '🌮', '🍦', '🍭', '🥐', '🫙'],
+  'ハート・感情': ['❤\uFE0F', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🩷', '🩵', '🩶', '💖', '💗', '💝', '💞', '💕', '❣\uFE0F', '💟', '✨', '🌟', '⭐', '💫', '🔥', '💯', '🎉', '🎊', '🥳', '🥰', '😍', '🤩'],
+  '動物': ['🐟', '🐡', '🐙', '🦑', '🐬', '🦈', '🐱', '🐶', '🐰', '🦊', '🐻', '🐼', '🐨', '🦁', '🐯', '🐮', '🐷', '🐸', '🐵', '🦄', '🐲', '🐧', '🦅', '🦉', '🦋', '🐝', '🦒', '🐘', '🦓', '🐺'],
+  '自然': ['🌸', '🌺', '🌻', '🌹', '🌷', '💐', '🌿', '🍀', '🍃', '🌾', '🍄', '🌴', '🌵', '🌙', '🌕', '🌠', '☀\uFE0F', '🌈', '❄\uFE0F', '🔥', '⚡', '💧', '🌊', '🌋', '⛰\uFE0F', '🏔\uFE0F', '🌤\uFE0F', '🌧\uFE0F', '🌪\uFE0F'],
+  'ファッション': ['👗', '👘', '🥻', '👔', '🧥', '👠', '👡', '👢', '🥾', '👒', '🎩', '🧢', '💍', '💄', '💅', '👛', '👜', '🎒', '🕶\uFE0F', '🪮', '💎', '🪙'],
+  'スポーツ': ['⚽', '🏀', '🏈', '⚾', '🎾', '🏐', '🎱', '⛳', '🏹', '🥊', '🥋', '🏊', '🏄', '🧗', '🏋\uFE0F', '🤸', '⛷\uFE0F', '🏂', '🎿', '🚴'],
+  '旅行・場所': ['✈\uFE0F', '🚢', '🚂', '🚗', '🏖\uFE0F', '🏕\uFE0F', '🗼', '🏯', '⛩\uFE0F', '🗺\uFE0F', '🧭', '🌏', '🌃', '🌆', '🌉', '🎆', '🎇', '🏠', '🏰', '⛺'],
+  '記号・マーク': ['📊', '📈', '📉', '🏷\uFE0F', '🎨', '🔑', '🗝\uFE0F', '🛡\uFE0F', '💡', '🔮', '🧿', '🪄', '🎀', '🔒', '📷', '🎁', '🎯', '🏅', '🥇', '🥈', '🥉', '🪐', '☯\uFE0F', '⚜\uFE0F', '🔱', '♾\uFE0F'],
 }
 
 const LUCIDE_GROUPS = {
@@ -34,11 +38,46 @@ const LUCIDE_GROUPS = {
   'その他': ['flame', 'zap', 'lightbulb', 'umbrella', 'glasses', 'shirt', 'watch', 'dumbbell', 'hash', 'infinity', 'circle-dollar-sign'],
 }
 
+// Phosphor: 表現力の高い6ウェイトアイコン（値は plain name、表示時に ph: プレフィックス付加）
+const PHOSPHOR_GROUPS = {
+  '定番': ['star', 'heart', 'house', 'crown', 'trophy', 'diamond', 'gift', 'bell', 'sparkle', 'confetti', 'medal', 'seal-check'],
+  '音楽・配信': ['music-note', 'music-notes', 'guitar', 'headphones', 'microphone', 'microphone-stage', 'radio', 'vinyl-record', 'piano-keys', 'speaker-high', 'broadcast', 'webcam'],
+  '人物': ['user', 'users', 'user-circle', 'smiley', 'smiley-wink', 'user-sound'],
+  'コミュニケーション': ['chat-circle', 'chat-circle-text', 'envelope', 'paper-plane-tilt', 'phone', 'video-camera', 'megaphone'],
+  '自然': ['sun', 'moon', 'cloud', 'flower', 'leaf', 'snowflake', 'tree', 'lightning', 'drop', 'fire', 'waves'],
+  'テック': ['monitor', 'laptop', 'device-mobile', 'desktop', 'screencast'],
+}
+
+// Tabler: 6000+ アイコン・統一ストローク（値は plain name、tb: プレフィックス付加）
+const TABLER_GROUPS = {
+  '定番': ['star', 'heart', 'home', 'crown', 'trophy', 'diamond', 'gift', 'bell', 'flame', 'bolt', 'confetti', 'medal', 'award'],
+  '音楽・配信': ['music', 'headphones', 'microphone', 'radio', 'piano', 'vinyl', 'speakerphone', 'broadcast', 'screen-share'],
+  '人物': ['user', 'users', 'mood-smile', 'mood-happy', 'user-check'],
+  'コミュニケーション': ['message-circle', 'mail', 'phone', 'video'],
+  '自然': ['sun', 'moon', 'cloud', 'flower', 'leaf', 'snowflake', 'tree', 'wave-sine'],
+  'テック': ['camera', 'monitor', 'device-mobile', 'device-laptop', 'wifi', 'cpu', 'chart-bar'],
+  'ブランド': ['brand-twitch', 'brand-youtube', 'brand-instagram', 'brand-twitter', 'brand-tiktok', 'brand-telegram', 'brand-line'],
+}
+
+// Heroicons: Tailwind公式・シンプル（値は plain name、hi: プレフィックス付加）
+const HEROICONS_GROUPS = {
+  '定番': ['star', 'heart', 'home', 'gift', 'bell', 'bolt', 'fire', 'sparkles', 'trophy'],
+  '音楽': ['musical-note', 'microphone', 'speaker-wave', 'play', 'film', 'tv', 'radio'],
+  '人物': ['user', 'user-group', 'face-smile'],
+  'コミュニケーション': ['chat-bubble-left', 'envelope', 'phone', 'video-camera', 'paper-airplane', 'megaphone'],
+  '自然': ['sun', 'moon', 'cloud'],
+  'テック': ['camera', 'computer-desktop', 'device-phone-mobile', 'wifi'],
+  'アクション': ['magnifying-glass', 'shopping-cart', 'credit-card', 'map-pin', 'globe-alt', 'calendar', 'clock', 'tag', 'rocket-launch', 'key'],
+}
+
+const PH_WEIGHTS = ['thin', 'light', 'regular', 'bold', 'fill', 'duotone']
+
 const IconPicker = ({ value, onChange, label }) => {
   const [open, setOpen] = useState(false)
   const [tab, setTab] = useState('emoji')
   const [search, setSearch] = useState('')
   const [customEmoji, setCustomEmoji] = useState('')
+  const [phosphorWeight, setPhosphorWeight] = useState('regular')
   const pickerRef = useRef(null)
 
   // クリック外で閉じる
@@ -53,7 +92,12 @@ const IconPicker = ({ value, onChange, label }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [open])
 
-  const activeGroups = tab === 'emoji' ? EMOJI_GROUPS : LUCIDE_GROUPS
+  const activeGroups =
+    tab === 'emoji' ? EMOJI_GROUPS :
+    tab === 'lucide' ? LUCIDE_GROUPS :
+    tab === 'phosphor' ? PHOSPHOR_GROUPS :
+    tab === 'tabler' ? TABLER_GROUPS :
+    HEROICONS_GROUPS
 
   const filteredGroups = useMemo(() => {
     if (!search) return activeGroups
@@ -64,6 +108,22 @@ const IconPicker = ({ value, onChange, label }) => {
     })
     return result
   }, [search, activeGroups])
+
+  const TABS = [
+    { id: 'emoji',    label: '絵文字',   color: 'amber' },
+    { id: 'lucide',   label: 'Lucide',   color: 'light-blue' },
+    { id: 'phosphor', label: 'Phosphor', color: 'violet' },
+    { id: 'tabler',   label: 'Tabler',   color: 'emerald' },
+    { id: 'heroicons',label: 'Heroicons',color: 'rose' },
+  ]
+
+  const TAB_ACTIVE = {
+    amber:      'bg-amber/20 text-amber border border-amber/50',
+    'light-blue': 'bg-light-blue/20 text-light-blue border border-light-blue/50',
+    violet:     'bg-violet-500/20 text-violet-300 border border-violet-500/50',
+    emerald:    'bg-emerald-500/20 text-emerald-300 border border-emerald-500/50',
+    rose:       'bg-rose-500/20 text-rose-300 border border-rose-500/50',
+  }
 
   return (
     <div className="relative" ref={pickerRef}>
@@ -80,41 +140,55 @@ const IconPicker = ({ value, onChange, label }) => {
       </div>
 
       {open && (
-        <div className="absolute z-50 mt-2 w-80 glass-effect border border-light-blue/30 rounded-xl overflow-hidden shadow-lg">
+        <div className="absolute z-50 mt-2 w-96 glass-effect border border-light-blue/30 rounded-xl overflow-hidden shadow-lg">
           {/* ヘッダー: タブ切り替え + 閉じるボタン */}
           <div className="p-2 border-b border-light-blue/20 flex gap-2 items-center">
-            <div className="flex gap-1 flex-1">
-              <button
-                type="button"
-                onClick={() => { setTab('emoji'); setSearch('') }}
-                className={`px-2.5 py-1 rounded-lg text-xs transition-all ${
-                  tab === 'emoji' ? 'bg-amber/20 text-amber border border-amber/50' : 'text-gray-400 hover:text-white'
-                }`}
-              >
-                絵文字
-              </button>
-              <button
-                type="button"
-                onClick={() => { setTab('lucide'); setSearch('') }}
-                className={`px-2.5 py-1 rounded-lg text-xs transition-all ${
-                  tab === 'lucide' ? 'bg-light-blue/20 text-light-blue border border-light-blue/50' : 'text-gray-400 hover:text-white'
-                }`}
-              >
-                Lucide
-              </button>
+            <div className="flex gap-1 flex-1 flex-wrap">
+              {TABS.map(({ id, label: tabLabel, color }) => (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => { setTab(id); setSearch('') }}
+                  className={`px-2 py-0.5 rounded-lg text-[10px] transition-all ${
+                    tab === id ? TAB_ACTIVE[color] : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  {tabLabel}
+                </button>
+              ))}
             </div>
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="p-1.5 hover:bg-light-blue/10 rounded-lg transition-all text-gray-400 hover:text-white"
+              className="p-1.5 hover:bg-light-blue/10 rounded-lg transition-all text-gray-400 hover:text-white shrink-0"
               title="閉じる"
             >
               <IconRenderer icon="x" size={16} />
             </button>
           </div>
 
-          {/* 検索（Lucideタブのみ） */}
-          {tab === 'lucide' && (
+          {/* Phosphorウェイト選択 */}
+          {tab === 'phosphor' && (
+            <div className="px-2 py-1.5 border-b border-light-blue/20 flex gap-1">
+              {PH_WEIGHTS.map(w => (
+                <button
+                  key={w}
+                  type="button"
+                  onClick={() => setPhosphorWeight(w)}
+                  className={`flex-1 py-0.5 rounded text-[9px] transition-all ${
+                    phosphorWeight === w
+                      ? 'bg-violet-500/20 text-violet-300 border border-violet-500/50'
+                      : 'text-gray-500 hover:text-gray-300'
+                  }`}
+                >
+                  {w}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* 検索（絵文字以外） */}
+          {tab !== 'emoji' && (
             <div className="p-2 border-b border-light-blue/20">
               <input
                 type="text"
@@ -130,31 +204,53 @@ const IconPicker = ({ value, onChange, label }) => {
             {Object.entries(filteredGroups).map(([group, icons]) => (
               <div key={group} className="mb-2">
                 <div className="text-[10px] text-gray-500 px-1 mb-1">{group}</div>
-                <div className="grid grid-cols-8 gap-1">
-                  {icons.map(icon => (
-                    <button
-                      key={icon}
-                      type="button"
-                      onClick={() => { onChange(icon); setOpen(false) }}
-                      className={`p-1.5 rounded-lg transition-all flex items-center justify-center ${
-                        value === icon
-                          ? 'bg-light-blue/20 border border-light-blue/50'
-                          : 'hover:bg-light-blue/10'
-                      }`}
-                      title={tab === 'lucide' ? icon : undefined}
-                    >
-                      {tab === 'emoji'
-                        ? <span className="text-base leading-none">{icon}</span>
-                        : <IconRenderer icon={icon} size={16} className="text-gray-300" />
-                      }
-                    </button>
-                  ))}
+                <div className="grid grid-cols-9 gap-1">
+                  {icons.map(iconName => {
+                    let iconValue, displayEl
+                    if (tab === 'emoji') {
+                      iconValue = iconName
+                      displayEl = <span className="text-base leading-none">{iconName}</span>
+                    } else if (tab === 'lucide') {
+                      iconValue = iconName
+                      displayEl = <IconRenderer icon={iconName} size={16} className="text-light-blue" />
+                    } else if (tab === 'phosphor') {
+                      iconValue = `ph:${iconName}:${phosphorWeight}`
+                      displayEl = <IconRenderer icon={iconValue} size={16} className="text-violet-300" />
+                    } else if (tab === 'tabler') {
+                      iconValue = `tb:${iconName}`
+                      displayEl = <IconRenderer icon={iconValue} size={16} className="text-emerald-300" />
+                    } else {
+                      iconValue = `hi:${iconName}`
+                      displayEl = <IconRenderer icon={iconValue} size={16} className="text-rose-300" />
+                    }
+
+                    // Phosphorは名前が一致すればウェイト問わずハイライト
+                    const isSelected = tab === 'phosphor'
+                      ? (value?.startsWith(`ph:${iconName}:`) || value === `ph:${iconName}`)
+                      : value === iconValue
+
+                    return (
+                      <button
+                        key={iconName}
+                        type="button"
+                        onClick={() => { onChange(iconValue); setOpen(false) }}
+                        className={`p-1.5 rounded-lg transition-all flex items-center justify-center ${
+                          isSelected
+                            ? 'bg-light-blue/20 border border-light-blue/50'
+                            : 'hover:bg-light-blue/10'
+                        }`}
+                        title={tab !== 'emoji' ? iconName : undefined}
+                      >
+                        {displayEl}
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
             ))}
           </div>
 
-          {/* カスタム絵文字入力 */}
+          {/* カスタム入力 */}
           <div className="p-2 border-t border-light-blue/20">
             <div className="text-[10px] text-gray-500 mb-1">カスタム入力</div>
             <div className="flex gap-1">
@@ -162,7 +258,7 @@ const IconPicker = ({ value, onChange, label }) => {
                 type="text"
                 value={customEmoji}
                 onChange={(e) => setCustomEmoji(e.target.value)}
-                placeholder="絵文字またはLucide名"
+                placeholder="絵文字 / lucide名 / ph:name:weight / tb:name / hi:name"
                 className="flex-1 px-2 py-1 glass-effect border border-light-blue/30 rounded text-white text-xs focus:outline-none focus:border-amber"
               />
               <button

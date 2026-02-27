@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { fetchSheetData, fetchIconData, fetchHistoryData } from '../lib/sheets'
+import { fetchSheetData, fetchIconData, fetchHistoryData, fetchEventData } from '../lib/sheets'
 
 export function useSheetData(sheetsConfig) {
   const [ranking, setRanking] = useState([])
@@ -8,6 +8,7 @@ export function useSheetData(sheetsConfig) {
   const [specialIndex, setSpecialIndex] = useState(8)
   const [benefits, setBenefits] = useState([])
   const [history, setHistory] = useState([])
+  const [events, setEvents] = useState({ upcoming: null, past: [] })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [lastUpdate, setLastUpdate] = useState(null)
@@ -19,7 +20,7 @@ export function useSheetData(sheetsConfig) {
   const [iconError, setIconError] = useState(null)
   const iconsLoadedRef = useRef(false)
 
-  const { spreadsheetId, rankingSheetName, benefitsSheetName, benefitsContentSheetName, historySheetName, iconSheetName, ranges, refreshIntervalMs } = sheetsConfig
+  const { spreadsheetId, rankingSheetName, benefitsSheetName, benefitsContentSheetName, historySheetName, iconSheetName, eventSheetName, ranges, refreshIntervalMs } = sheetsConfig
   // rangesオブジェクトを個別の文字列に分解して安定した依存関係にする
   const rankingRange = ranges.ranking
   const goalsRange = ranges.goals
@@ -36,19 +37,21 @@ export function useSheetData(sheetsConfig) {
     setError(null)
 
     try {
-      const fetches = [
+      const [rankingData, goalsData, benefitsData, rawRightsData, historyData, eventData] = await Promise.all([
         fetchSheetData(spreadsheetId, rankingSheetName, rankingRange),
         fetchSheetData(spreadsheetId, rankingSheetName, goalsRange),
         fetchSheetData(spreadsheetId, benefitsContentSheetName, benefitsRange),
         // rights: ヘッダー行込みで全シートを取得（Special列を動的に検出するため range なし・headers=0）
         fetchSheetData(spreadsheetId, benefitsSheetName, null, 3, { allRows: true }),
-      ]
-      if (historySheetName) {
         // history: A3:D（行上限なしのオープンレンジ）
-        fetches.push(fetchHistoryData(spreadsheetId, historySheetName, 'A3:D').catch(() => []))
-      }
-
-      const [rankingData, goalsData, benefitsData, rawRightsData, historyData] = await Promise.all(fetches)
+        historySheetName
+          ? fetchHistoryData(spreadsheetId, historySheetName, 'A3:D').catch(() => [])
+          : Promise.resolve([]),
+        // events: イベントシート（開催予定・開催済み）
+        eventSheetName
+          ? fetchEventData(spreadsheetId, eventSheetName).catch(() => ({ upcoming: null, past: [] }))
+          : Promise.resolve({ upcoming: null, past: [] }),
+      ])
 
       // "Special"列を含む行をヘッダー行として動的検出（先頭の空行・タイトル行をスキップ）
       let detectedSpecialIndex = -1
@@ -72,6 +75,7 @@ export function useSheetData(sheetsConfig) {
       setRights(rawRightsData.slice(headerRowIndex + 1)) // ヘッダー行の次から
       setSpecialIndex(detectedSpecialIndex)
       setHistory(historyData || [])
+      setEvents(eventData || { upcoming: null, past: [] })
       setLastUpdate(new Date())
       setError(null)
     } catch (err) {
@@ -80,7 +84,7 @@ export function useSheetData(sheetsConfig) {
     } finally {
       setLoading(false)
     }
-  }, [spreadsheetId, rankingSheetName, benefitsSheetName, benefitsContentSheetName, historySheetName, rankingRange, goalsRange, benefitsRange])
+  }, [spreadsheetId, rankingSheetName, benefitsSheetName, benefitsContentSheetName, historySheetName, eventSheetName, rankingRange, goalsRange, benefitsRange])
 
   // 初回読み込み + 自動更新
   useEffect(() => {
@@ -124,6 +128,7 @@ export function useSheetData(sheetsConfig) {
     specialIndex,
     benefits,
     history,
+    events,
     icons,
     loading,
     loadingIcons,

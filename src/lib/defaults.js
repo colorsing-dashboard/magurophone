@@ -11,9 +11,24 @@ const DEFAULT_CONFIG = {
     loadingText: 'Loading...',
     showHeader: true,
     showTitle: true,
+    titleStyle: 'glass',
     titleGradient: true,
     titleGradientDirection: 'to-r',
     titleGlow: true,
+    titlePosition: 'center',
+    titleSize: 'large',
+    titleTextFill: 'default',
+    titleGlassBg: 0.35,
+    titleGlassBlur: 12,
+    titlePaddingY: 12,
+    headerOverlayOpacity: 0.3,
+    headerImageFit: 'contain',
+    headerHeight: '',
+    headerHeightMobile: '',
+    headerImageW: 0,
+    headerImageH: 0,
+    headerImageWMobile: 0,
+    headerImageHMobile: 0,
   },
 
   colors: {
@@ -69,6 +84,7 @@ const DEFAULT_CONFIG = {
     benefitsContentSheetName: '特典内容',
     historySheetName: '特典履歴',
     iconSheetName: '枠内アイコン',
+    eventSheetName: 'イベント',
     ranges: {
       ranking: 'D2:G5',
       goals: 'A2:B10',
@@ -82,6 +98,7 @@ const DEFAULT_CONFIG = {
     { id: 'menu', label: 'Menu', icon: '🍾', enabled: true },
     { id: 'rights', label: 'ボトルキープ', icon: '👥', enabled: true, title: '🍾 ボトルキープ一覧' },
     { id: 'icons', label: '枠内アイコン', icon: '🖼️', enabled: true, title: '🖼️ 枠内アイコン' },
+    { id: 'events', label: 'イベント', icon: '📖', enabled: false, title: 'イベント' },
   ],
 
   benefitTiers: [

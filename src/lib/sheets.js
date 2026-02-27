@@ -85,6 +85,35 @@ export const fetchHistoryData = async (spreadsheetId, historySheetName, range = 
   }))
 }
 
+// イベントデータを読み込む
+// A列:日付(yyyymmdd), B列:タイトル, C列:セットリスト, D列:画像URL, E列:備考
+// 3行目: 開催予定イベント / 7行目以降: 開催済みイベント
+export const fetchEventData = async (spreadsheetId, sheetName) => {
+  const toEvent = (row) => ({
+    date: String(row[0] || ''),
+    title: String(row[1] || ''),
+    setlist: String(row[2] || ''),
+    imageUrl: String(row[3] || ''),
+    notes: String(row[4] || ''),
+  })
+
+  const [upcomingRows, pastRows] = await Promise.all([
+    fetchSheetData(spreadsheetId, sheetName, 'A3:E3', 3, { allRows: true }).catch(() => []),
+    fetchSheetData(spreadsheetId, sheetName, 'A7:E', 3, { allRows: true }).catch(() => []),
+  ])
+
+  const upcoming = upcomingRows.length > 0 && upcomingRows[0][1]
+    ? toEvent(upcomingRows[0])
+    : null
+
+  const past = pastRows
+    .map(row => toEvent(row))
+    .filter(e => e.title)
+    .sort((a, b) => b.date.localeCompare(a.date))
+
+  return { upcoming, past }
+}
+
 // 枠内アイコンデータを読み込む（A列:yyyymmまたはカテゴリ名, B列:ユーザー名, C列:画像URL）
 export const fetchIconData = async (spreadsheetId, iconSheetName) => {
   const iconData = {}

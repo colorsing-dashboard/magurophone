@@ -57,6 +57,15 @@ export function loadBaseConfig() {
 
   const merged = deepMerge(DEFAULT_CONFIG, config)
 
+  // views配列: ID基準でマージ（defaultsに新ビューが追加されても既存configから消えない）
+  if (Array.isArray(config.views)) {
+    const existingIds = new Set(config.views.map(v => v.id))
+    const newViews = DEFAULT_CONFIG.views.filter(v => !existingIds.has(v.id))
+    if (newViews.length > 0) {
+      merged.views = [...config.views, ...newViews]
+    }
+  }
+
   // 旧config互換: dataSheetName → rankingSheetName / benefitsSheetName
   if (config.sheets?.dataSheetName && !config.sheets?.rankingSheetName) {
     merged.sheets.rankingSheetName = config.sheets.dataSheetName
@@ -88,6 +97,14 @@ export function loadConfig() {
         config = deepMerge(config, parsed)
         if (parsed.benefitTiers) {
           config.benefitTiers = parsed.benefitTiers
+        }
+        // views配列: localStorage のマージ後もIDベースで補完（defaultsの新ビューが消えないように）
+        if (Array.isArray(config.views)) {
+          const existingIds = new Set(config.views.map(v => v.id))
+          const newViews = DEFAULT_CONFIG.views.filter(v => !existingIds.has(v.id))
+          if (newViews.length > 0) {
+            config.views = [...config.views, ...newViews]
+          }
         }
       }
     } catch {

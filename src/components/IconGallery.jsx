@@ -1,25 +1,22 @@
 import { useState, useMemo, useEffect } from 'react'
 import { useConfig } from '../context/ConfigContext'
-import { isMonthlyFormat } from '../lib/sheets'
+
+// yyyymm形式かどうかをキー個別に判定（全体でなく1キーずつ）
+const isYYYYMM = (key) => /^\d{6}$/.test(key)
 
 const IconGallery = ({ icons, selectedMonth, setSelectedMonth, loading, iconError }) => {
   const config = useConfig()
   const [searchTerm, setSearchTerm] = useState('')
   const [popupUser, setPopupUser] = useState(null)
 
-  const isMonthly = useMemo(() => {
-    const keys = Object.keys(icons).filter(k => k !== '_orderedKeys')
-    return isMonthlyFormat(keys)
-  }, [icons])
-
   const availableMonths = useMemo(() => {
     const keys = Object.keys(icons).filter(k => k !== '_orderedKeys' && icons[k].length > 0)
-    if (isMonthly) {
-      return keys.sort().reverse()
-    }
-    const orderedKeys = icons._orderedKeys || []
-    return orderedKeys.filter(k => icons[k] && icons[k].length > 0)
-  }, [icons, isMonthly])
+    // yyyymmキーは降順、文字列キーは_orderedKeysの順序を維持してyyyymmの後ろに並べる
+    const monthKeys = keys.filter(isYYYYMM).sort().reverse()
+    const orderedKeys = icons._orderedKeys || keys
+    const categoryKeys = orderedKeys.filter(k => !isYYYYMM(k) && icons[k] && icons[k].length > 0)
+    return [...monthKeys, ...categoryKeys]
+  }, [icons])
 
   // 選択中の月/カテゴリの全ユーザー（名前順）
   const allUsers = useMemo(() => {
@@ -54,7 +51,7 @@ const IconGallery = ({ icons, selectedMonth, setSelectedMonth, loading, iconErro
 
   const formatKey = (key) => {
     if (!key) return ''
-    if (isMonthly && key.length >= 6) {
+    if (isYYYYMM(key)) {
       const year = key.substring(0, 4)
       const m = parseInt(key.substring(4, 6), 10)
       return `${year}年${m}月`

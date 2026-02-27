@@ -39,6 +39,7 @@ git push origin main
 # 2. magurophone ブランチにも反映
 git checkout magurophone
 git merge main --no-edit
+git checkout HEAD -- public/customer/config.js  # ← magurophoneの実データを保持（必須）
 git push origin magurophone
 git checkout main
 
@@ -69,3 +70,38 @@ bash scripts/sync-all.sh
   → checkout → merge → push で行う
 - `public/customer/config.js` を main に含めると全顧客に配布されてしまう
   → このファイルは commit しない
+- `git merge main` 後に magurophone の config.js が main のプレースホルダーに上書きされる
+  → merge 直後に `git checkout HEAD -- public/customer/config.js` で復元する（push 前に必ず実行）
+
+---
+
+## フロントエンドUI生成ルール
+
+「AIが作った感」を排除するためのルール。コード生成・修正時は常時適用すること。
+
+### 絶対禁止（Anti-patterns）
+
+テーマを問わず以下は使わない：
+
+- Interフォント（デフォルトに戻るな）
+- Lucideアイコン**のみ**の使用（Phosphor Icons を優先）
+- 青→紫グラデーション背景
+- shadcn デフォルトそのまま流用
+- 角丸 16px 以上
+- 無彩色のみの配色構成
+- アニメーション・インタラクション完全なし
+
+### 指示ルール
+
+修正指示は**必ず数値で**行う：
+
+| 曖昧（禁止） | 具体（必須） |
+|------------|-----------|
+| 「綺麗にして」 | 「padding を 24px に」 |
+| 「もっと丸く」 | 「border-radius を 4px に」 |
+| 「余白を増やして」 | 「section の margin-top を 80px に」 |
+
+### テーマ定義
+
+- **現行テーマ（ダーク）**: `src/lib/defaults.js` / `src/index.css` 参照
+- **ウォームフラットテーマ**: `/ui-design` スキルを参照（`.claude/skills/ui-design/SKILL.md`）

@@ -113,6 +113,13 @@ const SheetsTab = ({ config, updateConfig }) => {
           placeholder="枠内アイコン"
           description="枠内アイコンデータのシート名"
         />
+        <Field
+          label="イベントシート名"
+          value={config.sheets.eventSheetName}
+          onChange={(v) => updateConfig('sheets.eventSheetName', v)}
+          placeholder="イベント"
+          description="イベント履歴（A:日付yyyymmdd, B:タイトル, C:セットリスト, D:画像URL, E:備考 / 3行目:開催予定, 7行目以降:履歴）"
+        />
       </div>
 
       <hr className="border-light-blue/20 my-8" />

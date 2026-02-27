@@ -82,6 +82,19 @@ const BrandingTab = ({ config, updateConfig }) => {
 
       {config.brand.showTitle !== false && (
         <div className="mb-5 space-y-3 ml-4 border-l-2 border-light-blue/20 pl-4">
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">タイトルスタイル</label>
+            <select
+              value={config.brand.titleStyle || 'glass'}
+              onChange={(e) => updateConfig('brand.titleStyle', e.target.value)}
+              className="px-3 py-1.5 glass-effect border border-light-blue/30 rounded-lg text-white text-sm focus:outline-none focus:border-amber bg-transparent"
+            >
+              <option value="glass">ガラス（フロストガラス帯・推奨）</option>
+              <option value="gradient">グラデーション（従来）</option>
+              <option value="plain">単色</option>
+            </select>
+          </div>
+
           <label className="flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
             <input
               type="checkbox"
@@ -92,19 +105,7 @@ const BrandingTab = ({ config, updateConfig }) => {
             タイトルにグロー（発光）エフェクトを適用
           </label>
 
-          <label className="flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={config.brand.titleGradient !== false}
-              onChange={(e) => updateConfig('brand.titleGradient', e.target.checked)}
-              className="accent-amber"
-            />
-            タイトルにグラデーションを適用
-          </label>
-          <p className="text-xs text-gray-500">OFFにすると単色で表示されます（カラー設定の「タイトルテキスト色」が適用）</p>
-          <p className="text-xs text-gray-500">グラデーション色の変更は「カラー設定 → テキスト」タブの「タイトルグラデーション色」で設定できます</p>
-
-          {config.brand.titleGradient !== false && (
+          {(config.brand.titleStyle || 'glass') === 'gradient' && (
             <div>
               <label className="block text-xs text-gray-500 mb-1">グラデーション方向</label>
               <select
@@ -121,6 +122,87 @@ const BrandingTab = ({ config, updateConfig }) => {
                 <option value="to-tr">右上へ ↗</option>
                 <option value="to-tl">左上へ ↖</option>
               </select>
+              <p className="text-xs text-gray-500 mt-1">グラデーション色は「カラー設定 → テキスト」タブで変更できます</p>
+            </div>
+          )}
+
+          {(config.brand.titleStyle || 'glass') === 'plain' && (
+            <p className="text-xs text-gray-500">単色の色は「カラー設定 → テキスト」タブの「タイトルテキスト色」で設定できます</p>
+          )}
+
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">タイトル位置</label>
+            <select
+              value={config.brand.titlePosition || 'center'}
+              onChange={(e) => updateConfig('brand.titlePosition', e.target.value)}
+              className="px-3 py-1.5 glass-effect border border-light-blue/30 rounded-lg text-white text-sm focus:outline-none focus:border-amber bg-transparent"
+            >
+              <option value="center">中央</option>
+              <option value="top-left">左上</option>
+              <option value="top-right">右上</option>
+              <option value="bottom-left">左下</option>
+              <option value="bottom-right">右下</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">
+              文字サイズ：{['小', '中', '大', '特大'][(['small','medium','large','xlarge'].indexOf(config.brand.titleSize || 'large'))]}
+            </label>
+            <input type="range" min="0" max="3" step="1"
+              value={['small','medium','large','xlarge'].indexOf(config.brand.titleSize || 'large')}
+              onChange={(e) => updateConfig('brand.titleSize', ['small','medium','large','xlarge'][+e.target.value])}
+              className="w-full accent-amber"
+            />
+            <div className="flex justify-between text-xs text-gray-600 mt-0.5">
+              <span>小</span><span>中</span><span>大</span><span>特大</span>
+            </div>
+          </div>
+
+          {(config.brand.titleStyle || 'glass') === 'glass' && (
+            <div className="space-y-3 pl-3 border-l-2 border-amber/20">
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">文字カラー</label>
+                <div className="flex gap-2 flex-wrap">
+                  {[['default','タイトルカラー追従'],['gradient','グラデーション']].map(([v, label]) => (
+                    <button key={v}
+                      onClick={() => updateConfig('brand.titleTextFill', v)}
+                      className={`px-3 py-1 rounded text-xs transition-all ${(config.brand.titleTextFill || 'default') === v ? 'bg-amber text-deep-blue font-bold' : 'glass-effect border border-light-blue/30 text-gray-300'}`}
+                    >{label}</button>
+                  ))}
+                </div>
+                <p className="text-xs text-gray-500 mt-1">色は「カラー設定 → テキスト → タイトルテキスト色」で変更できます</p>
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">
+                  ガラス背景の濃さ：{Math.round((config.brand.titleGlassBg ?? 0.35) * 100)}%
+                </label>
+                <input type="range" min="0" max="100" step="5"
+                  value={Math.round((config.brand.titleGlassBg ?? 0.35) * 100)}
+                  onChange={(e) => updateConfig('brand.titleGlassBg', +e.target.value / 100)}
+                  className="w-full accent-amber"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">
+                  ブラーの強さ：{config.brand.titleGlassBlur ?? 12}
+                </label>
+                <input type="range" min="0" max="40" step="1"
+                  value={config.brand.titleGlassBlur ?? 12}
+                  onChange={(e) => updateConfig('brand.titleGlassBlur', +e.target.value)}
+                  className="w-full accent-amber"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">
+                  上下の余白：{config.brand.titlePaddingY ?? 12}
+                </label>
+                <input type="range" min="0" max="60" step="2"
+                  value={config.brand.titlePaddingY ?? 12}
+                  onChange={(e) => updateConfig('brand.titlePaddingY', +e.target.value)}
+                  className="w-full accent-amber"
+                />
+              </div>
             </div>
           )}
         </div>
@@ -199,6 +281,20 @@ const BrandingTab = ({ config, updateConfig }) => {
         placeholder="https://drive.google.com/file/d/xxx/view  または  ./customer/header-mobile.png"
         description="縦長画像（750×600px程度）推奨。省略するとPC用画像が使われます"
       />
+
+      <div className="mb-5">
+        <label className="block text-sm font-body text-light-blue mb-1">オーバーレイの暗さ</label>
+        <p className="text-xs text-gray-500 mb-2">画像上の黒い半透明レイヤーの濃さ（0=なし〜1=真っ黒）</p>
+        <div className="flex items-center gap-3">
+          <input
+            type="range" min="0" max="1" step="0.05"
+            value={config.brand.headerOverlayOpacity ?? 0.3}
+            onChange={(e) => updateConfig('brand.headerOverlayOpacity', parseFloat(e.target.value))}
+            className="flex-1 accent-amber"
+          />
+          <span className="text-sm text-gray-300 w-10 text-right">{Math.round((config.brand.headerOverlayOpacity ?? 0.3) * 100)}%</span>
+        </div>
+      </div>
 
       <hr className="border-light-blue/20 my-8" />
       <h3 className="text-lg font-body text-amber mb-4">タイトルフォント</h3>
