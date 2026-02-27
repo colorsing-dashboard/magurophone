@@ -15,6 +15,14 @@ const formatEventDate = (dateStr) => {
   return dateStr
 }
 
+const isEventEnded = (dateStr) => {
+  const s = String(dateStr).replace(/\D/g, '')
+  if (s.length !== 8) return false
+  const t = new Date()
+  const today = `${t.getFullYear()}${String(t.getMonth() + 1).padStart(2, '0')}${String(t.getDate()).padStart(2, '0')}`
+  return s < today
+}
+
 const HomeView = ({ ranking, goals, events }) => {
   const config = useConfig()
 
@@ -81,14 +89,25 @@ const HomeView = ({ ranking, goals, events }) => {
         <h2 className="text-2xl md:text-4xl font-body mb-4 md:mb-8 text-center text-glow-soft text-primary">
           Next Event
         </h2>
-        {events?.upcoming?.title ? (
-          <div className="glass-effect rounded-2xl border border-amber/40 overflow-hidden">
+        {events?.upcoming?.title ? (() => {
+          const ended = events.upcoming.date ? isEventEnded(events.upcoming.date) : false
+          return (
+          <div className={`glass-effect rounded-2xl border overflow-hidden ${ended ? 'border-card-border/30' : 'border-amber/40'}`}>
             {events.upcoming.imageUrl && (
-              <img
-                src={convertDriveUrl(events.upcoming.imageUrl, 1200)}
-                alt={events.upcoming.title}
-                className="w-full object-cover"
-              />
+              <div className="relative">
+                <img
+                  src={convertDriveUrl(events.upcoming.imageUrl, 1200)}
+                  alt={events.upcoming.title}
+                  className={`w-full object-cover${ended ? ' brightness-50' : ''}`}
+                />
+                {ended && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="font-display font-black tracking-[0.4em] text-5xl md:text-7xl text-white drop-shadow-lg select-none">
+                      CLOSED
+                    </span>
+                  </div>
+                )}
+              </div>
             )}
             <div className="p-5 md:p-8 text-center">
               {events.upcoming.date && (
@@ -116,7 +135,8 @@ const HomeView = ({ ranking, goals, events }) => {
               )}
             </div>
           </div>
-        ) : (
+          )
+        })() : (
           <div className="glass-effect rounded-2xl border border-card-border/20 py-14 text-center">
             <div className="text-[10px] tracking-[0.6em] text-sub-text uppercase mb-5">coming up</div>
             <p className="text-4xl md:text-6xl font-display font-black tracking-widest text-primary">
