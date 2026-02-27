@@ -173,14 +173,7 @@ const BrandingTab = ({ config, updateConfig }) => {
                 </div>
               </div>
               {(config.brand.titleTextFill || 'white') === 'custom' && (
-                <div className="flex items-center gap-3">
-                  <input type="color"
-                    value={config.brand.titleTextColor || '#ffffff'}
-                    onChange={(e) => updateConfig('brand.titleTextColor', e.target.value)}
-                    className="w-10 h-8 rounded cursor-pointer border-0 bg-transparent"
-                  />
-                  <span className="text-xs text-gray-400">{config.brand.titleTextColor || '#ffffff'}</span>
-                </div>
+                <p className="text-xs text-gray-500">色は「カラー設定 → テキスト → タイトルテキスト色」で設定できます</p>
               )}
               <div>
                 <label className="block text-xs text-gray-500 mb-1">

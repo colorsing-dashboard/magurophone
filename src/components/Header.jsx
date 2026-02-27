@@ -47,12 +47,12 @@ const TitleText = ({ config, glowClass, compact = false }) => {
 
   if (effectiveStyle === 'glass') {
     const textFill = config.brand.titleTextFill || 'white'
-    const textColor = config.brand.titleTextColor || '#ffffff'
+    const o = config.colorOverrides || {}
     const gradientStyle = `linear-gradient(${dir}, var(--color-title-gradient-start, var(--color-ocean-teal)), var(--color-title-gradient-mid, var(--color-light-blue)), var(--color-title-gradient-end, var(--color-amber)))`
     const h1Style = textFill === 'gradient'
       ? { backgroundImage: gradientStyle, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }
       : textFill === 'custom'
-        ? { color: textColor }
+        ? { color: o.titleColor || '#ffffff' }
         : {}
     const textClass = textFill === 'gradient'
       ? `${sizeClass} font-display font-black tracking-wide bg-clip-text text-transparent drop-shadow-lg ${glowClass} leading-relaxed py-2`
