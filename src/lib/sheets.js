@@ -97,6 +97,8 @@ export const fetchEventData = async (spreadsheetId, sheetName) => {
     notes: String(row[4] || ''),
   })
 
+  const isDate8 = (v) => /^\d{8}$/.test(String(v || '').replace(/\D/g, ''))
+
   const [upcomingRows, pastRows] = await Promise.all([
     fetchSheetData(spreadsheetId, sheetName, 'A3:E3', 3, { allRows: true }),
     fetchSheetData(spreadsheetId, sheetName, 'A7:E', 3, { allRows: true }),
@@ -108,7 +110,7 @@ export const fetchEventData = async (spreadsheetId, sheetName) => {
 
   const past = pastRows
     .map(row => toEvent(row))
-    .filter(e => e.title)
+    .filter(e => e.title && isDate8(e.date))
     .sort((a, b) => b.date.localeCompare(a.date))
 
   return { upcoming, past }

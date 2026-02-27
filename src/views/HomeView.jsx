@@ -26,6 +26,7 @@ const isEventEnded = (dateStr) => {
 
 const HomeView = ({ ranking, goals, events }) => {
   const config = useConfig()
+  const eventsEnabled = config.views?.find(v => v.id === 'events')?.enabled !== false
 
   return (
     <>
@@ -85,8 +86,8 @@ const HomeView = ({ ranking, goals, events }) => {
         </div>
       </section>
 
-      {/* 次回イベント告知: eventsがnull（シートなし）の場合は非表示 */}
-      {events !== null && <section className="max-w-4xl mx-auto">
+      {/* 次回イベント告知: eventsビューが無効またはeventsがnullの場合は非表示 */}
+      {eventsEnabled && events !== null && <section className="max-w-4xl mx-auto">
         <h2 className="text-2xl md:text-4xl font-body mb-4 md:mb-8 text-center text-glow-soft text-primary">
           New Event
         </h2>
