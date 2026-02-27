@@ -114,14 +114,14 @@ const HomeView = ({ ranking, goals, events }) => {
             <div className="text-[10px] tracking-[0.6em] text-sub-text uppercase mb-5">coming up</div>
             <p
               className="text-4xl md:text-6xl font-display font-black tracking-widest text-transparent bg-clip-text"
-              style={{ backgroundImage: 'linear-gradient(to right, var(--color-ocean-teal), var(--color-light-blue), var(--color-amber))' }}
+              style={{ backgroundImage: 'linear-gradient(to right, var(--color-title-gradient-start, var(--color-primary)), var(--color-title-gradient-mid, var(--color-primary)), var(--color-title-gradient-end, var(--color-highlight)))' }}
             >
               Stay Tuned
             </p>
             <div className="flex justify-center gap-2 mt-6">
-              <span className="block w-8 h-px bg-light-blue/30" />
-              <span className="block w-1.5 h-1.5 rounded-full bg-light-blue/50 -mt-0.5" />
-              <span className="block w-8 h-px bg-light-blue/30" />
+              <span className="block w-8 h-px bg-primary/30" />
+              <span className="block w-1.5 h-1.5 rounded-full bg-primary/50 -mt-0.5" />
+              <span className="block w-8 h-px bg-primary/30" />
             </div>
           </div>
         )}
