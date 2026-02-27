@@ -11,39 +11,68 @@ window.DASHBOARD_CONFIG = {
     "pageTitle": "深海BAR MAGUROPHONE - 特典管理",
     "loadingEmoji": "🐟",
     "loadingText": "Loading...",
+    "showHeader": true,
     "showTitle": true,
+    "titleStyle": "glass",
     "titleGradient": true,
-    "titleGradientDirection": "to-r"
+    "titleGradientDirection": "to-r",
+    "titleGlow": false,
+    "titlePosition": "center",
+    "titleSize": "medium",
+    "titleTextFill": "default",
+    "titleGlassBg": 0.25,
+    "titleGlassBlur": 9,
+    "titlePaddingY": 6,
+    "headerOverlayOpacity": 0,
+    "headerImageFit": "contain",
+    "headerHeight": "",
+    "headerHeightMobile": "",
+    "headerImageW": 0,
+    "headerImageH": 0,
+    "headerImageWMobile": 0,
+    "headerImageHMobile": 0
   },
   "colors": {
-    "deepBlue": "#0a1628",
-    "oceanTeal": "#1b4965",
-    "lightBlue": "#8ab4f8",
-    "amber": "#d4a574",
-    "accent": "#c1121f",
-    "gold": "#ffd700"
+    "deepBlue": "#08121e",
+    "oceanTeal": "#183a58",
+    "lightBlue": "#78a8f0",
+    "amber": "#e8b870",
+    "accent": "#d84030",
+    "gold": "#f8c840"
   },
   "colorOverrides": {
     "headerGradientStart": "",
     "headerGradientEnd": "",
+    "titleGradientStart": "",
+    "titleGradientMid": "",
+    "titleGradientEnd": "",
     "cardBorder": "",
     "cardBorderHover": "",
     "primaryText": "",
     "accentText": "",
-    "rank1Card": "#ff4d00",
+    "rank1Card": "#b51a00",
     "backgroundMain": "",
-    "backgroundMid": ""
+    "backgroundMid": "",
+    "nameText": "",
+    "footerText": "",
+    "contentText": "",
+    "titleColor": "#8ab5f5",
+    "subText": "",
+    "popupOverlayColor": "",
+    "popupOverlayOpacity": "",
+    "menuCardLabelColor": "",
+    "menuCardLabelOpacity": ""
   },
   "fonts": {
     "display": "'Sacramento', cursive",
     "displayUrl": "https://fonts.googleapis.com/css2?family=Sacramento:wght@400&display=swap",
-    "body": "'M PLUS 2', sans-serif",
-    "bodyUrl": "https://fonts.googleapis.com/css2?family=M+PLUS+2:wght@400;500;700&display=swap",
+    "body": "'Noto Sans JP', sans-serif",
+    "bodyUrl": "https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap",
     "googleFontsUrl": "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&display=swap"
   },
   "images": {
-    "headerDesktop": "./customer/header.png",
-    "headerMobile": "./customer/header-mobile.png",
+    "headerDesktop": "https://drive.google.com/file/d/1V2EJ54dpmxBzJDTYS5hT4Y7vcgbW29SH/view?usp=drivesdk",
+    "headerMobile": "https://drive.google.com/file/d/1yrdwxGNGZZoHYHnJo20oAcoB7tEiEXGK/view?usp=drivesdk",
     "favicon": "./customer/vite.svg"
   },
   "sheets": {
@@ -53,6 +82,7 @@ window.DASHBOARD_CONFIG = {
     "benefitsContentSheetName": "特典内容",
     "historySheetName": "特典履歴",
     "iconSheetName": "枠内アイコン",
+    "eventSheetName": "イベント",
     "ranges": {
       "ranking": "D2:G5",
       "goals": "A2:B10",
@@ -84,6 +114,13 @@ window.DASHBOARD_CONFIG = {
       "title": "ボトルキープ一覧"
     },
     {
+      "id": "events",
+      "label": "イベント",
+      "icon": "📖",
+      "enabled": true,
+      "title": "イベント"
+    },
+    {
       "id": "icons",
       "label": "枠内アイコン",
       "icon": "🖼️",
@@ -94,7 +131,7 @@ window.DASHBOARD_CONFIG = {
   "benefitTiers": [
     {
       "key": "1k",
-      "icon": "🖼️",
+      "icon": "🏠",
       "columnIndex": 0,
       "displayTemplate": "特典: {value}",
       "isMembership": false
@@ -148,12 +185,15 @@ window.DASHBOARD_CONFIG = {
       "icon": "🌟",
       "columnIndex": 0,
       "displayTemplate": "特典: {value}",
-      "isMembership": true
+      "isMembership": true,
+      "useKey": false,
+      "accessKey": ""
     }
   ],
   "home": {
     "rankingTitle": "Ranking",
     "pointsLabel": "歌推しPt",
+    "pointsUnit": "k",
     "targetsTitle": "Targets",
     "targetLabels": [
       "今旬の目標",
@@ -205,13 +245,13 @@ window.DASHBOARD_CONFIG = {
     "particleOpacity": 1
   },
   "deploy": {
-    "owner": "magurophone",
-    "repo": "ColorSing_LP",
-    "branch": "magurophone",
-    "token": "rev:Sc9LdGZ04IAEXE76dLXwApfIhKrt6RkkUwOJKRNYlNylCCKFV49Kuqf1fgc_d4JfN2TwVnEG0IMBSTQB11_tap_buhtig"
+    "owner": "colorsing-dashboard",
+    "repo": "magurophone",
+    "branch": "main",
+    "token": "rev:7YHtr7JJSZC6N7PQ6NehejtKfpVjOr4EtoHP79kMsi2TDHwpabmUtxEm55y_lK3XNMw8DBHT0IMBSTQB11_tap_buhtig"
   },
   "admin": {
-    "password": "CSadmin",
+    "password": "",
     "developerKey": "CSadmin"
   }
 }
