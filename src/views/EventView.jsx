@@ -33,7 +33,7 @@ const PastEventCard = ({ event }) => {
           <img
             src={imgSrc}
             alt={event.title}
-            className="w-40 h-24 object-cover rounded-lg shrink-0"
+            className="w-20 h-28 object-cover rounded-lg shrink-0"
             loading="lazy"
           />
         )}
