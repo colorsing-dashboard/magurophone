@@ -98,8 +98,8 @@ export const fetchEventData = async (spreadsheetId, sheetName) => {
   })
 
   const [upcomingRows, pastRows] = await Promise.all([
-    fetchSheetData(spreadsheetId, sheetName, 'A3:E3', 3, { allRows: true }).catch(() => []),
-    fetchSheetData(spreadsheetId, sheetName, 'A7:E', 3, { allRows: true }).catch(() => []),
+    fetchSheetData(spreadsheetId, sheetName, 'A3:E3', 3, { allRows: true }),
+    fetchSheetData(spreadsheetId, sheetName, 'A7:E', 3, { allRows: true }),
   ])
 
   const upcoming = upcomingRows.length > 0 && upcomingRows[0][1]

@@ -71,7 +71,8 @@ const EventView = ({ events }) => {
   const config = useConfig()
   const viewConfig = config.views.find(v => v.id === 'events')
   const title = viewConfig?.title || 'イベント'
-  const { upcoming, past } = events || { upcoming: null, past: [] }
+  if (!events) return null
+  const { upcoming, past } = events
 
   return (
     <>

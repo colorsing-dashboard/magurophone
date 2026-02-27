@@ -8,7 +8,7 @@ export function useSheetData(sheetsConfig) {
   const [specialIndex, setSpecialIndex] = useState(8)
   const [benefits, setBenefits] = useState([])
   const [history, setHistory] = useState([])
-  const [events, setEvents] = useState({ upcoming: null, past: [] })
+  const [events, setEvents] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [lastUpdate, setLastUpdate] = useState(null)
@@ -49,8 +49,8 @@ export function useSheetData(sheetsConfig) {
           : Promise.resolve([]),
         // events: イベントシート（開催予定・開催済み）
         eventSheetName
-          ? fetchEventData(spreadsheetId, eventSheetName).catch(() => ({ upcoming: null, past: [] }))
-          : Promise.resolve({ upcoming: null, past: [] }),
+          ? fetchEventData(spreadsheetId, eventSheetName).catch(() => null)
+          : Promise.resolve(null),
       ])
 
       // "Special"列を含む行をヘッダー行として動的検出（先頭の空行・タイトル行をスキップ）
@@ -75,7 +75,7 @@ export function useSheetData(sheetsConfig) {
       setRights(rawRightsData.slice(headerRowIndex + 1)) // ヘッダー行の次から
       setSpecialIndex(detectedSpecialIndex)
       setHistory(historyData || [])
-      setEvents(eventData || { upcoming: null, past: [] })
+      setEvents(eventData ?? null)
       setLastUpdate(new Date())
       setError(null)
     } catch (err) {
