@@ -49,15 +49,12 @@ const TitleText = ({ config, glowClass, compact = false }) => {
     const textFill = config.brand.titleTextFill || 'default'
     const o = config.colorOverrides || {}
     const gradientStyle = `linear-gradient(${dir}, var(--color-title-gradient-start, var(--color-ocean-teal)), var(--color-title-gradient-mid, var(--color-light-blue)), var(--color-title-gradient-end, var(--color-amber)))`
-    const defaultColor = 'var(--color-title, var(--color-primary))'
     const h1Style = { fontSize, ...(
       textFill === 'gradient'
         ? { backgroundImage: gradientStyle, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }
-        : textFill === 'custom'
-          ? { color: o.titleColor || defaultColor }
-          : textFill === 'white'
-            ? { color: '#ffffff' }
-            : { color: defaultColor }
+        : textFill === 'white'
+          ? { color: '#ffffff' }
+          : { color: 'var(--color-title, var(--color-primary))' }
     )}
 
     return (
