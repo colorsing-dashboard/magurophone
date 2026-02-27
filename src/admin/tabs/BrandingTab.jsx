@@ -312,29 +312,55 @@ const BrandingTab = ({ config, updateConfig }) => {
         </select>
       </div>
 
+      {[
+        { label: 'ヘッダー比率（PC）', wKey: 'headerImageW', hKey: 'headerImageH', presets: [['1920','600'],['16','9'],['3','1'],['2','1']] },
+        { label: 'ヘッダー比率（モバイル）', wKey: 'headerImageWMobile', hKey: 'headerImageHMobile', presets: [['750','400'],['9','16'],['3','4'],['1','1']] },
+      ].map(({ label, wKey, hKey, presets }) => (
+        <div key={wKey} className="mb-5">
+          <label className="block text-sm font-body text-light-blue mb-2">{label}</label>
+          <div className="flex gap-2 flex-wrap mb-2">
+            {presets.map(([w, h]) => {
+              const active = String(config.brand[wKey]) === w && String(config.brand[hKey]) === h
+              return (
+                <button key={`${w}:${h}`}
+                  onClick={() => { updateConfig(`brand.${wKey}`, +w); updateConfig(`brand.${hKey}`, +h) }}
+                  className={`px-3 py-1 rounded text-xs transition-all ${active ? 'bg-amber text-deep-blue font-bold' : 'glass-effect border border-light-blue/30 text-gray-300'}`}>
+                  {w}:{h}
+                </button>
+              )
+            })}
+          </div>
+          <div className="flex items-center gap-2">
+            <input type="number" placeholder="幅" value={config.brand[wKey] || ''}
+              onChange={(e) => updateConfig(`brand.${wKey}`, +e.target.value)}
+              className="w-24 px-3 py-1.5 glass-effect border border-light-blue/30 rounded-lg text-white text-sm focus:outline-none focus:border-amber" />
+            <span className="text-gray-500">×</span>
+            <input type="number" placeholder="高さ" value={config.brand[hKey] || ''}
+              onChange={(e) => updateConfig(`brand.${hKey}`, +e.target.value)}
+              className="w-24 px-3 py-1.5 glass-effect border border-light-blue/30 rounded-lg text-white text-sm focus:outline-none focus:border-amber" />
+            <span className="text-xs text-gray-500">画像の実寸 px</span>
+          </div>
+          <p className="text-xs text-gray-600 mt-1">未設定時は固定値（下）にフォールバック</p>
+        </div>
+      ))}
+
       <div className="grid grid-cols-2 gap-4 mb-5">
         <div>
-          <label className="block text-sm font-body text-light-blue mb-1">ヘッダー高さ（PC）</label>
-          <input
-            type="text"
-            value={config.brand.headerHeight || ''}
+          <label className="block text-sm font-body text-light-blue mb-1">高さ固定値（PC）</label>
+          <input type="text" value={config.brand.headerHeight || ''}
             onChange={(e) => updateConfig('brand.headerHeight', e.target.value)}
             placeholder="600px"
-            className="w-full px-4 py-2 glass-effect border border-light-blue/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber transition-all text-sm"
-          />
+            className="w-full px-4 py-2 glass-effect border border-light-blue/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber transition-all text-sm" />
         </div>
         <div>
-          <label className="block text-sm font-body text-light-blue mb-1">ヘッダー高さ（モバイル）</label>
-          <input
-            type="text"
-            value={config.brand.headerHeightMobile || ''}
+          <label className="block text-sm font-body text-light-blue mb-1">高さ固定値（モバイル）</label>
+          <input type="text" value={config.brand.headerHeightMobile || ''}
             onChange={(e) => updateConfig('brand.headerHeightMobile', e.target.value)}
-            placeholder="300px"
-            className="w-full px-4 py-2 glass-effect border border-light-blue/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber transition-all text-sm"
-          />
+            placeholder="400px"
+            className="w-full px-4 py-2 glass-effect border border-light-blue/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber transition-all text-sm" />
         </div>
       </div>
-      <p className="text-xs text-gray-500 -mt-3 mb-5">単位をつけて入力（例: 400px, 50vh）。空欄でデフォルト値（PC: 600px / モバイル: 300px）</p>
+      <p className="text-xs text-gray-500 -mt-3 mb-5">比率未設定時のフォールバック。単位つきで入力（例: 400px, 50vh）</p>
 
       <hr className="border-light-blue/20 my-8" />
       <h3 className="text-lg font-body text-amber mb-4">タイトルフォント</h3>

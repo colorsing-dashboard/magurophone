@@ -28,38 +28,37 @@ const sanitizeCssUrl = (url) => {
   return sanitized ? `url('${sanitized}')` : null
 }
 
+// vwベース clamp: 全解像度で自然に拡縮
 const TITLE_SIZE = {
-  small:  { mobile: 'text-2xl', desktop: 'text-4xl' },
-  medium: { mobile: 'text-4xl', desktop: 'text-6xl' },
-  large:  { mobile: 'text-5xl', desktop: 'text-8xl' },
-  xlarge: { mobile: 'text-6xl', desktop: 'text-9xl' },
+  small:  'clamp(1rem,   3vw, 1.75rem)',
+  medium: 'clamp(1.5rem, 5vw, 3rem)',
+  large:  'clamp(2rem,   7vw, 5rem)',
+  xlarge: 'clamp(3rem,  10vw, 8rem)',
 }
 
 const TitleText = ({ config, glowClass, compact = false }) => {
   const effectiveStyle = config.brand.titleStyle || 'glass'
   const dir = GRADIENT_DIR[config.brand.titleGradientDirection] || 'to right'
-  const sizeKey = compact ? 'small' : (config.brand.titleSize || 'large')
-  const { mobile, desktop } = TITLE_SIZE[sizeKey] || TITLE_SIZE.large
-  const sizeClass = compact ? 'text-2xl md:text-3xl' : `${mobile} md:${desktop}`
+  const fontSize = compact ? '1.25rem' : (TITLE_SIZE[config.brand.titleSize || 'large'])
   const glassBg = config.brand.titleGlassBg ?? 0.35
   const glassBlur = config.brand.titleGlassBlur ?? 12
   const paddingY = config.brand.titlePaddingY ?? 12
+  const baseClass = `font-display font-black tracking-wide leading-tight drop-shadow-lg ${glowClass}`
 
   if (effectiveStyle === 'glass') {
     const textFill = config.brand.titleTextFill || 'white'
     const o = config.colorOverrides || {}
     const gradientStyle = `linear-gradient(${dir}, var(--color-title-gradient-start, var(--color-ocean-teal)), var(--color-title-gradient-mid, var(--color-light-blue)), var(--color-title-gradient-end, var(--color-amber)))`
-    const h1Style = textFill === 'gradient'
-      ? { backgroundImage: gradientStyle, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }
-      : textFill === 'custom'
-        ? { color: o.titleColor || '#ffffff' }
-        : {}
-    const textClass = textFill === 'gradient'
-      ? `${sizeClass} font-display font-black tracking-wide bg-clip-text text-transparent drop-shadow-lg ${glowClass} leading-relaxed py-2`
-      : `${sizeClass} font-display font-black tracking-wide text-white drop-shadow-lg ${glowClass} leading-relaxed py-2`
+    const h1Style = { fontSize, ...(
+      textFill === 'gradient'
+        ? { backgroundImage: gradientStyle, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }
+        : textFill === 'custom'
+          ? { color: o.titleColor || '#ffffff' }
+          : { color: '#ffffff' }
+    )}
 
     return (
-      <div className="mb-4 inline-block">
+      <div className="inline-block">
         <div
           className="px-6 rounded-xl"
           style={{
@@ -69,7 +68,10 @@ const TitleText = ({ config, glowClass, compact = false }) => {
             paddingBottom: `${paddingY}px`,
           }}
         >
-          <h1 className={textClass} style={h1Style}>
+          <h1
+            className={textFill === 'gradient' ? `${baseClass} bg-clip-text text-transparent` : baseClass}
+            style={h1Style}
+          >
             {config.brand.name}
           </h1>
         </div>
@@ -80,8 +82,9 @@ const TitleText = ({ config, glowClass, compact = false }) => {
   if (effectiveStyle === 'gradient') {
     return (
       <h1
-        className={`${sizeClass} font-display font-black text-transparent bg-clip-text ${glowClass} mb-4 leading-relaxed py-2`}
+        className={`${baseClass} bg-clip-text text-transparent`}
         style={{
+          fontSize,
           backgroundImage: `linear-gradient(${dir}, var(--color-title-gradient-start, var(--color-ocean-teal)), var(--color-title-gradient-mid, var(--color-light-blue)), var(--color-title-gradient-end, var(--color-amber)))`,
         }}
       >
@@ -92,8 +95,8 @@ const TitleText = ({ config, glowClass, compact = false }) => {
 
   return (
     <h1
-      className={`${sizeClass} font-display font-black ${glowClass} mb-4 leading-relaxed py-2`}
-      style={{ color: 'var(--color-title, var(--color-primary))' }}
+      className={baseClass}
+      style={{ fontSize, color: 'var(--color-title, var(--color-primary))' }}
     >
       {config.brand.name}
     </h1>
@@ -137,8 +140,12 @@ const Header = ({ lastUpdate, loading, onRefresh }) => {
   const titlePos = config.brand.titlePosition || 'center'
   const posClass = TITLE_POS[titlePos] || TITLE_POS.center
   const isCenter = titlePos === 'center'
+  const imgW  = config.brand.headerImageW
+  const imgH  = config.brand.headerImageH
+  const imgWM = config.brand.headerImageWMobile
+  const imgHM = config.brand.headerImageHMobile
   const heightDesktop = config.brand.headerHeight || '600px'
-  const heightMobile = config.brand.headerHeightMobile || '400px'
+  const heightMobile  = config.brand.headerHeightMobile || '400px'
 
   useEffect(() => {
     const id = 'header-cs-style'
@@ -148,8 +155,11 @@ const Header = ({ lastUpdate, loading, onRefresh }) => {
       el.id = id
       document.head.appendChild(el)
     }
-    el.textContent = `.header-cs{height:${heightMobile}}@media(min-width:768px){.header-cs{height:${heightDesktop}}}`
-  }, [heightDesktop, heightMobile])
+    // 画像サイズが設定されていれば aspect-ratio、なければ従来の height にフォールバック
+    const mobile  = (imgWM && imgHM) ? `aspect-ratio:${imgWM}/${imgHM}` : `height:${heightMobile}`
+    const desktop = (imgW  && imgH)  ? `aspect-ratio:${imgW}/${imgH}`   : `height:${heightDesktop}`
+    el.textContent = `.header-cs{${mobile}}@media(min-width:768px){.header-cs{${desktop}}}`
+  }, [imgW, imgH, imgWM, imgHM, heightDesktop, heightMobile])
 
   return (
     <div

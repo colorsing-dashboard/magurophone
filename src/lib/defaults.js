@@ -25,6 +25,10 @@ const DEFAULT_CONFIG = {
     headerImageFit: 'cover',
     headerHeight: '',
     headerHeightMobile: '',
+    headerImageW: 0,
+    headerImageH: 0,
+    headerImageWMobile: 0,
+    headerImageHMobile: 0,
   },
 
   colors: {
