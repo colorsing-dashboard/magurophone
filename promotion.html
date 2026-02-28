@@ -4,467 +4,457 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>カラーシングライバー専用 メンバーシップ特典 | あなた専用の特典管理ページ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        h1, h2, h3, .badge {
-            text-wrap: balance;
-        }
-
-        p {
-            text-wrap: wrap;
-            word-break: auto-phrase;
-            line-break: strict;
-            overflow-wrap: break-word;
-        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        h1, h2, h3 { text-wrap: balance; }
+        p { text-wrap: wrap; word-break: auto-phrase; line-break: strict; overflow-wrap: break-word; }
 
         :root {
-            --primary: #ff6b9d;
-            --secondary: #c449ff;
-            --accent: #ffd700;
-            --dark: #1a1a2e;
-            --light: #ffffff;
-            --gray: #8892b0;
+            --color-primary:   #E87C35;
+            --color-secondary: #EAD0B3;
+            --color-accent:    #5D4037;
+            --color-bg:        #FFFBF6;
+            --color-text:      #333333;
+            --radius:          6px;
+            --shadow:          0 4px 16px rgba(0,0,0,0.06);
         }
 
         body {
-            font-family: 'Helvetica Neue', 'Arial', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: var(--light);
-            line-height: 1.6;
+            font-family: 'Noto Sans JP', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+            background: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.65;
             overflow-x: hidden;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 24px;
         }
 
-        /* Hero Section */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 20% 50%, rgba(255, 107, 157, 0.2) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(196, 73, 255, 0.2) 0%, transparent 50%);
-            animation: pulse 8s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        .badge {
+        /* ── Labels & Headings ── */
+        .sec-label {
             display: inline-block;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            padding: 8px 20px;
-            border-radius: 50px;
-            font-size: 0.9rem;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        h1 {
-            font-size: 3.5rem;
-            font-weight: 900;
-            margin-bottom: 20px;
-            line-height: 1.2;
-            background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        @media (max-width: 768px) {
-            h1 { font-size: 2.2rem; }
-        }
-
-        .hero-subtitle {
-            font-size: 1.3rem;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 40px;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .cta-button {
-            display: inline-block;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: var(--light);
-            padding: 18px 50px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-size: 1.1rem;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.4);
-            border: 2px solid transparent;
-        }
-
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(255, 107, 157, 0.6);
-            border-color: rgba(255, 255, 255, 0.5);
-        }
-
-        /* Section Styles */
-        section {
-            padding: 100px 0;
-            position: relative;
-        }
-
-        section:nth-child(even) {
-            background: rgba(0, 0, 0, 0.2);
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--color-primary);
+            margin-bottom: 10px;
         }
 
         h2 {
-            font-size: 2.5rem;
-            text-align: center;
-            margin-bottom: 60px;
-            font-weight: 800;
+            font-family: 'Zen Kaku Gothic New', 'Hiragino Sans', sans-serif;
+            font-size: clamp(1.4rem, 2.8vw, 2rem);
+            font-weight: 900;
+            color: var(--color-accent);
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
         }
 
-        .section-subtitle {
-            text-align: center;
-            font-size: 1.1rem;
-            color: rgba(255, 255, 255, 0.8);
-            margin-top: -40px;
-            margin-bottom: 60px;
-        }
-
-        /* Problem Section */
-        .problem-box {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .problem-box h3 {
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-            color: var(--accent);
-            text-align: center;
-        }
-
-        .problem-list {
-            list-style: none;
-            margin-bottom: 30px;
-        }
-
-        .problem-list li {
-            padding: 15px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: start;
-            gap: 15px;
-        }
-
-        .problem-list li:last-child {
-            border-bottom: none;
-        }
-
-        .problem-icon {
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
-
-        .solution-highlight {
-            background: linear-gradient(135deg, rgba(255, 107, 157, 0.3), rgba(196, 73, 255, 0.3));
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-
-        /* Features Grid */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 40px;
-        }
-
-        .feature-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px 30px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-            background: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            display: block;
-        }
-
-        .feature-card h3 {
-            font-size: 1.3rem;
-            margin-bottom: 15px;
-            color: var(--accent);
-        }
-
-        .feature-card p {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.95rem;
-        }
-
-        /* Steps Section */
-        .steps {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .step {
-            display: flex;
-            gap: 30px;
+        .sec-desc {
+            font-size: 0.875rem;
+            color: #888;
             margin-bottom: 40px;
-            align-items: start;
         }
 
-        .step-number {
-            flex-shrink: 0;
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 50%;
-            display: flex;
+        /* ── Button ── */
+        .btn {
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            font-weight: bold;
+            gap: 8px;
+            background: var(--color-primary);
+            color: #fff;
+            padding: 13px 28px;
+            border-radius: var(--radius);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 700;
+            transition: background 0.15s, transform 0.15s;
+        }
+        .btn:hover { background: #d06e2e; transform: translateY(-1px); }
+
+        .btn-lg { font-size: 1rem; padding: 15px 36px; }
+
+        /* ── Hero ── */
+        .hero {
+            padding: 80px 0;
+            border-bottom: 1px solid var(--color-secondary);
         }
 
-        .step-content h3 {
-            font-size: 1.3rem;
-            margin-bottom: 10px;
-        }
-
-        .step-content p {
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        /* CTA Section */
-        .cta-section {
-            text-align: center;
-            padding: 120px 0;
-            background: linear-gradient(135deg, rgba(255, 107, 157, 0.2), rgba(196, 73, 255, 0.2));
-        }
-
-        .cta-section h2 {
-            margin-bottom: 30px;
-        }
-
-        /* Footer */
-        footer {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 40px 0;
-            text-align: center;
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        /* Value Comparison */
-        .value-comparison {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .value-stat-grid {
+        .hero-inner {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-bottom: 40px;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: center;
         }
 
         @media (max-width: 768px) {
-            .value-stat-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+            .hero-inner { grid-template-columns: 1fr; }
+            .hero-visual { display: none; }
         }
 
-        .value-stat {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            padding: 30px 15px;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .value-number {
-            display: block;
-            font-size: 2.2rem;
+        .hero-text h1 {
+            font-family: 'Zen Kaku Gothic New', 'Hiragino Sans', sans-serif;
+            font-size: clamp(2rem, 4vw, 3rem);
             font-weight: 900;
-            background: linear-gradient(135deg, var(--accent) 0%, #ffed4e 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 8px;
+            line-height: 1.22;
+            color: var(--color-accent);
+            margin-bottom: 18px;
+            letter-spacing: -0.015em;
         }
 
-        .value-label {
-            font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.7);
+        .hero-text h1 em {
+            font-style: normal;
+            color: var(--color-primary);
         }
 
-        .value-estimate {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            padding: 30px;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-
-        .value-estimate-label {
+        .hero-text p {
             font-size: 0.95rem;
-            color: rgba(255, 255, 255, 0.7);
+            color: #666;
+            line-height: 1.88;
+            margin-bottom: 32px;
+        }
+
+        /* ── Hero Visual Card ── */
+        .hero-visual {
+            background: #fff;
+            border: 1px solid var(--color-secondary);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 28px;
+        }
+
+        .vis-label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--color-primary);
+            margin-bottom: 16px;
+        }
+
+        .vis-list { list-style: none; }
+
+        .vis-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 11px 0;
+            border-bottom: 1px solid #f2e8de;
+            font-size: 0.845rem;
+        }
+
+        .vis-item:last-child { border-bottom: none; }
+
+        .vis-item-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #666;
+        }
+
+        .vis-item-left i { color: var(--color-primary); font-size: 17px; }
+
+        .vis-item-val {
+            font-weight: 700;
+            color: var(--color-accent);
+        }
+
+        /* ── Sections ── */
+        section { padding: 80px 0; }
+        section.alt { background: #fff; border-top: 1px solid var(--color-secondary); border-bottom: 1px solid var(--color-secondary); }
+
+        /* ── Problem ── */
+        .prob-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            max-width: 720px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 560px) { .prob-grid { grid-template-columns: 1fr; } }
+
+        .prob-item {
+            background: #fff;
+            border: 1px solid var(--color-secondary);
+            border-radius: var(--radius);
+            padding: 18px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            box-shadow: var(--shadow);
+        }
+
+        .prob-item i { color: var(--color-primary); flex-shrink: 0; margin-top: 1px; font-size: 18px; }
+        .prob-item p { font-size: 0.875rem; color: #555; }
+
+        .sol-bar {
+            background: var(--color-primary);
+            border-radius: var(--radius);
+            padding: 15px 24px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.92rem;
+            color: #fff;
+            max-width: 720px;
+        }
+
+        /* ── Features ── */
+        .feat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .feat-card {
+            background: var(--color-bg);
+            border: 1px solid var(--color-secondary);
+            border-radius: var(--radius);
+            padding: 24px 20px;
+            box-shadow: var(--shadow);
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+
+        .feat-card:hover {
+            border-color: var(--color-primary);
+            box-shadow: 0 6px 20px rgba(232,124,53,0.1);
+        }
+
+        .feat-icon {
+            width: 40px;
+            height: 40px;
+            background: #fff5ee;
+            border: 1px solid #f0d5c0;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-primary);
+            font-size: 20px;
+            margin-bottom: 14px;
+        }
+
+        .feat-card h3 { font-size: 0.92rem; font-weight: 700; margin-bottom: 8px; color: var(--color-accent); }
+        .feat-card p  { font-size: 0.83rem; color: #666; line-height: 1.75; }
+
+        /* ── Steps ── */
+        .steps { max-width: 640px; }
+
+        .step {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 17px;
+            top: 38px;
+            bottom: -4px;
+            width: 1px;
+            background: var(--color-secondary);
+        }
+
+        .step-num {
+            flex-shrink: 0;
+            width: 36px;
+            height: 36px;
+            background: var(--color-primary);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.9rem;
+            color: #fff;
+        }
+
+        .step-body { padding-top: 6px; }
+        .step-body h3 { font-size: 0.92rem; font-weight: 700; margin-bottom: 5px; color: var(--color-accent); }
+        .step-body p  { font-size: 0.83rem; color: #666; line-height: 1.78; }
+
+        /* ── Value ── */
+        .val-wrap { max-width: 720px; }
+
+        .val-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
             margin-bottom: 10px;
         }
 
-        .value-estimate-price {
-            font-size: 2rem;
-            font-weight: 900;
-            color: var(--light);
+        @media (max-width: 560px) { .val-grid { grid-template-columns: repeat(2, 1fr); } }
+
+        .val-stat {
+            background: #fff;
+            border: 1px solid var(--color-secondary);
+            border-radius: var(--radius);
+            padding: 20px 10px;
+            text-align: center;
+            box-shadow: var(--shadow);
         }
 
-        .value-estimate-price span {
+        .val-num {
             display: block;
-            font-size: 0.9rem;
-            font-weight: 400;
-            color: rgba(255, 255, 255, 0.6);
-            margin-top: 5px;
+            font-family: 'Zen Kaku Gothic New', sans-serif;
+            font-size: 1.65rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            letter-spacing: -0.02em;
+            margin-bottom: 4px;
         }
 
-        .value-estimate-note {
-            font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.5);
-            margin-top: 15px;
+        .val-lbl { font-size: 0.72rem; color: #999; }
+
+        .val-box {
+            background: #fff;
+            border: 1px solid var(--color-secondary);
+            border-radius: var(--radius);
+            padding: 24px;
+            text-align: center;
+            box-shadow: var(--shadow);
         }
 
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .val-box-lbl   { font-size: 0.8rem; color: #888; margin-bottom: 6px; }
+        .val-box-price {
+            font-family: 'Zen Kaku Gothic New', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 900;
+            color: var(--color-accent);
+            margin-bottom: 4px;
+        }
+        .val-box-note  { font-size: 0.76rem; color: #aaa; }
+
+        /* ── CTA ── */
+        .cta-sec {
+            padding: 80px 0;
+            text-align: center;
+            border-top: 1px solid var(--color-secondary);
         }
 
-        .animate-fade-in {
-            animation: fadeInUp 0.6s ease-out;
+        .cta-sec h2 { margin-bottom: 12px; }
+        .cta-sec p  { color: #777; font-size: 0.9rem; margin-bottom: 28px; }
+
+        /* ── Footer ── */
+        footer {
+            background: var(--color-accent);
+            padding: 28px 0;
+            text-align: center;
+            color: rgba(255,255,255,0.55);
+            font-size: 0.78rem;
         }
+
+        footer p + p { margin-top: 4px; }
     </style>
 </head>
 <body>
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content container animate-fade-in">
-            <div class="badge">🎵 カラーシングライバー専用特典</div>
-            <h1>あなた専用の<br>特典管理ページ</h1>
-            <p class="hero-subtitle">
-                メンバーシップ特典として「歌推し特典管理サイト」を無料提供。スプレッドシートを更新するだけで、リスナー向けの特典ページが自動で更新されます。
-            </p>
-        </div>
-    </section>
 
-    <!-- Problem Section -->
-    <section>
+    <!-- Hero -->
+    <section class="hero">
         <div class="container">
-            <h2>ライバーの皆さまへ</h2>
-            <div class="problem-box">
-                <h3>こんなお悩みはありませんか？</h3>
-                <ul class="problem-list">
-                    <li>
-                        <span class="problem-icon">📋</span>
-                        <span>特典を誰に何を渡したか把握しきれない</span>
-                    </li>
-                    <li>
-                        <span class="problem-icon">❓</span>
-                        <span>リスナーが自分の特典状況を確認できない</span>
-                    </li>
-                    <li>
-                        <span class="problem-icon">📝</span>
-                        <span>特典内容やランキングなど共有したい情報が多く、プロフィール欄では伝えきれない</span>
-                    </li>
-                    <li>
-                        <span class="problem-icon">⏰</span>
-                        <span>枠内アイコンの管理が煩雑で手が回らない</span>
-                    </li>
-                </ul>
-                <div class="solution-highlight">
-                    💡 スプレッドシートを更新するだけで、すべて自動反映されます
+            <div class="hero-inner">
+                <div class="hero-text">
+                    <span class="sec-label">カラーシングライバー専用特典</span>
+                    <h1>あなた専用の<br><em>特典管理ページ</em></h1>
+                    <p>メンバーシップ特典として「歌推し特典管理サイト」を無料提供。スプレッドシートを更新するだけで、リスナー向けの特典ページが自動で更新されます。</p>
+                    <a href="https://web.colorsing.com/memberships/livers/9f416ebb-bc97-4d24-8c38-9550c5040aa5?type=join" class="btn">
+                        メンバーシップに加入する
+                        <i class="ph ph-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="hero-visual">
+                    <p class="vis-label">主な機能</p>
+                    <ul class="vis-list">
+                        <li class="vis-item">
+                            <span class="vis-item-left"><i class="ph ph-trophy"></i>前月ランキング表示</span>
+                            <span class="vis-item-val">スプシ連携</span>
+                        </li>
+                        <li class="vis-item">
+                            <span class="vis-item-left"><i class="ph ph-gift"></i>特典管理・履歴記録</span>
+                            <span class="vis-item-val">スプシ連携</span>
+                        </li>
+                        <li class="vis-item">
+                            <span class="vis-item-left"><i class="ph ph-images"></i>枠内アイコンギャラリー</span>
+                            <span class="vis-item-val">スプシ連携</span>
+                        </li>
+                        <li class="vis-item">
+                            <span class="vis-item-left"><i class="ph ph-calendar-dots"></i>イベント告知・管理</span>
+                            <span class="vis-item-val">スプシ連携</span>
+                        </li>
+                        <li class="vis-item">
+                            <span class="vis-item-left"><i class="ph ph-paint-brush"></i>デザインカスタマイズ</span>
+                            <span class="vis-item-val">40+ 項目</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Features Section -->
+    <!-- Problem -->
     <section>
         <div class="container">
+            <span class="sec-label">Problem</span>
+            <h2>こんなお悩みはありませんか？</h2>
+            <p class="sec-desc">多くのライバーが抱える、特典・ランキング管理の課題</p>
+            <div class="prob-grid">
+                <div class="prob-item">
+                    <i class="ph ph-clipboard-text"></i>
+                    <p>特典を誰に何を渡したか把握しきれない</p>
+                </div>
+                <div class="prob-item">
+                    <i class="ph ph-question"></i>
+                    <p>リスナーが自分の特典状況を確認できない</p>
+                </div>
+                <div class="prob-item">
+                    <i class="ph ph-text-align-left"></i>
+                    <p>共有したい情報が多く、プロフィール欄では伝えきれない</p>
+                </div>
+                <div class="prob-item">
+                    <i class="ph ph-timer"></i>
+                    <p>枠内アイコンの管理が煩雑で手が回らない</p>
+                </div>
+            </div>
+            <div class="sol-bar">
+                スプレッドシートを更新するだけで、すべて自動反映されます
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="alt">
+        <div class="container">
+            <span class="sec-label">Features</span>
             <h2>主な機能</h2>
-            <p class="section-subtitle">スプレッドシート連携で、管理の手間を大幅削減</p>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <span class="feature-icon">🏆</span>
+            <p class="sec-desc">スプレッドシート連携で、管理の手間を大幅削減</p>
+            <div class="feat-grid">
+                <div class="feat-card">
+                    <div class="feat-icon"><i class="ph ph-trophy"></i></div>
                     <h3>前月ランキング表示</h3>
-                    <p>スプレッドシートと連携し、リスナーの歌推しポイントランキングを自動表示。<br>メダル画像や目標設定にも対応。</p>
+                    <p>スプレッドシートと連携し、リスナーの歌推しポイントランキングを自動表示。メダル画像や目標設定にも対応。</p>
                 </div>
-                <div class="feature-card">
-                    <span class="feature-icon">🎁</span>
+                <div class="feat-card">
+                    <div class="feat-icon"><i class="ph ph-gift"></i></div>
                     <h3>特典管理の自動化</h3>
-                    <p>配信者ごとの特典ティアに合わせて、各段階の達成状況を一覧表示。履歴記録にも対応。</p>
+                    <p>配信者ごとの特典ティアに合わせて、各段階の達成状況を一覧表示。特典履歴の記録にも対応。</p>
                 </div>
-                <div class="feature-card">
-                    <span class="feature-icon">🖼️</span>
+                <div class="feat-card">
+                    <div class="feat-icon"><i class="ph ph-images"></i></div>
                     <h3>枠内アイコンギャラリー</h3>
-                    <p>月別・カテゴリ別にリスナーのアイコンをギャラリー表示。Google Driveの画像URLを貼るだけ。</p>
+                    <p>月別・カテゴリ別にリスナーのアイコンをギャラリー表示。Google DriveのURLを貼るだけ。</p>
                 </div>
-                <div class="feature-card">
-                    <span class="feature-icon">🎨</span>
+                <div class="feat-card">
+                    <div class="feat-icon"><i class="ph ph-paint-brush"></i></div>
                     <h3>完全カスタマイズ</h3>
                     <p>ロゴ・カラー・フォント・エフェクトを管理画面から自由に変更。あなたの世界観をそのまま反映できます。</p>
                 </div>
@@ -475,26 +465,27 @@
     <!-- How it Works -->
     <section>
         <div class="container">
+            <span class="sec-label">How it works</span>
             <h2>導入までの流れ</h2>
-            <p class="section-subtitle">3ステップで、あなた専用の歌推し管理サイトが完成</p>
+            <p class="sec-desc">3ステップで、あなた専用の歌推し管理サイトが完成</p>
             <div class="steps">
                 <div class="step">
-                    <div class="step-number">1</div>
-                    <div class="step-content">
+                    <div class="step-num">1</div>
+                    <div class="step-body">
                         <h3>メンバーシップに加入</h3>
-                        <p>カラーシングのメンバーシップ（月額800円）に加入するだけ。その他費用は一切不要です。<br>加入期間中のみ利用可能で、一時休止にも対応しています。</p>
+                        <p>カラーシングのメンバーシップ（月額800円）に加入するだけ。その他費用は一切不要です。加入期間中のみ利用可能で、一時休止にも対応しています。</p>
                     </div>
                 </div>
                 <div class="step">
-                    <div class="step-number">2</div>
-                    <div class="step-content">
+                    <div class="step-num">2</div>
+                    <div class="step-body">
                         <h3>必要情報をご提供</h3>
-                        <p>専用のGoogleフォームに必要情報を記入してください。<br>ヘッダー画像2種をご用意いただく必要があります。（PC用 1920x600、モバイル用 750x400）</p>
+                        <p>専用のGoogleフォームに必要情報を記入してください。ヘッダー画像2種をご用意いただく必要があります。（PC用 1920×600、モバイル用 750×400）</p>
                     </div>
                 </div>
                 <div class="step">
-                    <div class="step-number">3</div>
-                    <div class="step-content">
+                    <div class="step-num">3</div>
+                    <div class="step-body">
                         <h3>専用URLをお届け</h3>
                         <p>セットアップ完了後、あなた専用のURLをお渡しします。すぐに配信で活用できます。</p>
                     </div>
@@ -503,47 +494,50 @@
         </div>
     </section>
 
-    <!-- Value Section -->
-    <section>
+    <!-- Value -->
+    <section class="alt">
         <div class="container">
+            <span class="sec-label">Value</span>
             <h2>このシステムの価値</h2>
-            <p class="section-subtitle">個別に開発を依頼した場合の相場と比較してください</p>
-            <div class="value-comparison">
-                <div class="value-stat-grid">
-                    <div class="value-stat">
-                        <span class="value-number">4,600+</span>
-                        <span class="value-label">行のソースコード</span>
+            <p class="sec-desc">個別に開発を依頼した場合の相場と比較してください</p>
+            <div class="val-wrap">
+                <div class="val-grid">
+                    <div class="val-stat">
+                        <span class="val-num">4,600+</span>
+                        <span class="val-lbl">行のソースコード</span>
                     </div>
-                    <div class="value-stat">
-                        <span class="value-number">39</span>
-                        <span class="value-label">ファイル構成</span>
+                    <div class="val-stat">
+                        <span class="val-num">39</span>
+                        <span class="val-lbl">ファイル構成</span>
                     </div>
-                    <div class="value-stat">
-                        <span class="value-number">40+</span>
-                        <span class="value-label">カスタマイズ項目</span>
+                    <div class="val-stat">
+                        <span class="val-num">40+</span>
+                        <span class="val-lbl">カスタマイズ項目</span>
                     </div>
-                    <div class="value-stat">
-                        <span class="value-number">8</span>
-                        <span class="value-label">管理画面タブ</span>
+                    <div class="val-stat">
+                        <span class="val-num">8</span>
+                        <span class="val-lbl">管理画面タブ</span>
                     </div>
                 </div>
-                <div class="value-estimate">
-                    <p class="value-estimate-label">同等のシステムを技術者に開発依頼した場合</p>
-                    <p class="value-estimate-price">300〜400万円<span>（制作会社経由なら500万円以上）</span></p>
-                    <p class="value-estimate-note">※ カスタマイズ機能を省き、個別にハードコードで制作した場合でも120〜250万円</p>
+                <div class="val-box">
+                    <p class="val-box-lbl">同等のシステムを技術者に開発依頼した場合</p>
+                    <p class="val-box-price">300〜400万円</p>
+                    <p class="val-box-note">制作会社経由なら500万円以上 ／ 機能を省いた場合でも120〜250万円</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- CTA Section -->
-    <section class="cta-section">
+    <!-- CTA -->
+    <section class="cta-sec">
         <div class="container">
+            <span class="sec-label">Join</span>
             <h2>今すぐ始めて、配信活動を次のレベルへ</h2>
-            <p style="font-size: 1.2rem; margin-bottom: 40px; color: rgba(255, 255, 255, 0.9);">
-                メンバーシップ加入で、あなた専用の歌推し特典サイトが手に入ります
-            </p>
-            <a href="https://web.colorsing.com/memberships/livers/9f416ebb-bc97-4d24-8c38-9550c5040aa5?type=join" class="cta-button" style="font-size: 1.2rem; padding: 20px 60px;">メンバーシップに加入する</a>
+            <p>メンバーシップ加入で、あなた専用の歌推し特典サイトが手に入ります</p>
+            <a href="https://web.colorsing.com/memberships/livers/9f416ebb-bc97-4d24-8c38-9550c5040aa5?type=join" class="btn btn-lg">
+                メンバーシップに加入する
+                <i class="ph ph-arrow-right"></i>
+            </a>
         </div>
     </section>
 
@@ -551,8 +545,9 @@
     <footer>
         <div class="container">
             <p>&copy; 2026 magurophone</p>
-            <p style="margin-top: 10px; font-size: 0.9rem;">本サービスはカラーシングのメンバーシップ特典として提供しています</p>
+            <p>本サービスはカラーシングのメンバーシップ特典として提供しています</p>
         </div>
     </footer>
+
 </body>
 </html>
