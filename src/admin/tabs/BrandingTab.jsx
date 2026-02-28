@@ -272,14 +272,14 @@ const BrandingTab = ({ config, updateConfig }) => {
         value={config.images?.headerDesktop}
         onChange={(v) => updateConfig('images.headerDesktop', v)}
         placeholder="https://drive.google.com/file/d/xxx/view  または  ./customer/header.png"
-        description="横幅1200px以上推奨。Google DriveのURLを貼り付けるか、ファイルパスを入力"
+        description="横長画像（1920×600px推奨）。Google DriveのURLを貼り付けるか、ファイルパスを入力"
       />
       <Field
         label="ヘッダー画像（モバイル用）"
         value={config.images?.headerMobile}
         onChange={(v) => updateConfig('images.headerMobile', v)}
         placeholder="https://drive.google.com/file/d/xxx/view  または  ./customer/header-mobile.png"
-        description="縦長画像（750×600px程度）推奨。省略するとPC用画像が使われます"
+        description="横長画像（750×400px推奨）。省略するとPC用画像が使われます"
       />
 
       <div className="mb-5">
