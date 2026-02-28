@@ -153,15 +153,37 @@ const TiersTab = ({ config, updateConfig }) => {
             </div>
 
             {tier.useKey && (
-              <div className="mt-3">
-                <label className="block text-xs text-gray-500 mb-1">アクセスキー</label>
-                <input
-                  type="text"
-                  value={tier.accessKey || ''}
-                  onChange={(e) => updateTier(index, 'accessKey', e.target.value)}
-                  placeholder="任意の文字列"
-                  className="w-full px-3 py-1.5 glass-effect border border-gold/40 rounded-lg text-white text-sm focus:outline-none focus:border-gold"
-                />
+              <div className="mt-3 space-y-2">
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">アクセスキー</label>
+                  <input
+                    type="text"
+                    value={tier.accessKey || ''}
+                    onChange={(e) => updateTier(index, 'accessKey', e.target.value)}
+                    placeholder="任意の文字列"
+                    className="w-full px-3 py-1.5 glass-effect border border-gold/40 rounded-lg text-white text-sm focus:outline-none focus:border-gold"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">コンテンツ（テキスト）</label>
+                  <textarea
+                    value={tier.lockedContent?.text || ''}
+                    onChange={(e) => updateTier(index, 'lockedContent', { ...(tier.lockedContent || {}), text: e.target.value })}
+                    rows={3}
+                    placeholder="表示するテキストを入力"
+                    className="w-full px-3 py-1.5 glass-effect border border-gold/40 rounded-lg text-white text-sm focus:outline-none focus:border-gold resize-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">コンテンツ（画像URL）</label>
+                  <input
+                    type="text"
+                    value={tier.lockedContent?.imageUrl || ''}
+                    onChange={(e) => updateTier(index, 'lockedContent', { ...(tier.lockedContent || {}), imageUrl: e.target.value })}
+                    placeholder="Google Drive URL（省略可）"
+                    className="w-full px-3 py-1.5 glass-effect border border-gold/40 rounded-lg text-white text-sm focus:outline-none focus:border-gold"
+                  />
+                </div>
               </div>
             )}
           </div>

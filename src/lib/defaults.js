@@ -102,13 +102,13 @@ const DEFAULT_CONFIG = {
   ],
 
   benefitTiers: [
-    { key: '5k', icon: '🎵', columnIndex: 1, displayTemplate: '強制リクエスト: {value}曲' },
-    { key: '10k', icon: '🎮', columnIndex: 2, displayTemplate: '権利: {value}時間分' },
-    { key: '20k', icon: '💬', columnIndex: 3, displayTemplate: 'オープンチャット招待済', isBoolean: true },
-    { key: '30k', icon: '🎤', columnIndex: 4, displayTemplate: 'アカペラ音源獲得: {value}曲' },
-    { key: '40k', icon: '⚡', columnIndex: 5, displayTemplate: '強制リクエスト: {value}曲' },
-    { key: '50k', icon: '🏆', columnIndex: 6, displayTemplate: 'ミックス音源獲得: {value}曲' },
-    { key: 'メンバーシップ', icon: '👑', columnIndex: 7, displayTemplate: '月内リクエスト対応中', isMembership: true },
+    { key: '5k', icon: '🎵', columnIndex: 1, displayTemplate: '強制リクエスト: {value}曲', lockedContent: { text: '', imageUrl: '' } },
+    { key: '10k', icon: '🎮', columnIndex: 2, displayTemplate: '権利: {value}時間分', lockedContent: { text: '', imageUrl: '' } },
+    { key: '20k', icon: '💬', columnIndex: 3, displayTemplate: 'オープンチャット招待済', isBoolean: true, lockedContent: { text: '', imageUrl: '' } },
+    { key: '30k', icon: '🎤', columnIndex: 4, displayTemplate: 'アカペラ音源獲得: {value}曲', lockedContent: { text: '', imageUrl: '' } },
+    { key: '40k', icon: '⚡', columnIndex: 5, displayTemplate: '強制リクエスト: {value}曲', lockedContent: { text: '', imageUrl: '' } },
+    { key: '50k', icon: '🏆', columnIndex: 6, displayTemplate: 'ミックス音源獲得: {value}曲', lockedContent: { text: '', imageUrl: '' } },
+    { key: 'メンバーシップ', icon: '👑', columnIndex: 7, displayTemplate: '月内リクエスト対応中', isMembership: true, lockedContent: { text: '', imageUrl: '' } },
   ],
 
   home: {
