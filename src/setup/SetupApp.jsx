@@ -220,10 +220,6 @@ const StepContent5 = () => (
     </p>
 
     <H4>① スプレッドシートIDの確認と登録</H4>
-    <p className="text-gray-300 text-sm mb-3">
-      コピーしたスプレッドシートを開き、URLの{' '}
-      <span className="text-amber font-bold">/d/ と /edit の間</span>の文字列がIDです。
-    </p>
     <Img
       src="./manual/ss-url-id.png"
       alt="スプレッドシートURLでIDの場所を示す図"
@@ -231,7 +227,10 @@ const StepContent5 = () => (
     />
     <Sub number="1">受け取った管理画面URL（末尾が /admin）を開く</Sub>
     <Sub number="2">「Google Sheets」タブを選択</Sub>
-    <Sub number="3">「スプレッドシートID」欄にコピーしたIDを貼り付け（自動保存）</Sub>
+    <Sub number="3">
+      「スプレッドシートID」欄にスプレッドシートIDをコピーして貼り付け（自動保存）
+      <p className="text-xs text-gray-500 mt-1">コピーしたスプレッドシートを開きましょう。表示されたURLの <span className="text-amber font-bold">/d/ と /edit の間</span> の文字列がIDです。</p>
+    </Sub>
     <Sub number="4">「接続テスト」ボタンで正常に読み込めるか確認</Sub>
     <Img
       src="./manual/admin-sheets-tab.png"
