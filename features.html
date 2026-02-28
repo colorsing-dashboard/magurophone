@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>機能一覧 | ColorSing LP — 歌推し特典管理ページ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        h1, h2, h3, h4 { text-wrap: balance; }
+        p { text-wrap: wrap; word-break: auto-phrase; line-break: strict; overflow-wrap: break-word; }
+
+        :root {
+            --color-primary:   #E87C35;
+            --color-secondary: #EAD0B3;
+            --color-accent:    #5D4037;
+            --color-bg:        #FFFBF6;
+            --color-text:      #333333;
+            --radius:          6px;
+            --shadow:          0 4px 16px rgba(0,0,0,0.06);
+        }
+
+        body {
+            font-family: 'Noto Sans JP', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+            background: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.65;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1060px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ── Nav ── */
+        .topnav {
+            border-bottom: 1px solid var(--color-secondary);
+            padding: 14px 0;
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .topnav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .nav-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.82rem;
+            color: #888;
+            text-decoration: none;
+            transition: color 0.14s;
+        }
+
+        .nav-back:hover { color: var(--color-primary); }
+
+        .nav-title {
+            font-family: 'Zen Kaku Gothic New', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 900;
+            color: var(--color-accent);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--color-primary);
+            color: #fff;
+            padding: 9px 20px;
+            border-radius: var(--radius);
+            text-decoration: none;
+            font-size: 0.84rem;
+            font-weight: 700;
+            transition: background 0.15s, transform 0.15s;
+        }
+
+        .btn:hover { background: #d06e2e; transform: translateY(-1px); }
+
+        /* ── Hero ── */
+        .page-hero {
+            padding: 56px 0 48px;
+            border-bottom: 1px solid var(--color-secondary);
+            text-align: center;
+        }
+
+        .sec-label {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+        }
+
+        .page-hero h1 {
+            font-family: 'Zen Kaku Gothic New', sans-serif;
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 900;
+            color: var(--color-accent);
+            margin-bottom: 12px;
+            letter-spacing: -0.015em;
+        }
+
+        .page-hero p {
+            color: #777;
+            font-size: 0.95rem;
+            max-width: 540px;
+            margin: 0 auto;
+            line-height: 1.85;
+        }
+
+        /* ── Feature Sections ── */
+        .feat-section {
+            padding: 72px 0;
+            border-bottom: 1px solid var(--color-secondary);
+        }
+
+        .feat-section.alt { background: #fff; }
+
+        .feat-inner {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: start;
+        }
+
+        .feat-inner.reverse { direction: rtl; }
+        .feat-inner.reverse > * { direction: ltr; }
+
+        @media (max-width: 720px) {
+            .feat-inner, .feat-inner.reverse { grid-template-columns: 1fr; direction: ltr; }
+        }
+
+        .feat-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .feat-icon-lg {
+            width: 48px;
+            height: 48px;
+            background: #fff5ee;
+            border: 1px solid #f0d5c0;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-primary);
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .feat-section h2 {
+            font-family: 'Zen Kaku Gothic New', sans-serif;
+            font-size: clamp(1.3rem, 2.5vw, 1.75rem);
+            font-weight: 900;
+            color: var(--color-accent);
+            letter-spacing: -0.01em;
+        }
+
+        .feat-desc {
+            font-size: 0.9rem;
+            color: #555;
+            line-height: 1.88;
+            margin-bottom: 20px;
+        }
+
+        .feat-points { list-style: none; }
+
+        .feat-point {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #f2e8de;
+            font-size: 0.875rem;
+            color: #444;
+        }
+
+        .feat-point:last-child { border-bottom: none; }
+
+        .feat-point i {
+            color: var(--color-primary);
+            font-size: 16px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* ── Image Placeholder ── */
+        .img-placeholder {
+            background: #f9f3ec;
+            border: 2px dashed #DEC09A;
+            border-radius: var(--radius);
+            min-height: 220px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: #C4A882;
+            font-size: 0.78rem;
+            text-align: center;
+            padding: 24px;
+        }
+
+        .img-placeholder i { font-size: 28px; opacity: 0.5; }
+
+        /* ── Sub-feature grid (within a section) ── */
+        .sub-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        @media (max-width: 500px) { .sub-grid { grid-template-columns: 1fr; } }
+
+        .sub-card {
+            background: var(--color-bg);
+            border: 1px solid var(--color-secondary);
+            border-radius: var(--radius);
+            padding: 14px 16px;
+        }
+
+        .sub-card h4 {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--color-accent);
+            margin-bottom: 4px;
+        }
+
+        .sub-card p { font-size: 0.78rem; color: #777; line-height: 1.65; }
+
+        /* ── Admin tabs overview ── */
+        .tabs-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        @media (max-width: 600px) { .tabs-grid { grid-template-columns: repeat(2, 1fr); } }
+
+        .tab-chip {
+            background: #fff;
+            border: 1px solid var(--color-secondary);
+            border-radius: var(--radius);
+            padding: 10px 12px;
+            text-align: center;
+            font-size: 0.78rem;
+            color: #555;
+            box-shadow: var(--shadow);
+        }
+
+        .tab-chip i { display: block; color: var(--color-primary); font-size: 18px; margin-bottom: 4px; }
+
+        /* ── CTA ── */
+        .cta-sec {
+            padding: 80px 0;
+            text-align: center;
+            background: #fff;
+            border-top: 1px solid var(--color-secondary);
+        }
+
+        .cta-sec h2 {
+            font-family: 'Zen Kaku Gothic New', sans-serif;
+            font-size: clamp(1.4rem, 2.8vw, 2rem);
+            font-weight: 900;
+            color: var(--color-accent);
+            margin-bottom: 12px;
+        }
+
+        .cta-sec p { color: #777; font-size: 0.9rem; margin-bottom: 28px; }
+
+        .btn-lg { font-size: 1rem; padding: 14px 36px; }
+
+        /* ── Footer ── */
+        footer {
+            background: var(--color-accent);
+            padding: 24px 0;
+            text-align: center;
+            color: rgba(255,255,255,0.55);
+            font-size: 0.78rem;
+        }
+
+        footer p + p { margin-top: 4px; }
+    </style>
+</head>
+<body>
+
+    <!-- Nav -->
+    <nav class="topnav">
+        <div class="container topnav-inner">
+            <a href="./promotion.html" class="nav-back">
+                <i class="ph ph-arrow-left"></i> 概要に戻る
+            </a>
+            <span class="nav-title">機能一覧</span>
+            <a href="https://web.colorsing.com/memberships/livers/9f416ebb-bc97-4d24-8c38-9550c5040aa5?type=join" class="btn">
+                加入する <i class="ph ph-arrow-right"></i>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Page Hero -->
+    <section class="page-hero">
+        <div class="container">
+            <span class="sec-label">ColorSing LP — Features</span>
+            <h1>具体的に、何ができるのか</h1>
+            <p>スプレッドシートに入力するだけで、リスナー向けの特典管理ページが自動で更新されます。各機能の詳細をご覧ください。</p>
+        </div>
+    </section>
+
+    <!-- 1. Ranking -->
+    <section class="feat-section">
+        <div class="container">
+            <div class="feat-inner">
+                <div class="feat-body">
+                    <div class="feat-header">
+                        <div class="feat-icon-lg"><i class="ph ph-trophy"></i></div>
+                        <div>
+                            <span class="sec-label">Ranking</span>
+                            <h2>前月ランキング表示</h2>
+                        </div>
+                    </div>
+                    <p class="feat-desc">スプレッドシートに入力した歌推しポイントを読み込み、ランキング形式で自動表示。1〜3位は特別なデザインで強調表示されます。</p>
+                    <ul class="feat-points">
+                        <li class="feat-point"><i class="ph ph-check-circle"></i>ポイント順の自動ランキング表示</li>
+                        <li class="feat-point"><i class="ph ph-check-circle"></i>1・2・3位のメダル特別表示（カスタム画像対応）</li>
+                        <li class="feat-point"><i class="ph ph-check-circle"></i>目標ポイントの設定（あと何ポイントで次のティア）</li>
+                        <li class="feat-point"><i class="ph ph-check-circle"></i>リスナー名クリックで個別詳細ポップアップ表示</li>
+                        <li class="feat-point"><i class="ph ph-check-circle"></i>月別の履歴閲覧</li>
+                    </ul>
+                </div>
+                <div class="img-placeholder">
+                    <i class="ph ph-image"></i>
+                    <span>スクリーンショット（準備中）</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. Benefits -->
+    <section class="feat-section alt">
+        <div class="container">
+            <div class="feat-inner reverse">
+                <div class="feat-body">
+                    <div class="feat-header">
+                        <div class="feat-icon-lg"><i class="ph ph-gift"></i></div>
+                        <div>
+                            <span class="sec-label">Benefits</span>
+                            <h2>特典管理</h2>
+                        </div>
+                    </div>
+                    <p class="feat-desc">特典ティアごとの内容説明と、各リスナーの達成状況・受け取り履歴を一元管理。限定コンテンツのアクセスキー保護にも対応しています。</p>
+                    <ul class="feat-points">
+                        <li class="feat-point"><i class="ph ph-check-circle"></i>特典ティア別の説明カード一覧</li>
+                        <li class="feat-point"><i class="ph ph-check-circle"></i>リスナーごとの達成ティア・特典履歴表示</li>
+                        <li class="feat-point"><i class="ph ph-check-circle"></i>アイコン・説明文のカスタマイズ</li>
+                        <li class="feat-point"><i class="ph ph-check-circle"></i>アクセスキーで保護した限定コンテンツ配信</li>
+                        <li class="feat-point"><i class="ph ph-check-circle"></i>テキスト・画像の限定コンテンツに対応</li>
+                    </ul>
+                    <div class="sub-grid">
+                        <div class="sub-card">
+                            <h4><i class="ph ph-lock-key" style="color:var(--color-primary);margin-right:4px;"></i>限定コンテンツ</h4>
+                            <p>アクセスキーを知るリスナーだけが閲覧できる、テキストや画像コンテンツを設定できます。</p>
+                        </div>
+                        <div class="sub-card">
+                            <h4><i class="ph ph-clock-counter-clockwise" style="color:var(--color-primary);margin-right:4px;"></i>特典履歴</h4>
+                            <p>いつ・どの特典を受け取ったかをスプシで管理。リスナーページに自動反映されます。</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="img-placeholder">
+                    <i class="ph ph-image"></i>
+                    <span>スクリーンショット（準備中）</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Icon Gallery -->
+    <section class="feat-section">
+        <div class="container">
+            <div class="feat-inner">
+                <div class="feat-body">
+                    <div class="feat-header">
+                        <div class="feat-icon-lg"><i class="ph ph-images"></i></div>
+                        <div>
+                            <span class="sec-label">Icon Gallery</span>
+                            <h2>枠内アイコンギャラリー</h2>
+                        </div>
+                    </div>
+                    <p class="feat-desc">リスナーが使っている枠内アイコンをギャラリー形式で一覧表示。月別・カテゴリ別に整理でき、スプレッドシートにGoogle DriveのURLを登録するだけで表示されます。</p>
+                    <ul class="feat-points">
+                        <li class="feat-point"><i class="ph ph-check-circle"></i>月別・カテゴリ別のグリッドギャラリー表示</li>
+                        <li class="feat-point"><i class="ph ph-check-circle"></i>Google DriveのURLをスプシに登録するだけ</li>
+                        <li class="feat-point"><i class="ph ph-check-circle"></i>リスナー名・コメントの表示に対応</li>
+                        <li class="feat-point"><i class="ph ph-check-circle"></i>画像クリックで拡大表示</li>
+                    </ul>
+                </div>
+                <div class="img-placeholder">
+                    <i class="ph ph-image"></i>
+                    <span>スクリーンショット（準備中）</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Events -->
+    <section class="feat-section alt">
+        <div class="container">
+            <div class="feat-inner reverse">
+                <div class="feat-body">
+                    <div class="feat-header">
+                        <div class="feat-icon-lg"><i class="ph ph-calendar-dots"></i></div>
+                        <div>
+                            <span class="sec-label">Events</span>
+                            <h2>イベント告知・管理</h2>
+                        </div>
+                    </div>
+                    <p class="feat-desc">次回イベントの告知カードをサイト上に自動表示。スプレッドシートにイベント情報を入力するだけで、リスナーへの告知が完了します。過去のイベント履歴表示にも対応。</p>
+                    <ul class="feat-points">
+                        <li class="feat-point"><i class="ph ph-check-circle"></i>次回イベントの告知カード自動表示</li>
+                        <li class="feat-point"><i class="ph ph-check-circle"></i>日程・タイトル・説明をスプシで管理</li>
+                        <li class="feat-point"><i class="ph ph-check-circle"></i>イベント履歴の一覧表示</li>
+                        <li class="feat-point"><i class="ph ph-check-circle"></i>管理画面からイベントビューのON/OFF切り替え可能</li>
+                    </ul>
+                </div>
+                <div class="img-placeholder">
+                    <i class="ph ph-image"></i>
+                    <span>スクリーンショット（準備中）</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Customize -->
+    <section class="feat-section">
+        <div class="container">
+            <div class="feat-inner">
+                <div class="feat-body">
+                    <div class="feat-header">
+                        <div class="feat-icon-lg"><i class="ph ph-paint-brush"></i></div>
+                        <div>
+                            <span class="sec-label">Customize</span>
+                            <h2>完全カスタマイズ</h2>
+                        </div>
+                    </div>
+                    <p class="feat-desc">ヘッダー画像からカラーテーマ・フォント・エフェクトまで、40以上の設定項目を管理画面から変更できます。コードを書かずに、あなたの世界観を反映したサイトに仕上げられます。</p>
+                    <ul class="feat-points">
+                        <li class="feat-point"><i class="ph ph-check-circle"></i>PC / モバイル別のヘッダー画像設定</li>
+                        <li class="feat-point"><i class="ph ph-check-circle"></i>プライマリ・ハイライト等のカラーテーマ</li>
+                        <li class="feat-point"><i class="ph ph-check-circle"></i>フォント・タイトルスタイル（glass / gradient / plain）</li>
+                        <li class="feat-point"><i class="ph ph-check-circle"></i>グロー・フロートなどのエフェクト設定</li>
+                        <li class="feat-point"><i class="ph ph-check-circle"></i>各ビューのON/OFF・表示順変更</li>
+                    </ul>
+                </div>
+                <div class="img-placeholder">
+                    <i class="ph ph-image"></i>
+                    <span>スクリーンショット（準備中）</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. Admin -->
+    <section class="feat-section alt">
+        <div class="container">
+            <div class="feat-header" style="margin-bottom:16px;">
+                <div class="feat-icon-lg"><i class="ph ph-sliders"></i></div>
+                <div>
+                    <span class="sec-label">Admin</span>
+                    <h2 style="font-family:'Zen Kaku Gothic New',sans-serif;font-size:clamp(1.3rem,2.5vw,1.75rem);font-weight:900;color:var(--color-accent);">管理画面</h2>
+                </div>
+            </div>
+            <p class="feat-desc" style="max-width:640px;">設定はすべて管理画面から操作できます。変更は自動保存され、デプロイボタン1つでサイトに反映されます。8つのタブで機能別に整理されています。</p>
+            <div class="tabs-grid">
+                <div class="tab-chip"><i class="ph ph-table"></i>Google Sheets<br>接続設定</div>
+                <div class="tab-chip"><i class="ph ph-image"></i>ブランディング<br>ヘッダー・ロゴ</div>
+                <div class="tab-chip"><i class="ph ph-palette"></i>カラー<br>テーマ設定</div>
+                <div class="tab-chip"><i class="ph ph-text-aa"></i>フォント<br>テキスト設定</div>
+                <div class="tab-chip"><i class="ph ph-layout"></i>ビュー管理<br>表示・順序</div>
+                <div class="tab-chip"><i class="ph ph-gift"></i>特典ティア<br>内容・限定設定</div>
+                <div class="tab-chip"><i class="ph ph-star"></i>エフェクト<br>アニメーション</div>
+                <div class="tab-chip"><i class="ph ph-rocket-launch"></i>デプロイ<br>ワンクリック公開</div>
+            </div>
+            <div style="margin-top:24px;">
+                <div class="img-placeholder" style="min-height:180px;">
+                    <i class="ph ph-image"></i>
+                    <span>管理画面スクリーンショット（準備中）</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-sec">
+        <div class="container">
+            <span class="sec-label">Join</span>
+            <h2>月額800円で、すべての機能が使えます</h2>
+            <p>カラーシングのメンバーシップに加入するだけ。その他費用は一切不要です。</p>
+            <a href="https://web.colorsing.com/memberships/livers/9f416ebb-bc97-4d24-8c38-9550c5040aa5?type=join" class="btn btn-lg">
+                メンバーシップに加入する
+                <i class="ph ph-arrow-right"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 magurophone</p>
+            <p>本サービスはカラーシングのメンバーシップ特典として提供しています</p>
+        </div>
+    </footer>
+
+</body>
+</html>
