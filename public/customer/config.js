@@ -38,7 +38,8 @@ window.DASHBOARD_CONFIG = {
     "lightBlue": "#78a8f0",
     "amber": "#e8b870",
     "accent": "#d84030",
-    "gold": "#f8c840"
+    "gold": "#f8c840",
+    "brightness": "dark"
   },
   "colorOverrides": {
     "headerGradientStart": "",
@@ -178,7 +179,9 @@ window.DASHBOARD_CONFIG = {
       "icon": "👑",
       "columnIndex": 7,
       "displayTemplate": "月内リクエスト対応中",
-      "isMembership": true
+      "isMembership": true,
+      "useKey": false,
+      "accessKey": "あああ"
     },
     {
       "key": "メンバーシップB",
@@ -186,8 +189,11 @@ window.DASHBOARD_CONFIG = {
       "columnIndex": 0,
       "displayTemplate": "特典: {value}",
       "isMembership": true,
-      "useKey": false,
-      "accessKey": ""
+      "useKey": true,
+      "accessKey": "aaa",
+      "lockedContent": {
+        "text": "https://magurophone.github.io/ColorSing_LP/promotion.html"
+      }
     }
   ],
   "home": {
