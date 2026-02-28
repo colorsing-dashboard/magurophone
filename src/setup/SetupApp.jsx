@@ -12,7 +12,7 @@ const Note = ({ children, type = 'info' }) => {
   }
   const labels = { info: '補足', warn: '注意', danger: '重要' }
   return (
-    <div className={`rounded-lg border p-3 mt-4 ${styles[type]}`}>
+    <div className={`rounded-lg border p-3 mt-4 mb-4 ${styles[type]}`}>
       <p className="text-xs font-bold mb-1">{labels[type]}</p>
       <p className="text-gray-300 text-xs leading-relaxed">{children}</p>
     </div>
