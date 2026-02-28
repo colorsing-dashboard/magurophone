@@ -242,6 +242,9 @@ const StepContent5 = () => (
     <p className="text-gray-300 text-sm mb-3">
       ステップ3で用意したヘッダー画像のGoogle Drive URLを設定します。
     </p>
+    <Note type="info">
+      ヘッダー画像は後から設定することもできます。まだ用意できていない場合はそのままデプロイに進んでOKです。
+    </Note>
     <Sub number="1">管理画面「ブランディング」タブを選択</Sub>
     <Sub number="2">「ヘッダー画像（PC用）」欄にPC用のGoogle Drive URLを貼り付け（自動保存）</Sub>
     <Sub number="3">「ヘッダー画像（モバイル用）」欄にモバイル用のGoogle Drive URLを貼り付け（自動保存）</Sub>
@@ -256,7 +259,7 @@ const StepContent5 = () => (
     <Sub number="2">「デプロイ実行」ボタンをクリック</Sub>
 
     <Note type="warn">
-      デプロイ実行しないとサイトに反映されません。スプレッドシートIDとヘッダー画像の設定が完了してからデプロイしてください。
+      デプロイ実行しないとサイトに反映されません。少なくともスプレッドシートIDの設定が完了してからデプロイしてください。
     </Note>
   </div>
 )
