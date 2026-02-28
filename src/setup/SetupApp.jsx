@@ -118,7 +118,7 @@ const StepContent3 = () => (
         {[
           { label: 'サイトURL',                   desc: 'あなた専用のランキング・特典管理ページのURL' },
           { label: '管理画面URL',                 desc: '設定を変更するための管理画面のURL（サイトURLの末尾が /admin）' },
-          { label: 'コピー用スプレッドシートURL', desc: 'データ管理に使うスプレッドシートのコピー元URL' },
+          { label: 'コピー用スプレッドシートURL', desc: 'データ管理に使うスプレッドシートのコピー用URL。開くとそのままコピーダイアログが表示されます。' },
         ].map(item => (
           <div key={item.label} className="bg-black/20 rounded-lg border border-light-blue/15 p-3">
             <p className="text-sm font-bold text-amber">{item.label}</p>
@@ -187,22 +187,8 @@ const StepContent4 = () => (
     </p>
 
     <H4>① スプレッドシートをコピー</H4>
-    <Sub number="1">受け取ったコピー用URLをブラウザのアドレスバーに貼り付ける</Sub>
-    <Sub number="2">
-      URLの末尾の{' '}
-      <code className="bg-black/40 text-amber px-1.5 py-0.5 rounded text-xs">/edit</code>
-      {' '}以降を{' '}
-      <code className="bg-black/40 text-amber px-1.5 py-0.5 rounded text-xs">/copy</code>
-      {' '}に書き換えてEnterキーを押す
-    </Sub>
-    <Sub number="3">「コピーを作成」ダイアログが表示されたら「コピーを作成」をクリック</Sub>
-
-    <Note type="info">
-      例:{' '}
-      <code className="bg-black/40 text-xs px-1 rounded">…/d/xxxxx<span className="text-red-400">/edit?usp=sharing</span></code>
-      {' '}→{' '}
-      <code className="bg-black/40 text-xs px-1 rounded">…/d/xxxxx<span className="text-green-400">/copy</span></code>
-    </Note>
+    <Sub number="1">受け取ったコピー用URLをブラウザのアドレスバーに貼り付けてEnterキーを押す</Sub>
+    <Sub number="2">「コピーを作成」ダイアログが表示されたら「コピーを作成」をクリック</Sub>
 
     <H4>② 共有設定を変更</H4>
     <p className="text-gray-300 text-sm mb-3">
