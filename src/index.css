@@ -33,7 +33,7 @@
   --color-sub-text: var(--override-sub-text, #9ca3af);
 
   --font-display: 'Playfair Display', serif;
-  --font-body: 'Yu Gothic Medium', 'YuGothic', 'Inter', sans-serif;
+  --font-body: 'Yu Gothic Medium', 'YuGothic', sans-serif;
 
   --breakpoint-xs: 320px;
 
@@ -52,13 +52,33 @@
 
 }
 
+/* ライトテーマ上書き */
+[data-theme="light"] {
+  /* テキスト色の color-mix ターゲットを white → ダーク系に上書き */
+  --color-name-text: var(--override-name-text, color-mix(in oklab, var(--base-light-blue) 35%, #2c1810));
+  --color-content-text: var(--override-content-text, color-mix(in oklab, var(--base-light-blue) 25%, #2c1810));
+  --color-sub-text: var(--override-sub-text, #6b5a4e);
+}
+
+[data-theme="light"] body {
+  color: #2c1810;
+}
+
+/* ライトテーマ時の Tailwind ハードコード色を上書き（管理画面・メインサイト共通） */
+[data-theme="light"] .text-white { color: #2c1810; }
+[data-theme="light"] .text-gray-300 { color: #4a3728; }
+[data-theme="light"] .text-gray-400 { color: #6b5a4e; }
+[data-theme="light"] .text-gray-500 { color: #8b7266; }
+[data-theme="light"] .placeholder-gray-400::placeholder,
+[data-theme="light"] .placeholder-gray-500::placeholder { color: #b8a090; }
+
 /* ベーススタイル */
 body {
   background: linear-gradient(180deg, var(--override-background-main, var(--base-deep-blue)), var(--override-background-mid, var(--base-ocean-teal)), var(--override-background-main, var(--base-deep-blue)));
   background-attachment: fixed;
   color: white;
   min-height: 100vh;
-  font-family: var(--font-body, 'Yu Gothic Medium', 'YuGothic', 'Inter', sans-serif);
+  font-family: var(--font-body, 'Yu Gothic Medium', 'YuGothic', sans-serif);
 }
 
 * {

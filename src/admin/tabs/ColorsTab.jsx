@@ -75,6 +75,7 @@ const ColorsTab = ({ config, updateConfig }) => {
     Object.entries(preset.colors).forEach(([key, value]) => {
       updateConfig(`colors.${key}`, value)
     })
+    updateConfig('colors.brightness', preset.brightness ?? 'dark')
   }
 
   const o = config.colorOverrides || {}
@@ -150,7 +151,16 @@ const ColorsTab = ({ config, updateConfig }) => {
                     <div key={i} className="w-4 h-4 rounded-full border border-white/20" style={{ backgroundColor: col }} />
                   ))}
                 </div>
-                <span className="text-gray-300">{preset.name}</span>
+                <div className="flex flex-col items-start gap-0.5">
+                  <span className="text-gray-300 leading-tight">{preset.name}</span>
+                  <span className={`text-[9px] px-1.5 py-px rounded-full leading-tight ${
+                    (preset.brightness ?? 'dark') === 'light'
+                      ? 'bg-light-blue/20 text-light-blue/70'
+                      : 'bg-amber/25 text-amber/80'
+                  }`}>
+                    {(preset.brightness ?? 'dark') === 'light' ? 'ライト' : 'ダーク'}
+                  </span>
+                </div>
               </button>
             ))}
           </div>

@@ -29,6 +29,63 @@ function AdminApp() {
   const [authenticated, setAuthenticated] = useState(false)
   const [passwordInput, setPasswordInput] = useState('')
   const [saveMessage, setSaveMessage] = useState(null)
+  const [adminTheme, setAdminTheme] = useState(
+    () => localStorage.getItem('admin_theme') ?? 'dark'
+  )
+
+  // 管理画面独自のライト/ダーク切り替え（サイト設定とは独立したハードコード値）
+  useEffect(() => {
+    const root = document.documentElement
+    const loadFont = (id, url) => {
+      let link = document.getElementById(id)
+      if (url) {
+        if (!link) {
+          link = document.createElement('link')
+          link.id = id
+          link.rel = 'stylesheet'
+          document.head.appendChild(link)
+        }
+        link.href = url
+      } else if (link) {
+        link.remove()
+      }
+    }
+    if (adminTheme === 'light') {
+      root.dataset.theme = 'light'
+      // promotion.html / ui-design skill 準拠カラー
+      root.style.setProperty('--base-deep-blue', '#FFFBF6')
+      root.style.setProperty('--base-ocean-teal', '#F0EAD6')
+      root.style.setProperty('--base-light-blue', '#E87C35')
+      root.style.setProperty('--base-amber', '#5D4037')
+      root.style.setProperty('--base-accent', '#FF6B6B')
+      root.style.setProperty('--override-glass-bg', 'rgba(255, 255, 255, 0.65)')
+      // ui-design skill 準拠フォント
+      root.style.setProperty('--font-display', "'Zen Kaku Gothic New', sans-serif")
+      root.style.setProperty('--font-body', "'Noto Sans JP', sans-serif")
+      document.body.style.fontFamily = "'Noto Sans JP', sans-serif"
+      loadFont('admin-font-light', 'https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@700&family=Noto+Sans+JP:wght@400;500;700&display=swap')
+    } else {
+      delete root.dataset.theme
+      root.style.setProperty('--base-deep-blue', '#0a1628')
+      root.style.setProperty('--base-ocean-teal', '#1b4965')
+      root.style.setProperty('--base-light-blue', '#8ab4f8')
+      root.style.setProperty('--base-amber', '#d4a574')
+      root.style.setProperty('--base-accent', '#c1121f')
+      root.style.removeProperty('--override-glass-bg')
+      root.style.setProperty('--font-display', "'Playfair Display', serif")
+      root.style.setProperty('--font-body', "'Yu Gothic Medium', 'YuGothic', sans-serif")
+      document.body.style.fontFamily = "'Yu Gothic Medium', 'YuGothic', sans-serif"
+      loadFont('admin-font-light', '')
+    }
+  }, [adminTheme])
+
+  const toggleAdminTheme = () => {
+    setAdminTheme(prev => {
+      const next = prev === 'dark' ? 'light' : 'dark'
+      localStorage.setItem('admin_theme', next)
+      return next
+    })
+  }
 
   // パスワード保護チェック
   const needsAuth = config.admin?.password && !authenticated
@@ -154,12 +211,19 @@ function AdminApp() {
         {/* モバイル: タイトル行 + タブスクロール */}
         <div className="md:hidden">
           <div className="flex items-center gap-3 px-4 py-2 border-b border-light-blue/15">
-            <span className="text-sm font-display font-black text-transparent bg-clip-text bg-gradient-to-r from-ocean-teal via-light-blue to-amber whitespace-nowrap">
+            <span className="text-sm font-display font-black text-light-blue whitespace-nowrap">
               管理画面
             </span>
             <span className="text-light-blue/40 text-xs">›</span>
             <span className="text-light-blue text-xs font-bold truncate flex-1 min-w-0">{activeTabDef?.label}</span>
             <div className="flex items-center gap-1 flex-shrink-0">
+              <button
+                onClick={toggleAdminTheme}
+                className="p-1.5 rounded-lg text-gray-400 hover:text-gray-200 hover:bg-white/5 transition-all"
+                title={adminTheme === 'dark' ? 'ライトモードに切替' : 'ダークモードに切替'}
+              >
+                {adminTheme === 'light' ? '☀' : '🌙'}
+              </button>
               <a href="./index.html" target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-lg text-gray-400 hover:text-gray-200 hover:bg-white/5 transition-all" title="プレビュー">
                 <IconRenderer icon="monitor" size={15} />
               </a>
@@ -188,10 +252,17 @@ function AdminApp() {
 
         {/* PC: サイドバー */}
         <div className="hidden md:flex flex-col h-full">
-          <div className="px-5 py-5 border-b border-light-blue/15">
-            <h1 className="text-base font-display font-black text-transparent bg-clip-text bg-gradient-to-r from-ocean-teal via-light-blue to-amber">
+          <div className="px-5 py-5 border-b border-light-blue/15 flex items-start justify-between">
+            <h1 className="text-base font-display font-black text-light-blue">
               管理画面
             </h1>
+            <button
+              onClick={toggleAdminTheme}
+              className="text-[13px] text-gray-400 hover:text-gray-200 transition-colors mt-0.5"
+              title={adminTheme === 'dark' ? 'ライトモードに切替' : 'ダークモードに切替'}
+            >
+              {adminTheme === 'light' ? '☀' : '🌙'}
+            </button>
           </div>
 
           <nav className="flex flex-col gap-0.5 p-3 flex-1">
