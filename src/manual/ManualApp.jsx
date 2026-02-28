@@ -105,7 +105,7 @@ const ADMIN_TABS_DATA = [
     img: './manual/admin-sheets-tab.png',
     items: [
       { label: 'スプレッドシートID', desc: 'データを読み込むGoogleスプレッドシートのIDを入力します。' },
-      { label: 'シート名（5種類）', desc: '目標管理・ランキング / 特典管理 / 特典内容 / 特典履歴 / 枠内アイコン の各シート名を設定します。シート名を変更した場合はこちらも合わせて変更してください。' },
+      { label: 'シート名（6種類）', desc: '目標管理・ランキング / 特典管理 / 特典内容 / 特典履歴 / 枠内アイコン / イベント の各シート名を設定します。シート名を変更した場合はこちらも合わせて変更してください。' },
       { label: 'セル範囲（3種類）', desc: 'ランキング・目標・特典説明データのセル範囲を設定します。権利者データと特典履歴は行上限なしで自動取得されます。通常は変更不要です。' },
       { label: '自動更新', desc: 'サイトが自動的にデータを再読み込みする間隔（分）を設定します。デフォルトは5分。' },
     ],
@@ -114,7 +114,7 @@ const ADMIN_TABS_DATA = [
     name: 'ビュー管理',
     img: './manual/admin-views-tab.png',
     items: [
-      { label: '表示・非表示の切り替え', desc: '各ページ（ホーム・メニュー・権利者リスト・枠内アイコン等）をON/OFFできます。' },
+      { label: '表示・非表示の切り替え', desc: '各ページ（ホーム・メニュー・権利者リスト・枠内アイコン・イベント等）をON/OFFできます。スプレッドシートにイベントシートを用意していない場合は「イベント」をOFFにしてください。' },
       { label: 'ラベル・アイコンの変更', desc: 'ナビゲーションに表示されるページ名と絵文字アイコンを変更できます。' },
       { label: '表示順の変更', desc: '上下ボタンでナビゲーションの並び順を変更できます。' },
     ],
@@ -289,6 +289,26 @@ const SS_SHEET_DATA = [
       </div>
     ),
   },
+  {
+    name: 'イベント',
+    img: './manual/ss-event-sheet.png',
+    content: () => (
+      <>
+        <div className="space-y-3">
+          <Cell range="A3:E3" label="次回（開催予定）イベント"
+            desc="A列: 開催日（yyyymmdd形式、例: 20260315） / B列: タイトル / C列: セットリスト（改行で複数行入力可） / D列: ポスター画像URL（Google Drive） / E列: 備考" />
+          <Cell range="A7:E（行上限なし）" label="開催済みイベント履歴（7行目以降）"
+            desc="フォーマットは3行目と同じ。新しいイベントを3行目に書き、終わったら7行目以降に移します。4〜6行目は空白のままにしてください。" />
+        </div>
+        <Note type="info">
+          ポスター画像はGoogle DriveにアップロードしてURLを貼り付けます（「アイコン・メダル画像の設定」タブ参照）。画像がない場合は D列を空白にしてください。
+        </Note>
+        <Note type="warn">
+          イベントシートを使わない場合は、管理画面「ビュー管理」タブでイベントをOFFにしてください。OFFにするとホームとイベントページ両方に何も表示されなくなります。
+        </Note>
+      </>
+    ),
+  },
 ]
 
 const TabSpreadsheetEntry = () => {
@@ -299,7 +319,7 @@ const TabSpreadsheetEntry = () => {
   return (
     <div>
       <p className="text-gray-300 text-sm mb-4">
-        スプレッドシートは <span className="text-amber font-bold">5つのシート</span> で構成されています。
+        スプレッドシートは <span className="text-amber font-bold">6つのシート</span> で構成されています（イベント機能を使う場合）。
         シート名は管理画面の「Google Sheets」タブで変更できます。
       </p>
 
