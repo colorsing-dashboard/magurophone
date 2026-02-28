@@ -189,10 +189,10 @@ window.DASHBOARD_CONFIG = {
       "columnIndex": 0,
       "displayTemplate": "特典: {value}",
       "isMembership": true,
-      "useKey": true,
-      "accessKey": "aaa",
+      "useKey": false,
+      "accessKey": "",
       "lockedContent": {
-        "text": "https://magurophone.github.io/ColorSing_LP/promotion.html"
+        "text": ""
       }
     }
   ],
