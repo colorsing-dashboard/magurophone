@@ -98,33 +98,33 @@ window.DASHBOARD_CONFIG = {
     {
       "id": "home",
       "label": "Home",
-      "icon": "🏠",
+      "icon": "hi:home",
       "enabled": true
     },
     {
       "id": "menu",
       "label": "Menu",
-      "icon": "🍸",
+      "icon": "wine",
       "enabled": true
     },
     {
       "id": "rights",
       "label": "ボトルキープ",
-      "icon": "👥",
+      "icon": "hi:user-group",
       "enabled": true,
       "title": "ボトルキープ一覧"
     },
     {
       "id": "events",
       "label": "イベント",
-      "icon": "📖",
+      "icon": "flame",
       "enabled": true,
       "title": "イベント"
     },
     {
       "id": "icons",
       "label": "枠内アイコン",
-      "icon": "🖼️",
+      "icon": "ph:smiley-wink:light",
       "enabled": true,
       "title": "枠内アイコン"
     }
