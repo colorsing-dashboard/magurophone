@@ -1,4 +1,5 @@
 import DEFAULT_CONFIG from './defaults'
+import { reverseToken, restoreToken } from './utils'
 
 // パス第1セグメント（リポジトリ名）でキーを分離。同一ドメインの複数顧客が混在しないように
 const _repoSlug = (typeof window !== 'undefined' ? window.location.pathname.split('/')[1] : '') || 'default'
@@ -76,7 +77,7 @@ export function loadBaseConfig() {
 
   // 反転トークンを復元
   if (merged.deploy?.token?.startsWith('rev:')) {
-    merged.deploy.token = merged.deploy.token.slice(4).split('').reverse().join('')
+    merged.deploy.token = restoreToken(merged.deploy.token)
   }
 
   return merged
@@ -94,10 +95,8 @@ export function loadConfig() {
       if (stored) {
         const parsed = JSON.parse(stored)
         // benefitTiers は localStorage を正とする（管理画面での削除を永続化）
+        // deepMerge は配列を丸ごと上書きするため、benefitTiers も自動的に localStorage の値が使われる
         config = deepMerge(config, parsed)
-        if (parsed.benefitTiers) {
-          config.benefitTiers = parsed.benefitTiers
-        }
         // views配列: localStorage のマージ後もIDベースで補完（defaultsの新ビューが消えないように）
         if (Array.isArray(config.views)) {
           const existingIds = new Set(config.views.map(v => v.id))
@@ -145,7 +144,7 @@ export function generateConfigJS(config) {
   // deploy.token は GitHub シークレットスキャンを回避するため反転して保存
   if (cleanConfig.deploy?.token && !cleanConfig.deploy.token.startsWith('rev:')) {
     cleanConfig.deploy = { ...cleanConfig.deploy }
-    cleanConfig.deploy.token = 'rev:' + cleanConfig.deploy.token.split('').reverse().join('')
+    cleanConfig.deploy.token = reverseToken(cleanConfig.deploy.token)
   }
 
   const json = JSON.stringify(cleanConfig, null, 2)
