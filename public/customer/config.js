@@ -186,8 +186,8 @@ window.DASHBOARD_CONFIG = {
     {
       "key": "メンバーシップB",
       "icon": "🌟",
-      "columnIndex": 0,
-      "displayTemplate": "特典: {value}",
+      "columnIndex": 8,
+      "displayTemplate": "オリジナル歌推しサイト提供中！",
       "isMembership": true,
       "useKey": false,
       "accessKey": "",
@@ -207,6 +207,7 @@ window.DASHBOARD_CONFIG = {
     ],
     "faq": {
       "enabled": true,
+      "accordion": true,
       "title": "📝 FAQ・注意事項",
       "items": [
         {
