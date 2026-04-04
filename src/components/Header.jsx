@@ -132,12 +132,18 @@ const Header = ({ lastUpdate, loading, onRefresh }) => {
   const titlePos = config.brand.titlePosition || 'center'
   const posClass = TITLE_POS[titlePos] || TITLE_POS.center
   const isCenter = titlePos === 'center'
+  const desktopSrc = convertDriveUrl(config.images.headerDesktop, 1600)
+  const mobileSrc  = convertDriveUrl(config.images.headerMobile || config.images.headerDesktop, 800)
+  const hasImage = desktopSrc || mobileSrc
+
   const imgW  = config.brand.headerImageW
   const imgH  = config.brand.headerImageH
   const imgWM = config.brand.headerImageWMobile
   const imgHM = config.brand.headerImageHMobile
-  const heightDesktop = config.brand.headerHeight || '600px'
-  const heightMobile  = config.brand.headerHeightMobile || '400px'
+  const defaultHeightDesktop = hasImage ? '600px' : '120px'
+  const defaultHeightMobile  = hasImage ? '400px' : '80px'
+  const heightDesktop = config.brand.headerHeight || defaultHeightDesktop
+  const heightMobile  = config.brand.headerHeightMobile || defaultHeightMobile
 
   useEffect(() => {
     const id = 'header-cs-style'
@@ -151,11 +157,7 @@ const Header = ({ lastUpdate, loading, onRefresh }) => {
     const mobile  = (imgWM && imgHM) ? `aspect-ratio:${imgWM}/${imgHM}` : `height:${heightMobile}`
     const desktop = (imgW  && imgH)  ? `aspect-ratio:${imgW}/${imgH}`   : `height:${heightDesktop}`
     el.textContent = `.header-cs{${mobile}}@media(min-width:768px){.header-cs{${desktop}}}`
-  }, [imgW, imgH, imgWM, imgHM, heightDesktop, heightMobile])
-
-  const desktopSrc = convertDriveUrl(config.images.headerDesktop, 1600)
-  const mobileSrc  = convertDriveUrl(config.images.headerMobile || config.images.headerDesktop, 800)
-  const hasImage = desktopSrc || mobileSrc
+  }, [imgW, imgH, imgWM, imgHM, heightDesktop, heightMobile, hasImage])
 
   return (
     <div
