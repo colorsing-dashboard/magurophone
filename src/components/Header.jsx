@@ -102,11 +102,11 @@ const Header = ({ lastUpdate, loading, onRefresh }) => {
   // ヘッダー非表示モード（コンパクト表示）
   if (config.brand.showHeader === false) {
     return (
-      <div className="w-full px-6 py-4 flex items-center justify-between gap-4">
+      <div className="w-full px-6 py-4 flex flex-col items-center gap-3">
         {config.brand.showTitle !== false && (
           <TitleText config={config} glowClass={glowClass} compact />
         )}
-        <div className="flex items-center gap-3 ml-auto shrink-0">
+        <div className="flex items-center gap-3">
           {lastUpdate && (
             <div className="hidden md:block text-xs text-sub-text">
               {config.ui.lastUpdate}: {lastUpdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })}
@@ -153,10 +153,11 @@ const Header = ({ lastUpdate, loading, onRefresh }) => {
 
   const desktopSrc = convertDriveUrl(config.images.headerDesktop, 1600)
   const mobileSrc  = convertDriveUrl(config.images.headerMobile || config.images.headerDesktop, 800)
+  const hasImage = desktopSrc || mobileSrc
 
   return (
     <div
-      className={`${imgFit !== 'contain' ? 'header-cs ' : ''}w-full relative overflow-hidden`}
+      className={`${imgFit !== 'contain' || !hasImage ? 'header-cs ' : ''}w-full relative overflow-hidden`}
       style={{
         background: hasHeaderBg
           ? `linear-gradient(to bottom, var(--color-header-gradient-end, var(--color-deep-blue)), var(--color-header-gradient-start, var(--color-ocean-teal)) 50%, var(--color-header-gradient-end, var(--color-deep-blue)))`
