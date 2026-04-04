@@ -102,11 +102,13 @@ const Header = ({ lastUpdate, loading, onRefresh }) => {
   // ヘッダー非表示モード（コンパクト表示）
   if (config.brand.showHeader === false) {
     return (
-      <div className="w-full px-6 py-4 flex flex-col items-center gap-3">
+      <div className="w-full relative px-6 py-4">
         {config.brand.showTitle !== false && (
-          <TitleText config={config} glowClass={glowClass} compact />
+          <div className="text-center">
+            <TitleText config={config} glowClass={glowClass} compact />
+          </div>
         )}
-        <div className="flex items-center gap-3">
+        <div className="absolute top-4 right-4 flex items-center gap-3">
           {lastUpdate && (
             <div className="hidden md:block text-xs text-sub-text">
               {config.ui.lastUpdate}: {lastUpdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })}
