@@ -91,6 +91,7 @@ const ColorsTab = ({ config, updateConfig }) => {
       'primaryText', 'accentText', 'nameText', 'contentText', 'footerText', 'titleColor',
       'glassBgColor', 'glassBgOpacity',
       'tierCardBgColor', 'tierCardBgOpacity',
+      'menuCardBgColor', 'menuCardBgOpacity',
       'popupOverlayColor', 'popupOverlayOpacity',
       'menuCardLabelColor', 'menuCardLabelOpacity',
       'backgroundMain', 'backgroundMid', 'cardBorder', 'cardBorderHover', 'rank1Card',
@@ -132,11 +133,13 @@ const ColorsTab = ({ config, updateConfig }) => {
 
   const glassSlider = opacitySlider('glassBgOpacity', 0.6)
   const tierCardSlider = opacitySlider('tierCardBgOpacity', 0.5)
+  const menuCardSlider = opacitySlider('menuCardBgOpacity', 0.85)
   const popupSlider = opacitySlider('popupOverlayOpacity', 0.7)
   const menuLabelSlider = opacitySlider('menuCardLabelOpacity', 0.1)
 
   const glassHasChange = o.glassBgColor || (o.glassBgOpacity !== '' && o.glassBgOpacity != null)
   const tierCardHasChange = o.tierCardBgColor || (o.tierCardBgOpacity !== '' && o.tierCardBgOpacity != null)
+  const menuCardHasChange = o.menuCardBgColor || (o.menuCardBgOpacity !== '' && o.menuCardBgOpacity != null)
   const popupHasChange = o.popupOverlayColor || (o.popupOverlayOpacity !== '' && o.popupOverlayOpacity != null)
   const menuLabelHasChange = o.menuCardLabelColor || (o.menuCardLabelOpacity !== '' && o.menuCardLabelOpacity != null)
 

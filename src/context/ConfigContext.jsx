@@ -78,6 +78,21 @@ export function ConfigProvider({ config, children }) {
       }
     }
 
+    // menu card 背景色（特典内容ビュー専用、未設定時は glass-effect と同じ値を使う = フォールバック）
+    {
+      if (o.menuCardBgColor && /^#[0-9a-f]{6}$/i.test(o.menuCardBgColor)) {
+        const a = (o.menuCardBgOpacity !== '' && o.menuCardBgOpacity != null)
+          ? o.menuCardBgOpacity
+          : 0.85
+        const menuCardRgba = hexToRgba(o.menuCardBgColor, a)
+        if (menuCardRgba) {
+          root.style.setProperty('--menu-card-bg', menuCardRgba)
+        }
+      } else {
+        root.style.removeProperty('--menu-card-bg')
+      }
+    }
+
     // tier card 背景色（未設定時は deepBlue 50% / ライトテーマは白 55%）
     {
       const col = (o.tierCardBgColor && /^#[0-9a-f]{6}$/i.test(o.tierCardBgColor))
