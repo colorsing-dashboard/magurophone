@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import { loadConfig, saveConfig, deepMerge, saveConfigMeta } from '../lib/configIO'
 import { restoreToken } from '../lib/utils'
 import DEFAULT_CONFIG from '../lib/defaults'
+import { TENANT_KIND, resolveTenantKind } from '../productization/tenantKind'
+import { loadFanPageCreation } from '../productization/fanPageCreation'
 import IconRenderer from '../components/IconRenderer'
 import BrandingTab from './tabs/BrandingTab'
 import ColorsTab from './tabs/ColorsTab'
@@ -9,24 +11,75 @@ import ColorsTab from './tabs/ColorsTab'
 import SheetsTab from './tabs/SheetsTab'
 import ViewsTab from './tabs/ViewsTab'
 import TiersTab from './tabs/TiersTab'
+import SupportersTab from './tabs/SupportersTab'
 import ContentTab from './tabs/ContentTab'
 import EffectsTab from './tabs/EffectsTab'
 import DeployTab from './tabs/DeployTab'
+
+// 新規顧客に見せないタブ。
+// Google Sheets はデータ元がCentral DBの新規顧客には無関係。
+// デプロイは顧客へGitHubのリポジトリやトークンを触らせない方針のため出さない。
+const LEGACY_ONLY_TABS = new Set(['sheets', 'deploy'])
+// リスナー情報はCentral DBが正本。既存顧客はSheetsのままなので出さない。
+const NEW_ONLY_TABS = new Set(['supporters'])
+
+// 「ティア」は業界語。初めての人には通じないので、新規顧客には言い換える。
+const NEW_TENANT_LABELS = {
+  tiers: { label: '特典の段階', short: '段階' },
+}
 
 const TABS = [
   { id: 'branding', label: 'ブランディング', short: 'ブランド', icon: 'tag' },
   { id: 'colors',   label: 'カラー',         short: 'カラー',   icon: 'palette' },
   { id: 'sheets',   label: 'Google Sheets',  short: 'シート',   icon: 'bar-chart-3' },
   { id: 'views',    label: 'ビュー管理',     short: 'ビュー',   icon: 'smartphone' },
+  { id: 'supporters', label: 'リスナー情報', short: 'リスナー', icon: 'users' },
   { id: 'tiers',    label: '特典ティア',     short: 'ティア',   icon: 'trophy' },
   { id: 'content',  label: 'コンテンツ',     short: 'コンテンツ', icon: 'file-text' },
   { id: 'effects',  label: 'エフェクト',     short: 'エフェクト', icon: 'sparkles' },
   { id: 'deploy',   label: 'デプロイ',       short: 'デプロイ', icon: 'rocket' },
 ]
 
+
+// セットアップ案内から来た人にだけ、現在地と戻り先を出す。目的を持たずに
+// 管理画面を開いた人へチュートリアルを押し付けない。
+const SETUP_GUIDES = {
+  'setup-colors': { label: 'ページの色を決める', done: '色を選ぶと保存されます。' },
+  'setup-tiers': { label: '特典の段階を決める（例: 5K, 10K）', done: '入力すると保存されます。' },
+  'setup-supporters': { label: 'リスナーを登録する', done: '追加すると保存されます。' },
+}
+
+function SetupGuideBar({ guide }) {
+  const info = SETUP_GUIDES[guide]
+  if (!info) return null
+  return (
+    <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-light-blue/35 bg-light-blue/10 px-4 py-3" data-testid="setup-guide-bar">
+      <div>
+        <p className="text-xs font-bold text-light-blue">歌推しページの初期設定</p>
+        <p className="mt-1 text-sm text-gray-200">{info.label}。{info.done}</p>
+      </div>
+      <a href="./onboarding.html" data-testid="setup-guide-back" className="rounded-lg border border-light-blue/50 bg-light-blue/15 px-4 py-2 text-sm font-bold text-light-blue">
+        設定の続きへ戻る
+      </a>
+    </div>
+  )
+}
+
 function AdminApp() {
   const [config, setConfig] = useState(() => loadConfig())
-  const [activeTab, setActiveTab] = useState('branding')
+  const isLegacyTenant = resolveTenantKind(config, { hasFanPageRecord: Boolean(loadFanPageCreation()) }) === TENANT_KIND.LEGACY
+  const visibleTabs = TABS
+    .filter(tab => isLegacyTenant ? !NEW_ONLY_TABS.has(tab.id) : !LEGACY_ONLY_TABS.has(tab.id))
+    .map(tab => (isLegacyTenant || !NEW_TENANT_LABELS[tab.id]) ? tab : { ...tab, ...NEW_TENANT_LABELS[tab.id] })
+  // セットアップ案内から、作業する場所へ直接来られるようにする。
+  // 「色を変える」と言われた人が、どこを開けばよいか探さずに済む。
+  const [activeTab, setActiveTab] = useState(() => {
+    const requested = new URLSearchParams(window.location.search).get('tab')
+    // 表示しないタブはURLで直接指定されても開かない。
+    return visibleTabs.some(tab => tab.id === requested) ? requested : 'branding'
+  })
+  // 目的（guide）は場所（tab）とは別。同じタブへ別の用事で来ることがある。
+  const [setupGuide] = useState(() => new URLSearchParams(window.location.search).get('guide') || '')
   const [authenticated, setAuthenticated] = useState(false)
   const [passwordInput, setPasswordInput] = useState('')
   const [saveMessage, setSaveMessage] = useState(null)
@@ -196,6 +249,7 @@ function AdminApp() {
     sheets: SheetsTab,
     views: ViewsTab,
     tiers: TiersTab,
+    supporters: SupportersTab,
     content: ContentTab,
     effects: EffectsTab,
     deploy: DeployTab,
@@ -228,13 +282,15 @@ function AdminApp() {
               <a href="./index.html" target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-lg text-gray-400 hover:text-gray-200 hover:bg-white/5 transition-all" title="プレビュー">
                 <IconRenderer icon="monitor" size={15} />
               </a>
-              <a href="./manual.html" target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-lg text-gray-400 hover:text-gray-200 hover:bg-white/5 transition-all" title="マニュアル">
-                <IconRenderer icon="book-open" size={15} />
-              </a>
+              {isLegacyTenant && (
+                <a href="./manual.html" target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-lg text-gray-400 hover:text-gray-200 hover:bg-white/5 transition-all" title="マニュアル">
+                  <IconRenderer icon="book-open" size={15} />
+                </a>
+              )}
             </div>
           </div>
           <nav className="flex gap-1 overflow-x-auto px-2 py-2">
-            {TABS.map(tab => (
+            {visibleTabs.map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
@@ -267,7 +323,7 @@ function AdminApp() {
           </div>
 
           <nav className="flex flex-col gap-0.5 p-3 flex-1">
-            {TABS.map(tab => (
+            {visibleTabs.map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
@@ -292,14 +348,16 @@ function AdminApp() {
             >
               プレビューを開く
             </a>
-            <a
-              href="./manual.html"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block w-full px-3 py-2 bg-light-blue/10 hover:bg-light-blue/20 border border-light-blue/30 rounded-lg transition-all text-light-blue text-xs font-body text-center"
-            >
-              管理マニュアル
-            </a>
+            {isLegacyTenant && (
+              <a
+                href="./manual.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full px-3 py-2 bg-light-blue/10 hover:bg-light-blue/20 border border-light-blue/30 rounded-lg transition-all text-light-blue text-xs font-body text-center"
+              >
+                管理マニュアル
+              </a>
+            )}
           </div>
         </div>
       </aside>
@@ -313,7 +371,8 @@ function AdminApp() {
         )}
 
         <div className="max-w-3xl">
-          <ActiveTab config={config} updateConfig={updateConfig} onSyncFromGitHub={handleSyncFromGitHub} />
+          <SetupGuideBar guide={setupGuide} />
+          <ActiveTab config={config} updateConfig={updateConfig} onSyncFromGitHub={handleSyncFromGitHub} isLegacyTenant={isLegacyTenant} />
         </div>
 
       </main>

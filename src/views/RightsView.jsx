@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from 'react'
 import { useConfig } from '../context/ConfigContext'
-import { BENEFIT_FIELDS, RIGHTS_NAME_INDEX, hasRight } from '../lib/rights'
+import { BENEFIT_FIELDS, RIGHTS_NAME_INDEX, hasRight, isRightsColumn } from '../lib/rights'
 import IconRenderer from '../components/IconRenderer'
 
 const RightsView = ({ rights, history, benefits, onSelectPerson, specialIndex = 8 }) => {
@@ -35,6 +35,7 @@ const RightsView = ({ rights, history, benefits, onSelectPerson, specialIndex = 
   const getRightsIcons = useCallback((person) => {
     const icons = []
     config.benefitTiers.forEach((tier) => {
+      if (!isRightsColumn(tier.columnIndex)) return
       if (hasRight(person[tier.columnIndex])) {
         icons.push(tier.icon)
       }
@@ -60,7 +61,9 @@ const RightsView = ({ rights, history, benefits, onSelectPerson, specialIndex = 
       if (!name) return false
       if (!name.toLowerCase().includes(searchTerm.toLowerCase())) return false
 
-      const hasAnyRight = config.benefitTiers.some(tier => hasRight(person[tier.columnIndex]))
+      const hasAnyRight = config.benefitTiers.some(
+        tier => isRightsColumn(tier.columnIndex) && hasRight(person[tier.columnIndex])
+      )
       const specialValue = String(person[specialIndex] ?? '').trim()
       const normalizedSpecial = specialValue.toUpperCase()
       const hasSpecial = normalizedSpecial !== '' && normalizedSpecial !== 'FALSE' && normalizedSpecial !== '0'
@@ -74,7 +77,7 @@ const RightsView = ({ rights, history, benefits, onSelectPerson, specialIndex = 
   return (
     <section>
       <h2 className="text-2xl md:text-4xl font-body mb-4 md:mb-8 text-center text-glow-soft text-primary">
-        {viewConfig.title || '🍾 ボトルキープ一覧'}
+        {viewConfig.title || '特典一覧'}
       </h2>
 
       <div className="mb-6 max-w-2xl mx-auto">

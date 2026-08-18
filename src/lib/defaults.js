@@ -2,7 +2,7 @@
 const DEFAULT_CONFIG = {
   brand: {
     name: '',
-    sidebarTitle: 'color singer LP',
+    sidebarTitle: '',
     footerText: '',
     footerSubText: '',
     footerNote: '',
@@ -107,23 +107,24 @@ const DEFAULT_CONFIG = {
     refreshIntervalMs: 300000,
   },
 
+  platform: {
+    tenantSlug: '',
+    publicApiBaseUrl: '',
+    readSource: 'sheets',
+    shadowCompareEnabled: false,
+    useRuntimeConfig: true,
+  },
+
   views: [
     { id: 'home', label: 'Home', icon: '🏠', enabled: true },
     { id: 'menu', label: 'Menu', icon: '🍾', enabled: true },
-    { id: 'rights', label: 'ボトルキープ', icon: '👥', enabled: true, title: '🍾 ボトルキープ一覧' },
+    { id: 'rights', label: '特典一覧', icon: '👥', enabled: true, title: '特典一覧' },
     { id: 'icons', label: '枠内アイコン', icon: '🖼️', enabled: true, title: '🖼️ 枠内アイコン' },
     { id: 'events', label: 'イベント', icon: '📖', enabled: false, title: 'イベント' },
   ],
 
-  benefitTiers: [
-    { key: '5k', icon: '🎵', columnIndex: 1, displayTemplate: '強制リクエスト: {value}曲', lockedContent: { text: '', imageUrl: '' } },
-    { key: '10k', icon: '🎮', columnIndex: 2, displayTemplate: '権利: {value}時間分', lockedContent: { text: '', imageUrl: '' } },
-    { key: '20k', icon: '💬', columnIndex: 3, displayTemplate: 'オープンチャット招待済', isBoolean: true, lockedContent: { text: '', imageUrl: '' } },
-    { key: '30k', icon: '🎤', columnIndex: 4, displayTemplate: 'アカペラ音源獲得: {value}曲', lockedContent: { text: '', imageUrl: '' } },
-    { key: '40k', icon: '⚡', columnIndex: 5, displayTemplate: '強制リクエスト: {value}曲', lockedContent: { text: '', imageUrl: '' } },
-    { key: '50k', icon: '🏆', columnIndex: 6, displayTemplate: 'ミックス音源獲得: {value}曲', lockedContent: { text: '', imageUrl: '' } },
-    { key: 'メンバーシップ', icon: '👑', columnIndex: 7, displayTemplate: '月内リクエスト対応中', isMembership: true, lockedContent: { text: '', imageUrl: '' } },
-  ],
+  // 特典は顧客が決めるもの。他の配信者の段階を最初から並べない。
+  benefitTiers: [],
 
   home: {
     rankingTitle: 'Ranking',
@@ -135,11 +136,8 @@ const DEFAULT_CONFIG = {
       enabled: true,
       accordion: true,
       title: '📝 FAQ・注意事項',
-      items: [
-        { question: '特典の使用方法は？', answer: '枠内でリクエストするか、XのDMでお知らせください。' },
-        { question: '10k以上の特典について', answer: '永続権利です。月が替わっても消えることがありません。' },
-        { question: 'メンバーシップ特典について', answer: 'メンバーシップ特典で得られた10ｋ及び20ｋ特典は、それぞれの箇所に合算して記載しています。' },
-      ],
+      // 他の配信者のルールを、新しい顧客のページに最初から載せない。
+      items: [],
     },
   },
 
