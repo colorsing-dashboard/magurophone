@@ -259,7 +259,11 @@ window.DASHBOARD_CONFIG = {
   },
   "platform": {
     "publicApiBaseUrl": "https://song-list-tool.pages.dev",
-    "tenantSlug": "magurophone"
+    "tenantSlug": "magurophone",
+    "tenantId": "tenant-magurophone",
+    "publicUrl": "https://colorsing-dashboard.github.io/magurophone/",
+    "controlPlaneOrigin": "https://song-list-tool.pages.dev",
+    "configAuthority": "control_plane"
   },
   "admin": {
     "password": "",
