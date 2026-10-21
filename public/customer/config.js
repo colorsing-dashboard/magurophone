@@ -258,7 +258,7 @@ window.DASHBOARD_CONFIG = {
     "token": "rev:7YHtr7JJSZC6N7PQ6NehejtKfpVjOr4EtoHP79kMsi2TDHwpabmUtxEm55y_lK3XNMw8DBHT0IMBSTQB11_tap_buhtig"
   },
   "platform": {
-    "publicApiBaseUrl": "https://song-list-tool.pages.dev",
+    "publicApiBaseUrl": "https://tsumuen.com",
     "tenantSlug": "magurophone",
     "tenantId": "tenant-magurophone",
     "publicUrl": "https://colorsing-dashboard.github.io/magurophone/",
